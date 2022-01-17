@@ -1,10 +1,10 @@
 const { parseCommands, Command } = require("./commands");
+require("dotenv").config();
+
 const { deploy } = require("./deploy");
 const { serve } = require("./serve");
 
 const commands = parseCommands();
-
-console.log(commands);
 
 commands.forEach((command) => {
   switch (command) {
