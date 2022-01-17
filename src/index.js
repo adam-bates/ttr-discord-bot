@@ -1,6 +1,6 @@
-const { parseCommands, Command } = require("./commands");
 require("dotenv").config();
 
+const { parseCommands, Command } = require("./commands");
 const { deploy } = require("./deploy");
 const { serve } = require("./serve");
 
