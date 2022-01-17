@@ -1,0 +1,22 @@
+{
+  "name": "tlc-discord-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for the Runescape clan: The Last Citadel",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "runescape"
+  ],
+  "author": {
+    "name": "Adam Bates",
+    "email": "adam@adambates.ca"
+  },
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "dotenv": "^14.2.0"
+  }
+}
