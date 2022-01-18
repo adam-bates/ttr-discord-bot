@@ -1,17 +1,18 @@
 require("dotenv").config();
 
+const { forEachAsync } = require("./utils/array");
 const { parseArgsToCommands, Command } = require("./args");
 const { deploy, serve } = require("./bot");
 
 const commands = parseArgsToCommands();
 
-commands.forEach((command) => {
+forEachAsync(commands, async (command) => {
   switch (command) {
     case Command.DEPLOY:
-      deploy();
+      await deploy();
       break;
     case Command.SERVE:
-      serve();
+      await serve();
       break;
     default:
       throw new Error(`Unknown command: ${command}`);

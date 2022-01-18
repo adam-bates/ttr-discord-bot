@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Custom Discord bot for the Runescape clan: The Last Citadel",
   "main": "index.js",
+  "engines": {
+    "node": ">=11.14.0"
+  },
   "scripts": {
     "start": "node ./src/index.js --serve",
     "deploy": "node ./src/index.js --deploy"

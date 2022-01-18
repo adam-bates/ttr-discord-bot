@@ -1,62 +1,61 @@
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
 
-const fs = require("fs");
+const fs = require("fs").promises;
 const path = require("path");
 const { Client, Collection, Intents } = require("discord.js");
 
 const COMMANDS_DIR = path.join(__dirname, "handlers", "commands");
 const EVENTS_DIR = path.join(__dirname, "handlers", "events");
 
-const buildCommands = () => {
+const buildCommands = async () => {
   const commands = [];
 
-  const commandFiles = fs
-    .readdirSync(COMMANDS_DIR)
-    .filter((file) => file.endsWith(".js"));
+  const commandFiles = await fs.readdir(COMMANDS_DIR);
 
-  commandFiles.forEach((file) => {
-    const command = require(path.join(COMMANDS_DIR, file));
+  commandFiles
+    .filter((file) => file.endsWith(".js"))
+    .forEach((file) => {
+      const command = require(path.join(COMMANDS_DIR, file));
 
-    commands.push([command.data.name, command]);
-  });
+      commands.push([command.data.name, command]);
+    });
 
   return commands;
 };
 
-const setupEvents = (client) => {
-  const eventFiles = fs
-    .readdirSync(EVENTS_DIR)
-    .filter((file) => file.endsWith(".js"));
+const setupEvents = async (client) => {
+  const eventFiles = await fs.readdir(EVENTS_DIR);
 
-  eventFiles.forEach((file) => {
-    const event = require(path.join(EVENTS_DIR, file));
+  eventFiles
+    .filter((file) => file.endsWith(".js"))
+    .forEach((file) => {
+      const event = require(path.join(EVENTS_DIR, file));
 
-    if (event.once) {
-      client.once(event.name, (...args) => event.execute(client, ...args));
-    } else {
-      client.on(event.name, (...args) => event.execute(client, ...args));
-    }
-  });
+      if (event.once) {
+        client.once(event.name, (...args) => event.execute(client, ...args));
+      } else {
+        client.on(event.name, (...args) => event.execute(client, ...args));
+      }
+    });
 };
 
-const startClient = (client) => {
+const startClient = async (client) =>
   client.login(process.env.DISCORD_BOT_TOKEN);
-};
 
-const serve = () => {
+const serve = async () => {
   const client = new Client({
     intents: [Intents.FLAGS.GUILDS],
   });
 
   client.commands = new Collection();
 
-  const commands = buildCommands();
+  const commands = await buildCommands();
   commands.forEach(([name, command]) => client.commands.set(name, command));
 
-  setupEvents(client);
+  await setupEvents(client);
 
-  startClient(client);
+  await startClient(client);
 };
 
 module.exports = {
