@@ -1,7 +1,7 @@
 {
   "name": "tlc-discord-bot",
   "version": "1.0.0",
-  "description": "Discord bot for the Runescape clan: The Last Citadel",
+  "description": "Custom Discord bot for the Runescape clan: The Last Citadel",
   "main": "index.js",
   "scripts": {
     "start": "node ./src/index.js --serve",
