@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const { forEachAsync } = require("./utils/array");
+const { forEachAsync } = require("./utils/promises");
 const { parseArgsToCommands, Command } = require("./args");
 const { deploy, serve } = require("./bot");
 
