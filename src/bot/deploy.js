@@ -6,7 +6,7 @@ const path = require("path");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 
-const COMMANDS_DIR = `${__dirname}/../bot/commands`;
+const COMMANDS_DIR = path.join(__dirname, "commands");
 
 const deploy = () => {
   const commands = [];

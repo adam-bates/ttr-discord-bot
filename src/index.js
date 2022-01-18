@@ -1,8 +1,7 @@
 require("dotenv").config();
 
 const { parseArgsToCommands, Command } = require("./args");
-const { deploy } = require("./deploy");
-const { serve } = require("./serve");
+const { deploy, serve } = require("./bot");
 
 const commands = parseArgsToCommands();
 

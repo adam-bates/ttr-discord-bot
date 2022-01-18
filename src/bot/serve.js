@@ -5,8 +5,8 @@ const fs = require("fs");
 const path = require("path");
 const { Client, Collection, Intents } = require("discord.js");
 
-const COMMANDS_DIR = `${__dirname}/../bot/commands`;
-const EVENTS_DIR = `${__dirname}/../bot/events`;
+const COMMANDS_DIR = path.join(__dirname, "commands");
+const EVENTS_DIR = path.join(__dirname, "events");
 
 const buildCommands = () => {
   const commands = [];
