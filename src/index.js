@@ -1,10 +1,10 @@
 require("dotenv").config();
 
-const { parseCommands, Command } = require("./commands");
+const { parseArgsToCommands, Command } = require("./args");
 const { deploy } = require("./deploy");
 const { serve } = require("./serve");
 
-const commands = parseCommands();
+const commands = parseArgsToCommands();
 
 commands.forEach((command) => {
   switch (command) {

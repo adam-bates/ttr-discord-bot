@@ -13,7 +13,7 @@ const getAppVersion = () => {
   return packageJson.version;
 };
 
-const parseCommands = () => {
+const parseArgsToCommands = () => {
   const version = getAppVersion();
 
   program.version(version, "-v, -V, --version");
@@ -39,5 +39,5 @@ const parseCommands = () => {
 };
 
 module.exports = {
-  parseCommands,
+  parseArgsToCommands,
 };
