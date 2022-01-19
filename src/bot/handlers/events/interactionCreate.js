@@ -1,6 +1,6 @@
 module.exports = {
   name: "interactionCreate",
-  execute: async (client, interaction) => {
+  execute: async (client, db, interaction) => {
     if (!interaction.isCommand()) {
       return;
     }
@@ -12,7 +12,7 @@ module.exports = {
     }
 
     try {
-      await command.execute(interaction);
+      await command.execute(db, interaction);
     } catch (error) {
       console.error(error);
 

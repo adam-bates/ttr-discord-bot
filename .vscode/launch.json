@@ -1,0 +1,45 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Deploy",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/src/index.js",
+      "args": ["-d"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Serve",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/src/index.js",
+      "args": ["-s"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Fetch",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/src/index.js",
+      "args": ["-f"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Messages",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/src/index.js",
+      "args": ["-m"]
+    },
+  ]
+}

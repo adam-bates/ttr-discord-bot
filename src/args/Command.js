@@ -1,4 +1,6 @@
 module.exports = {
   DEPLOY: "DEPLOY",
   SERVE: "SERVE",
+  FETCH_DATA: "FETCH_DATA",
+  SEND_MESSAGES: "SEND_MESSAGES",
 };

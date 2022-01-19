@@ -19,7 +19,9 @@ const parseArgsToCommands = () => {
   program.version(version, "-v, -V, --version");
   program
     .option("-d, --deploy", "Deploy changes to Discord")
-    .option("-s, --serve", "Login and serve Discord bot requests");
+    .option("-s, --serve", "Login and serve Discord bot requests")
+    .option("-f, --fetch", "Fetch updated data from Runescape APIs")
+    .option("-m, --messages", "Send scheduled messages to Discord");
 
   program.parse(process.argv);
 
@@ -33,6 +35,18 @@ const parseArgsToCommands = () => {
 
   if (options.serve) {
     commands.push(Command.SERVE);
+  }
+
+  if (options.fetch) {
+    commands.push(Command.FETCH_DATA);
+  }
+
+  if (options.messages) {
+    commands.push(Command.SEND_MESSAGES);
+  }
+
+  if (commands.length === 0) {
+    program.outputHelp();
   }
 
   return commands;

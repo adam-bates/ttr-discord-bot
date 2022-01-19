@@ -4,6 +4,7 @@
 const fs = require("fs").promises;
 const path = require("path");
 const { Client, Collection, Intents } = require("discord.js");
+const { createInfluxClient } = require("../services/influxdb");
 
 const COMMANDS_DIR = path.join(__dirname, "handlers", "commands");
 const EVENTS_DIR = path.join(__dirname, "handlers", "events");
@@ -24,7 +25,7 @@ const buildCommands = async () => {
   return commands;
 };
 
-const setupEvents = async (client) => {
+const setupEvents = async (client, influx) => {
   const eventFiles = await fs.readdir(EVENTS_DIR);
 
   eventFiles
@@ -33,17 +34,18 @@ const setupEvents = async (client) => {
       const event = require(path.join(EVENTS_DIR, file));
 
       if (event.once) {
-        client.once(event.name, (...args) => event.execute(client, ...args));
+        client.once(event.name, (...args) =>
+          event.execute(client, influx, ...args)
+        );
       } else {
-        client.on(event.name, (...args) => event.execute(client, ...args));
+        client.on(event.name, (...args) =>
+          event.execute(client, influx, ...args)
+        );
       }
     });
 };
 
-const startClient = async (client) =>
-  client.login(process.env.DISCORD_BOT_TOKEN);
-
-const serve = async () => {
+const setupClient = async () => {
   const client = new Client({
     intents: [Intents.FLAGS.GUILDS],
   });
@@ -53,7 +55,23 @@ const serve = async () => {
   const commands = await buildCommands();
   commands.forEach(([name, command]) => client.commands.set(name, command));
 
-  await setupEvents(client);
+  const influx = createInfluxClient();
+
+  await setupEvents(client, influx);
+
+  return client;
+};
+
+const startClient = async (client) =>
+  client.login(process.env.DISCORD_BOT_TOKEN);
+
+// const sendMessage = (client) =>
+//   setTimeout(() => {
+//     console.log(client.channels.cache);
+//   }, 500);
+
+const serve = async () => {
+  const client = await setupClient();
 
   await startClient(client);
 };
