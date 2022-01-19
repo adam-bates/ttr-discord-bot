@@ -9,7 +9,7 @@ module.exports = {
       option.setName("rsn").setDescription("Enter an RSN").setRequired(true)
     ),
 
-  execute: async (_influx, interaction) => {
+  execute: async (_, interaction) => {
     console.log(interaction);
 
     const rsn = interaction.options.getString("rsn");

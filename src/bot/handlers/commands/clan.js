@@ -6,7 +6,7 @@ module.exports = {
     .setName("clan")
     .setDescription("Replies with clan info!"),
 
-  execute: async (_influx, interaction) => {
+  execute: async (_, interaction) => {
     const clan = await getClanInfo();
 
     const fullContent = JSON.stringify(clan, null, 2);
