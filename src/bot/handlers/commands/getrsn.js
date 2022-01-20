@@ -6,14 +6,14 @@ module.exports = {
     .setDescription("Gets RSN for a Discord user")
     .addUserOption((option) =>
       option
-        .setName("target")
+        .setName("Target")
         .setDescription("Discord user to get RSN for")
         .setRequired(false)
     )
     .addBooleanOption((option) =>
       option
-        .setName("public")
-        .setDescription("Makes the output of this command public to the server")
+        .setName("Public")
+        .setDescription("Make the output of this command public to the server")
         .setRequired(false)
     ),
 
@@ -22,7 +22,7 @@ module.exports = {
 
     const user = interaction.options.getUser("target") || interaction.user;
 
-    const rsn = await redis.get(`GetRsnByUserId/${user.id}`);
+    const rsn = await redis.getRsnByUserId(user.id);
 
     if (rsn) {
       await interaction.reply({

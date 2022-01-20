@@ -15,7 +15,7 @@ const fetchData = async () => {
   const players = await fetchClanInfo(process.env.CLAN_NAME);
 
   const rsns = players.map(({ rsn }) => rsn);
-  await redis.set("GetAllRsns", JSON.stringify(rsns));
+  await redis.setAllRsns(rsns);
 
   // const playerChunks = chunkArray(players, Math.ceil(players.length / 100));
 

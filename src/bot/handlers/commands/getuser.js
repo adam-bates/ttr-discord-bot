@@ -6,14 +6,14 @@ module.exports = {
     .setDescription("Gets the Discord user for an RSN")
     .addStringOption((option) =>
       option
-        .setName("rsn")
+        .setName("RSN")
         .setDescription("In-game Runescape name")
         .setRequired(true)
     )
     .addBooleanOption((option) =>
       option
-        .setName("public")
-        .setDescription("Makes the output of this command public to the server")
+        .setName("Public")
+        .setDescription("Make the output of this command public to the server")
         .setRequired(false)
     ),
 
