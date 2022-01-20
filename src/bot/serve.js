@@ -4,7 +4,6 @@
 const fs = require("fs").promises;
 const path = require("path");
 const { Client, Collection, Intents } = require("discord.js");
-const { createInfluxClient } = require("../services/influxdb");
 const { connectRedisClient } = require("../services/redis");
 
 const COMMANDS_DIR = path.join(__dirname, "handlers", "commands");
@@ -26,7 +25,7 @@ const buildCommands = async () => {
   return commands;
 };
 
-const setupEvents = async (client, influx, redis) => {
+const setupEvents = async (client, redis) => {
   const eventFiles = await fs.readdir(EVENTS_DIR);
 
   eventFiles
@@ -36,11 +35,11 @@ const setupEvents = async (client, influx, redis) => {
 
       if (event.once) {
         client.once(event.name, (...args) =>
-          event.execute({ client, influx, redis }, ...args)
+          event.execute({ client, redis }, ...args)
         );
       } else {
         client.on(event.name, (...args) =>
-          event.execute({ client, influx, redis }, ...args)
+          event.execute({ client, redis }, ...args)
         );
       }
     });
@@ -68,10 +67,9 @@ const setupClient = async () => {
   const commands = await buildCommands();
   commands.forEach(([name, command]) => client.commands.set(name, command));
 
-  const influx = createInfluxClient();
   const redis = await connectRedisClient();
 
-  await setupEvents(client, influx, redis);
+  await setupEvents(client, redis);
 
   return client;
 };
