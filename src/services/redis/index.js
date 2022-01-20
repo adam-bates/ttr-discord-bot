@@ -15,8 +15,6 @@ const { parse, stringify } = JSON;
 const Redis = (client) => {
   const getAllRsns = async () => parse(await client.get(GET_ALL_RSNS)) || [];
 
-  const setAllRsns = async (rsns) => client.set(GET_ALL_RSNS, stringify(rsns));
-
   const getRsnByUserId = async (userId) =>
     client.get(key(GET_RSN_BY_USER_ID, userId));
 
@@ -64,8 +62,24 @@ const Redis = (client) => {
     return keys.map((k) => k.split("/")[2]);
   };
 
+  const updatePlayersByRsns = async (rsns) => {
+    const rsnsSet = new Set(rsns);
+    const oldRsns = await getAllRsns();
+    const removedRsns = oldRsns.filter((rsn) => !rsnsSet.has(rsn));
+
+    await client.set(GET_ALL_RSNS, stringify(rsns));
+
+    const promises = removedRsns.map(async (rsn) => {
+      await client.del(key(GET_STATS_BY_RSN, rsn));
+
+      // Note: Don't delete snapshots! They may be used in event results.
+    });
+
+    await Promise.all(promises);
+  };
+
   client.getAllRsns = getAllRsns;
-  client.setAllRsns = setAllRsns;
+  client.updatePlayersByRsns = updatePlayersByRsns;
   client.getRsnByUserId = getRsnByUserId;
   client.setRsnByUserId = setRsnByUserId;
   client.deleteRsnByUserId = deleteRsnByUserId;

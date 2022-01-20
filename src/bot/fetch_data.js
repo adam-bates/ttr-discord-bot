@@ -15,7 +15,7 @@ const fetchData = async () => {
   const players = await fetchClanInfo(process.env.CLAN_NAME);
 
   const rsns = players.map(({ rsn }) => rsn);
-  await redis.setAllRsns(rsns);
+  await redis.updatePlayersByRsns(rsns);
 
   const timestamp = unixTimestamp();
 
