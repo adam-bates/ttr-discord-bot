@@ -5,7 +5,7 @@ const {
 } = require("../services/runescape-api");
 const { connectRedisClient } = require("../services/redis");
 const { forEachAsyncOrdered } = require("../utils/promises");
-const { chunkArray } = require("../utils/arrays");
+const { unixTimestamp } = require("../utils/time");
 
 const wait = promisify(setTimeout);
 
@@ -17,34 +17,44 @@ const fetchData = async () => {
   const rsns = players.map(({ rsn }) => rsn);
   await redis.setAllRsns(rsns);
 
-  // const playerChunks = chunkArray(players, Math.ceil(players.length / 100));
+  const timestamp = unixTimestamp();
 
-  // await forEachAsyncOrdered(playerChunks, async (playerChunk) => {
-  //   const playersStats = await forEachAsyncOrdered(
-  //     playerChunk,
-  //     async (player, idx) => {
-  //       if (idx > 0) {
-  //         await wait(10);
-  //       }
-  //       console.log("Fetching player: %o", player.rsn);
+  let success = 0;
 
-  //       const stats = await fetchPlayerStats(player.rsn);
+  await forEachAsyncOrdered(players, async (player, idx) => {
+    if (idx > 0) {
+      await wait(2);
+    }
 
-  //       if (stats) {
-  //         console.log("Size: %d", JSON.stringify(stats, null, 0).length);
-  //       } else {
-  //         console.log("Not found.");
-  //       }
+    console.log(
+      "(%d/%d) Fetching player: %o",
+      idx + 1,
+      players.length,
+      player.rsn
+    );
 
-  //       return {
-  //         ...player,
-  //         stats,
-  //       };
-  //     }
-  //   );
+    const stats = await fetchPlayerStats(player.rsn);
 
-  //   console.log("Got stats for %d players.", playersStats.length);
-  // });
+    if (stats) {
+      await redis.setStatsByRsn(player.rsn, {
+        ...stats,
+        timestamp,
+      });
+
+      success += 1;
+
+      console.log("Success.");
+    } else {
+      console.log("Not found.");
+    }
+  });
+
+  console.log(
+    "Done! %d/%d, took %d seconds",
+    success,
+    players.length,
+    unixTimestamp() - timestamp
+  );
 
   await redis.disconnect();
 };

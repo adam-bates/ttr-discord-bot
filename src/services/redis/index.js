@@ -1,9 +1,13 @@
+/* eslint-disable no-param-reassign */
+
 const { createClient } = require("redis");
 
 const GET_ALL_RSNS = "GetAllRsns";
 const GET_RSN_BY_USER_ID = "GetRsnByUserId";
 const GET_USER_ID_BY_RSN = "GetUserIdByRsn";
-const GET_STATS_BY_RSN_BY_TIMESTAMP = "GetStatsByRsnByTimestamp";
+const GET_STATS_BY_RSN = "GetStatsByRsn";
+const GET_STATS_SNAPSHOT_BY_RSN_AND_TIMESTAMP =
+  "GetStatsSnapshotByRsnAndTimestamp";
 
 const key = (...parts) => parts.join("/");
 const { parse, stringify } = JSON;
@@ -29,50 +33,52 @@ const Redis = (client) => {
   const getUserIdByRsn = async (rsn) =>
     client.get(key(GET_USER_ID_BY_RSN, rsn));
 
-  const getStatsByRsnByTimestamp = async (rsn, timestamp) =>
-    parse(await client.get(key(GET_STATS_BY_RSN_BY_TIMESTAMP, rsn, timestamp)));
+  const getStatsByRsn = async (rsn) =>
+    parse(await client.get(key(GET_STATS_BY_RSN, rsn)));
 
-  const addStatsByRsnByTimestamp = async (rsn, timestamp, snapshot) =>
-    client.set(
-      key(GET_STATS_BY_RSN_BY_TIMESTAMP, rsn, timestamp),
-      stringify(snapshot)
+  const setStatsByRsn = async (rsn, stats) =>
+    client.set(key(GET_STATS_BY_RSN, rsn), stringify(stats));
+
+  const getStatsSnapshotByRsnAndTimestamp = async (rsn, timestamp) =>
+    parse(
+      await client.get(
+        key(GET_STATS_SNAPSHOT_BY_RSN_AND_TIMESTAMP, rsn, timestamp)
+      )
     );
 
-  const deleteStatsByRsnByTimestamp = async (rsn, timestamp) =>
-    client.del(key(GET_STATS_BY_RSN_BY_TIMESTAMP, rsn, timestamp));
+  const setStatsSnapshotByRsnAndTimestamp = async (rsn, timestamp, stats) =>
+    client.set(
+      key(GET_STATS_SNAPSHOT_BY_RSN_AND_TIMESTAMP, rsn, timestamp),
+      stringify(stats)
+    );
 
-  const getStatTimestampsByRsn = async (rsn) => {
+  const deleteStatsSnapshotByRsnAndTimestamp = async (rsn, timestamp) =>
+    client.del(key(GET_STATS_SNAPSHOT_BY_RSN_AND_TIMESTAMP, rsn, timestamp));
+
+  const getStatSnapshotTimestampsByRsn = async (rsn) => {
     const keys = await client.sendCommand([
       "KEYS",
-      `${key(GET_STATS_BY_RSN_BY_TIMESTAMP, rsn)}/*`,
+      `${key(GET_STATS_SNAPSHOT_BY_RSN_AND_TIMESTAMP, rsn)}/*`,
     ]);
 
     return keys.map((k) => k.split("/")[2]);
   };
 
-  const getLatestStatTimestampByRsn = async (rsn) => {
-    const timestamps = await getStatTimestampsByRsn(rsn);
-    return Math.max(...timestamps);
-  };
+  client.getAllRsns = getAllRsns;
+  client.setAllRsns = setAllRsns;
+  client.getRsnByUserId = getRsnByUserId;
+  client.setRsnByUserId = setRsnByUserId;
+  client.deleteRsnByUserId = deleteRsnByUserId;
+  client.getUserIdByRsn = getUserIdByRsn;
+  client.getStatsByRsn = getStatsByRsn;
+  client.setStatsByRsn = setStatsByRsn;
+  client.getStatsSnapshotByRsnAndTimestamp = getStatsSnapshotByRsnAndTimestamp;
+  client.setStatsSnapshotByRsnAndTimestamp = setStatsSnapshotByRsnAndTimestamp;
+  client.deleteStatsSnapshotByRsnAndTimestamp =
+    deleteStatsSnapshotByRsnAndTimestamp;
+  client.getStatSnapshotTimestampsByRsn = getStatSnapshotTimestampsByRsn;
 
-  const getLatestStatsByRsn = async (rsn) =>
-    getStatsByRsnByTimestamp(rsn, await getLatestStatTimestampByRsn(rsn));
-
-  return {
-    disconnect: client.disconnect,
-    getAllRsns,
-    setAllRsns,
-    getRsnByUserId,
-    setRsnByUserId,
-    deleteRsnByUserId,
-    getUserIdByRsn,
-    getStatsByRsnByTimestamp,
-    addStatsByRsnByTimestamp,
-    deleteStatsByRsnByTimestamp,
-    getStatTimestampsByRsn,
-    getLatestStatTimestampByRsn,
-    getLatestStatsByRsn,
-  };
+  return client;
 };
 
 const connectRedisClient = async () => {
