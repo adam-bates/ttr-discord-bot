@@ -1,5 +1,9 @@
+const { connectRedisClient } = require("../services/redis");
+
 const sendMessages = async () => {
-  console.log("TODO: Send messages");
+  const redis = await connectRedisClient();
+
+  await redis.disconnect();
 };
 
 module.exports = {
