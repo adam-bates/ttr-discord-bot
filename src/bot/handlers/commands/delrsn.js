@@ -6,13 +6,13 @@ module.exports = {
     .setDescription("Removes assigned RSN for a Discord user")
     .addUserOption((option) =>
       option
-        .setName("Target")
+        .setName("target")
         .setDescription("Target user to update")
         .setRequired(false)
     )
     .addBooleanOption((option) =>
       option
-        .setName("Force")
+        .setName("force")
         .setDescription(
           "Force the change, even if the RSN is already assigned to another target"
         )
@@ -20,7 +20,7 @@ module.exports = {
     )
     .addBooleanOption((option) =>
       option
-        .setName("Public")
+        .setName("public")
         .setDescription("Make the output of this command public to the server")
         .setRequired(false)
     ),

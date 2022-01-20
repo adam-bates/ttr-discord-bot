@@ -6,13 +6,13 @@ module.exports = {
     .setDescription("Gets RSN for a Discord user")
     .addUserOption((option) =>
       option
-        .setName("Target")
+        .setName("target")
         .setDescription("Discord user to get RSN for")
         .setRequired(false)
     )
     .addBooleanOption((option) =>
       option
-        .setName("Public")
+        .setName("public")
         .setDescription("Make the output of this command public to the server")
         .setRequired(false)
     ),

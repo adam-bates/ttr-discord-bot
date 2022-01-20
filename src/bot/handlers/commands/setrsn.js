@@ -6,19 +6,19 @@ module.exports = {
     .setDescription("Sets RSN for a Discord user")
     .addStringOption((option) =>
       option
-        .setName("RSN")
+        .setName("rsn")
         .setDescription("In-game Runescape name")
         .setRequired(true)
     )
     .addUserOption((option) =>
       option
-        .setName("Target")
+        .setName("target")
         .setDescription("Target user to update")
         .setRequired(false)
     )
     .addBooleanOption((option) =>
       option
-        .setName("Force RSN")
+        .setName("force-rsn")
         .setDescription(
           "Force the change, even if the RSN is already assigned to another target"
         )
@@ -26,7 +26,7 @@ module.exports = {
     )
     .addBooleanOption((option) =>
       option
-        .setName("Force Target")
+        .setName("force-target")
         .setDescription(
           "Force the change, even if the target is already assigned to another RSN"
         )
@@ -34,7 +34,7 @@ module.exports = {
     )
     .addBooleanOption((option) =>
       option
-        .setName("Public")
+        .setName("public")
         .setDescription("Makes the output of this command public to the server")
         .setRequired(false)
     ),

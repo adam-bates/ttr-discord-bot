@@ -6,7 +6,7 @@ module.exports = {
     .setDescription("Replies with Pong!")
     .addBooleanOption((option) =>
       option
-        .setName("Public")
+        .setName("public")
         .setDescription("Make the output of this command public to the server")
         .setRequired(false)
     ),
