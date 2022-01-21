@@ -54,7 +54,7 @@ const fetchData = async () => {
     "Done! %d/%d, took ~ %d mins",
     success,
     players.length,
-    Math.floor((unixTimestamp() - timestamp) / 60)
+    Math.round((unixTimestamp() - timestamp) / 60)
   );
 
   await redis.disconnect();
