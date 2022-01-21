@@ -1,4 +1,6 @@
 module.exports = {
+  disabled: true,
+
   builder: (command) => command.setName("test").setDescription("TLC!"),
 
   execute: async (_, interaction) => {

@@ -51,6 +51,11 @@ const buildCommands = async () => {
     .filter((file) => file.endsWith(".js"))
     .forEach((file) => {
       const subcommand = require(path.join(COMMANDS_DIR, file));
+
+      if (subcommand.disabled) {
+        return;
+      }
+
       command.addSubcommand(subcommand.builder);
 
       executors.push([

@@ -18,8 +18,11 @@ const deploy = async () => {
   commandFiles
     .filter((file) => file.endsWith(".js"))
     .forEach((file) => {
-      const commandBuilder = require(path.join(COMMANDS_DIR, file)).builder;
-      command.addSubcommand(commandBuilder);
+      const commandInfo = require(path.join(COMMANDS_DIR, file));
+
+      if (!commandInfo.disabled) {
+        command.addSubcommand(commandInfo.builder);
+      }
     });
 
   const serializedCommand = command.toJSON();

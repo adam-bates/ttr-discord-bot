@@ -1,6 +1,8 @@
 const { MessageActionRow, MessageButton } = require("discord.js");
 
 module.exports = {
+  disabled: true,
+
   builder: (command) =>
     command.setName("button").setDescription("Replies with a button!"),
 
