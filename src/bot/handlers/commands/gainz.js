@@ -47,7 +47,11 @@ const calculateGainz = ({ from, to }) =>
   statKeys.reduce(
     (gainz, key) => ({
       ...gainz,
-      [key]: !from[key] || !to[key] ? "-" : to[key] - from[key],
+      [key]:
+        !from[key] || !to[key]
+          ? "-"
+          : parseInt(to[key].replace(/,/g, ""), 10) -
+            parseInt(from[key].replace(/,/g, ""), 10),
     }),
     {}
   );
