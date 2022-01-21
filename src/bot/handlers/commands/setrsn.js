@@ -2,7 +2,7 @@ module.exports = {
   builder: (command) =>
     command
       .setName("setrsn")
-      .setDescription("Sets RSN for a Discord user")
+      .setDescription("Assign an RSN to a Discord user")
       .addStringOption((option) =>
         option
           .setName("rsn")
@@ -12,14 +12,14 @@ module.exports = {
       .addUserOption((option) =>
         option
           .setName("target")
-          .setDescription("Target user to update")
+          .setDescription("Discord user")
           .setRequired(false)
       )
       .addBooleanOption((option) =>
         option
           .setName("force-rsn")
           .setDescription(
-            "Force the change, even if the RSN is already assigned to another target"
+            "Force the change, even if the RSN is already assigned; the current assignment will be removed"
           )
           .setRequired(false)
       )
@@ -27,7 +27,7 @@ module.exports = {
         option
           .setName("force-target")
           .setDescription(
-            "Force the change, even if the target is already assigned to another RSN"
+            "Force the change, even if the target is already assigned; the current assignment will be removed"
           )
           .setRequired(false)
       )

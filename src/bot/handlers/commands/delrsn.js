@@ -2,11 +2,11 @@ module.exports = {
   builder: (command) =>
     command
       .setName("delrsn")
-      .setDescription("Removes assigned RSN for a Discord user")
+      .setDescription("Remove the assigned RSN for a Discord user")
       .addUserOption((option) =>
         option
           .setName("target")
-          .setDescription("Target user to update")
+          .setDescription("Discord user")
           .setRequired(false)
       )
       .addBooleanOption((option) =>

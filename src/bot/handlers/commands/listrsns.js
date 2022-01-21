@@ -2,7 +2,7 @@ module.exports = {
   builder: (command) =>
     command
       .setName("listrsns")
-      .setDescription("Lists all RSNs with their assigned Discord user")
+      .setDescription("List all Discord user's RSN assignments")
       .addBooleanOption((option) =>
         option
           .setName("public")

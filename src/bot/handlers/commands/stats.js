@@ -1,4 +1,5 @@
 const fs = require("fs").promises;
+const path = require("path");
 const {
   fetchPlayerProfile,
   fetchPlayerMonthlyXp,
@@ -9,40 +10,22 @@ module.exports = {
   builder: (command) =>
     command
       .setName("stats")
-      .setDescription("Replies with stats for a player")
+      .setDescription("Get detailed stats for a player")
       .addStringOption((option) =>
         option
           .setName("rsn")
-          .setDescription("In-game Runescape name to get Runescape stats")
+          .setDescription("In-game Runescape name")
           .setRequired(false)
       )
       .addUserOption((option) =>
-        option
-          .setName("user")
-          .setDescription("Discord user to get Runescape stats")
-          .setRequired(false)
+        option.setName("user").setDescription("Discord user").setRequired(false)
       )
-      .addIntegerOption((option) =>
+      .addStringOption((option) =>
         option
-          .setName("activities")
-          .setDescription(
-            "How many recent activities to include (0 by default)"
-          )
-          .setMinValue(0)
-          .setMaxValue(20)
-          .setRequired(false)
-      )
-      .addBooleanOption((option) =>
-        option
-          .setName("monthly-xp")
-          .setDescription("Include past year of Monthly XP gainz")
-          .setRequired(false)
-      )
-      .addBooleanOption((option) =>
-        option
-          .setName("quests")
-          .setDescription("Include Quest data")
-          .setRequired(false)
+          .setName("output")
+          .setDescription("Format and presentation of data")
+          .addChoice("Image", "png")
+          .addChoice("CSV", "csv")
       )
       .addBooleanOption((option) =>
         option
@@ -72,7 +55,7 @@ module.exports = {
       }
     }
 
-    const user = interaction.options.getUser("user");
+    let user = interaction.options.getUser("user");
 
     if (user) {
       const userRsn = await redis.getRsnByUserId(user.id);
@@ -87,7 +70,16 @@ module.exports = {
 
       rsn = userRsn;
     } else if (!rsn) {
-      rsn = await redis.getRsnByUserId(interaction.user.id);
+      user = interaction.user;
+      rsn = await redis.getRsnByUserId(user.id);
+    }
+
+    if (!rsn) {
+      await interaction.reply({
+        content: `Error: ${user} has no assigned RSN`,
+        ephemeral: true,
+      });
+      return;
     }
 
     const stats = await redis.getStatsByRsn(rsn);
@@ -107,24 +99,28 @@ module.exports = {
       stats.quests = await fetchPlayerQuests(rsn);
     }
 
-    const htmlContent = templates.playerStats();
+    const htmlContent = templates.stats();
 
-    const filename = `${interaction.id}.png`;
+    const filepath = path.join(
+      process.env.PWD,
+      "resources",
+      `${interaction.id}.png`
+    );
 
     await page.setViewport({
-      width: 1200,
+      width: 2500,
       height: 1369,
       deviceScaleFactor: 1,
     });
     await page.setContent(htmlContent);
-    await page.screenshot({ path: filename });
+    await page.screenshot({ path: filepath });
 
     await interaction.reply({
       content: JSON.stringify(stats),
       ephemeral: !isPublic,
-      files: [filename],
+      files: [filepath],
     });
 
-    await fs.rm(filename);
+    await fs.rm(filepath);
   },
 };

@@ -2,7 +2,7 @@ module.exports = {
   builder: (command) =>
     command
       .setName("getuser")
-      .setDescription("Gets the Discord user for an RSN")
+      .setDescription("Get the assigned Discord user for an RSN")
       .addStringOption((option) =>
         option
           .setName("rsn")
