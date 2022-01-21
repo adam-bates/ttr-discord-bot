@@ -1,10 +1,8 @@
 const { MessageActionRow, MessageButton } = require("discord.js");
-const { SlashCommandBuilder } = require("@discordjs/builders");
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("button")
-    .setDescription("Replies with a button!"),
+  builder: (command) =>
+    command.setName("button").setDescription("Replies with a button!"),
 
   execute: async (_, interaction) => {
     const button = new MessageButton()

@@ -37,6 +37,7 @@ const fetchData = async () => {
 
     if (stats) {
       await redis.setStatsByRsn(player.rsn, {
+        ...player,
         ...stats,
         timestamp,
       });
@@ -50,10 +51,10 @@ const fetchData = async () => {
   });
 
   console.log(
-    "Done! %d/%d, took %d seconds",
+    "Done! %d/%d, took ~ %d mins",
     success,
     players.length,
-    unixTimestamp() - timestamp
+    Math.floor((unixTimestamp() - timestamp) / 60)
   );
 
   await redis.disconnect();

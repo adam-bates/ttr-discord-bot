@@ -178,7 +178,16 @@ const fetchPlayerStats = async (rsn) => {
   return stats;
 };
 
+const fetchPlayerProfile = async (rsn) => {};
+
+const fetchPlayerMonthlyXp = async (rsn) => {};
+
+const fetchPlayerQuests = async (rsn) => {};
+
 module.exports = {
   fetchClanInfo,
   fetchPlayerStats,
+  fetchPlayerProfile,
+  fetchPlayerMonthlyXp,
+  fetchPlayerQuests,
 };

@@ -1,29 +1,30 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
-
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("tlc-delrsn")
-    .setDescription("Removes assigned RSN for a Discord user")
-    .addUserOption((option) =>
-      option
-        .setName("target")
-        .setDescription("Target user to update")
-        .setRequired(false)
-    )
-    .addBooleanOption((option) =>
-      option
-        .setName("force")
-        .setDescription(
-          "Force the change, even if the RSN is already assigned to another target"
-        )
-        .setRequired(false)
-    )
-    .addBooleanOption((option) =>
-      option
-        .setName("public")
-        .setDescription("Make the output of this command public to the server")
-        .setRequired(false)
-    ),
+  builder: (command) =>
+    command
+      .setName("delrsn")
+      .setDescription("Removes assigned RSN for a Discord user")
+      .addUserOption((option) =>
+        option
+          .setName("target")
+          .setDescription("Target user to update")
+          .setRequired(false)
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName("force")
+          .setDescription(
+            "Force the change, even if the RSN is already assigned to another target"
+          )
+          .setRequired(false)
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName("public")
+          .setDescription(
+            "Make the output of this command public to the server"
+          )
+          .setRequired(false)
+      ),
 
   execute: async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");

@@ -1,21 +1,22 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
-
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("tlc-getrsn")
-    .setDescription("Gets RSN for a Discord user")
-    .addUserOption((option) =>
-      option
-        .setName("target")
-        .setDescription("Discord user to get RSN for")
-        .setRequired(false)
-    )
-    .addBooleanOption((option) =>
-      option
-        .setName("public")
-        .setDescription("Make the output of this command public to the server")
-        .setRequired(false)
-    ),
+  builder: (command) =>
+    command
+      .setName("getrsn")
+      .setDescription("Gets RSN for a Discord user")
+      .addUserOption((option) =>
+        option
+          .setName("target")
+          .setDescription("Discord user to get RSN for")
+          .setRequired(false)
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName("public")
+          .setDescription(
+            "Make the output of this command public to the server"
+          )
+          .setRequired(false)
+      ),
 
   execute: async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");

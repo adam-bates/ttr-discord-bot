@@ -1,43 +1,44 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
-
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("tlc-setrsn")
-    .setDescription("Sets RSN for a Discord user")
-    .addStringOption((option) =>
-      option
-        .setName("rsn")
-        .setDescription("In-game Runescape name")
-        .setRequired(true)
-    )
-    .addUserOption((option) =>
-      option
-        .setName("target")
-        .setDescription("Target user to update")
-        .setRequired(false)
-    )
-    .addBooleanOption((option) =>
-      option
-        .setName("force-rsn")
-        .setDescription(
-          "Force the change, even if the RSN is already assigned to another target"
-        )
-        .setRequired(false)
-    )
-    .addBooleanOption((option) =>
-      option
-        .setName("force-target")
-        .setDescription(
-          "Force the change, even if the target is already assigned to another RSN"
-        )
-        .setRequired(false)
-    )
-    .addBooleanOption((option) =>
-      option
-        .setName("public")
-        .setDescription("Makes the output of this command public to the server")
-        .setRequired(false)
-    ),
+  builder: (command) =>
+    command
+      .setName("setrsn")
+      .setDescription("Sets RSN for a Discord user")
+      .addStringOption((option) =>
+        option
+          .setName("rsn")
+          .setDescription("In-game Runescape name")
+          .setRequired(true)
+      )
+      .addUserOption((option) =>
+        option
+          .setName("target")
+          .setDescription("Target user to update")
+          .setRequired(false)
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName("force-rsn")
+          .setDescription(
+            "Force the change, even if the RSN is already assigned to another target"
+          )
+          .setRequired(false)
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName("force-target")
+          .setDescription(
+            "Force the change, even if the target is already assigned to another RSN"
+          )
+          .setRequired(false)
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName("public")
+          .setDescription(
+            "Makes the output of this command public to the server"
+          )
+          .setRequired(false)
+      ),
 
   execute: async ({ client, redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");

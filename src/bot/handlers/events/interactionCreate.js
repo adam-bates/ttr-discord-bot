@@ -1,18 +1,18 @@
 module.exports = {
   name: "interactionCreate",
   execute: async ({ client, ...rest }, interaction) => {
-    if (!interaction.isCommand()) {
+    if (!interaction.isCommand() || interaction.commandName !== "tlc") {
       return;
     }
 
-    const command = client.commands.get(interaction.commandName);
+    const execute = client.executors.get(interaction.options.getSubcommand());
 
-    if (!command) {
+    if (!execute) {
       return;
     }
 
     try {
-      await command.execute({ client, ...rest }, interaction);
+      await execute({ client, ...rest }, interaction);
     } catch (error) {
       console.error(error);
 

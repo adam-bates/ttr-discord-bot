@@ -2,3 +2,4 @@ node_modules
 .env
 dump.rdb
 temp.*
+seed.js
