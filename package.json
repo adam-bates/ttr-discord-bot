@@ -10,7 +10,9 @@
     "start": "node ./src/index.js --serve",
     "deploy": "node ./src/index.js --deploy",
     "fetch": "node ./src/index.js --fetch",
-    "messages": "node ./src/index.js --messages"
+    "messages": "node ./src/index.js --messages",
+    
+    "seed": "node ./seed.js"
   },
   "keywords": [
     "discord",
