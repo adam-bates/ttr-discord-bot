@@ -13,12 +13,12 @@ const actions = {
   [Command.SEND_MESSAGES]: sendMessages,
 };
 
-forEachAsync(commands, async (command) => {
+forEachAsync(commands, async ([command, ...args]) => {
   const action = actions[command];
 
   if (!action) {
     throw new Error(`Unknown command: ${command}`);
   }
 
-  await action();
+  await action(...args);
 });

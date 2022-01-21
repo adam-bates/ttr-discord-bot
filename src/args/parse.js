@@ -21,6 +21,8 @@ const parseArgsToCommands = () => {
     .option("-d, --deploy", "Deploy changes to Discord")
     .option("-s, --serve", "Login and serve Discord bot requests")
     .option("-f, --fetch", "Fetch updated data from Runescape APIs")
+    .option("--day", "Mark the execution as the start of day")
+    .option("--week", "Mark the execution as the start of week")
     .option("-m, --messages", "Send scheduled messages to Discord");
 
   program.parse(process.argv);
@@ -30,19 +32,22 @@ const parseArgsToCommands = () => {
   const commands = [];
 
   if (options.deploy) {
-    commands.push(Command.DEPLOY);
+    commands.push([Command.DEPLOY]);
   }
 
   if (options.serve) {
-    commands.push(Command.SERVE);
+    commands.push([Command.SERVE]);
   }
 
   if (options.fetch) {
-    commands.push(Command.FETCH_DATA);
+    commands.push([
+      Command.FETCH_DATA,
+      { isWeekStart: options.week, isDayStart: options.day },
+    ]);
   }
 
   if (options.messages) {
-    commands.push(Command.SEND_MESSAGES);
+    commands.push([Command.SEND_MESSAGES]);
   }
 
   if (commands.length === 0) {

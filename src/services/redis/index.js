@@ -45,19 +45,19 @@ const Redis = (client) => {
     client.set(key(GET_LATEST_STATS, rsn), stringify(stats));
 
   const getTodayStatsByRsn = async (rsn) =>
-    client.get(key(GET_TODAY_STATS, rsn));
+    parse(await client.get(key(GET_TODAY_STATS, rsn)));
+
+  const setTodayStatsByRsn = async (rsn, stats) =>
+    client.set(key(GET_TODAY_STATS, rsn), stringify(stats));
 
   const getYesterdayStatsByRsn = async (rsn) =>
-    client.get(key(GET_YESTERDAY_STATS, rsn));
+    parse(await client.get(key(GET_YESTERDAY_STATS, rsn)));
 
-  const setTodayStatsByRsn = async (rsn, stats) => {
-    const yesterdayStats = await client.get(key(GET_TODAY_STATS, rsn));
-    await client.set(key(GET_YESTERDAY_STATS, rsn), yesterdayStats);
+  const setYesterdayStatsByRsn = async (rsn, stats) =>
+    client.set(key(GET_YESTERDAY_STATS, rsn), stringify(stats));
 
-    await client.set(key(GET_TODAY_STATS, rsn), stringify(stats));
-  };
-
-  const getWeekStatsByRsn = async (rsn) => client.get(key(GET_WEEK_STATS, rsn));
+  const getWeekStatsByRsn = async (rsn) =>
+    parse(await client.get(key(GET_WEEK_STATS, rsn)));
 
   const setWeekStatsByRsn = async (rsn, stats) =>
     client.set(key(GET_WEEK_STATS, rsn), stringify(stats));
@@ -109,6 +109,7 @@ const Redis = (client) => {
   client.getTodayStatsByRsn = getTodayStatsByRsn;
   client.setTodayStatsByRsn = setTodayStatsByRsn;
   client.getYesterdayStatsByRsn = getYesterdayStatsByRsn;
+  client.setYesterdayStatsByRsn = setYesterdayStatsByRsn;
   client.getWeekStatsByRsn = getWeekStatsByRsn;
   client.setWeekStatsByRsn = setWeekStatsByRsn;
   client.getStatsSnapshotByRsnAndTimestamp = getStatsSnapshotByRsnAndTimestamp;

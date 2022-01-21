@@ -33,36 +33,36 @@ const XP_STAT_KEYS = [
 ];
 
 const ACTIVITY_STAT_KEYS = [
-  "Bounty Hunter",
-  "B.H. Rogues",
-  "Dominion Tower",
-  "The Crucible",
-  "Castle Wars games",
-  "B.A. Attackers",
-  "B.A. Defenders",
-  "B.A. Collectors",
-  "B.A. Healers",
-  "Duel Tournament",
-  "Mobilising Armies",
-  "Conquest",
-  "Fist of Guthix",
-  "GG: Athletics",
-  "GG: Resource Race",
-  "WE2: Armadyl Lifetime Contribution",
-  "WE2: Bandos Lifetime Contribution",
-  "WE2: Armadyl PvP kills",
-  "WE2: Bandos PvP kills",
-  "Heist Guard Level",
-  "Heist Robber Level",
-  "CFP: 5 game average",
-  "AF15: Cow Tipping",
-  "AF15: Rats killed after the miniquest",
-  "RuneScore",
-  "Clue Scrolls Easy",
-  "Clue Scrolls Medium",
-  "Clue Scrolls Hard",
-  "Clue Scrolls Elite",
-  "Clue Scrolls Master",
+  ["Bounty Hunter", "bountyHunter"],
+  ["B.H. Rogues", "bhRogues"],
+  ["Dominion Tower", "domintionTower"],
+  ["The Crucible", "theCrucible"],
+  ["Castle Wars games", "castleWarsGames"],
+  ["B.A. Attackers", "baAttackers"],
+  ["B.A. Defenders", "baDefenders"],
+  ["B.A. Collectors", "baCollectors"],
+  ["B.A. Healers", "baHealers"],
+  ["Duel Tournament", "duelTournament"],
+  ["Mobilising Armies", "mobilisingArmies"],
+  ["Conquest", "conquest"],
+  ["Fist of Guthix", "fistOfGuthix"],
+  ["GG: Athletics", "ggAthletics"],
+  ["GG: Resource Race", "ggResourceRace"],
+  ["WE2: Armadyl Lifetime Contribution", "we2ArmadylLifetimeContribution"],
+  ["WE2: Bandos Lifetime Contribution", "we2BandoslLifetimeContribution"],
+  ["WE2: Armadyl PvP kills", "we2ArmadylPvpKills"],
+  ["WE2: Bandos PvP kills", "we2BandosPvpKills"],
+  ["Heist Guard Level", "heistGuardLevel"],
+  ["Heist Robber Level", "heistRobberLevel"],
+  ["CFP: 5 game average", "cpf5GameAverage"],
+  ["AF15: Cow Tipping", "af15CowTipping"],
+  ["AF15: Rats killed after the miniquest", "af15RatsKilledAfterTheMiniquest"],
+  ["RuneScore", "runescore"],
+  ["Clue Scrolls Easy", "clueScrollsEasy"],
+  ["Clue Scrolls Medium", "clueScrollsMedium"],
+  ["Clue Scrolls Hard", "clueScrollHard"],
+  ["Clue Scrolls Elite", "clueScrollElite"],
+  ["Clue Scrolls Master", "clueScrollMaster"],
 ];
 
 const getDataOrNull = async (url, errorHandler = console.warn) => {
@@ -143,7 +143,7 @@ const fetchPlayerStats = async (rsn) => {
       const res = { ...obj };
 
       if (hasStat) {
-        res[XP_STAT_KEYS[idx]] = stat;
+        res[XP_STAT_KEYS[idx].toLowerCase()] = stat;
       }
 
       return res;
@@ -169,7 +169,7 @@ const fetchPlayerStats = async (rsn) => {
     const res = { ...obj };
 
     if (hasStat) {
-      res[ACTIVITY_STAT_KEYS[idx - XP_STAT_KEYS.length]] = stat;
+      res[ACTIVITY_STAT_KEYS[idx - XP_STAT_KEYS.length][1]] = stat;
     }
 
     return res;
