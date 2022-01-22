@@ -113,7 +113,10 @@ const setupClient = async () => {
 
   const redis = await connectRedisClient();
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox"],
+  });
 
   const templates = await compileTemplates();
 
