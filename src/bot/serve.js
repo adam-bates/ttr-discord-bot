@@ -128,11 +128,6 @@ const setupClient = async () => {
 const startClient = async (client) =>
   client.login(process.env.DISCORD_BOT_TOKEN);
 
-// const sendMessage = (client) =>
-//   setTimeout(() => {
-//     console.log(client.channels.cache);
-//   }, 500);
-
 const serve = async () => {
   const client = await setupClient();
 
