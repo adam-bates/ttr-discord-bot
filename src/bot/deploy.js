@@ -7,13 +7,11 @@ const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const IS_PROD = (process.env.NODE_ENV || "").toLowerCase() === "production";
-
 const COMMANDS_DIR = path.join(__dirname, "handlers", "commands");
 
 const deploy = async () => {
   const command = new SlashCommandBuilder()
-    .setName(IS_PROD ? "tlc" : "local")
+    .setName(process.env.COMMAND_NAME)
     .setDescription("Custom commands for the TLC Discord");
   const commandFiles = await fs.readdir(COMMANDS_DIR);
 

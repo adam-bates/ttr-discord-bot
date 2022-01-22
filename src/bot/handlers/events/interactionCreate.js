@@ -1,7 +1,10 @@
 module.exports = {
   name: "interactionCreate",
   execute: async ({ client, ...rest }, interaction) => {
-    if (!interaction.isCommand() || interaction.commandName !== "tlc") {
+    if (
+      !interaction.isCommand() ||
+      interaction.commandName !== process.env.COMMAND_NAME
+    ) {
       return;
     }
 

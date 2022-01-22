@@ -9,8 +9,6 @@ const puppeteer = require("puppeteer");
 const handlebars = require("handlebars");
 const { connectRedisClient } = require("../services/redis");
 
-const IS_PROD = (process.env.NODE_ENV || "").toLowerCase() === "production";
-
 const COMMANDS_DIR = path.join(__dirname, "handlers", "commands");
 const EVENTS_DIR = path.join(__dirname, "handlers", "events");
 const TEMPLATES_DIR = path.join(
@@ -42,7 +40,7 @@ const compileTemplates = async () => {
 
 const buildCommands = async () => {
   const command = new SlashCommandBuilder()
-    .setName(IS_PROD ? "tlc" : "local")
+    .setName(process.env.COMMAND_NAME)
     .setDescription("Custom commands for the TLC Discord");
 
   const executors = [];
