@@ -115,8 +115,10 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       }
 
       if (isDayStart || isLateToday) {
-        const yesterday = await redis.getTodayStatsByRsn(player.rsn);
-        await redis.setYesterdayStatsByRsn(player.rsn, yesterday);
+        if (isDayStart) {
+          const yesterday = await redis.getTodayStatsByRsn(player.rsn);
+          await redis.setYesterdayStatsByRsn(player.rsn, yesterday);
+        }
 
         await redis.setTodayStatsByRsn(player.rsn, {
           ...playerStats,

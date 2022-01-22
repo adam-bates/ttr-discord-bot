@@ -18,13 +18,13 @@
     <table class="table table-bordered table-striped table-dark caption-top" style="margin: 0">
       <thead class="thead-light">
         <tr>
-          <th colspan="4"><h1>{{rsn}}</h1>RS3 XP Gainz</th>
+          <th colspan="4"><h1>{{rsn}}</h1><div style="width: 100%; display: flex; justify-content: space-between;"><span>RS3 XP Gainz</span><span class="text-right text-muted">{{lateMessage}}</span></div></th>
         </tr>
         <tr>
           <th><small class="text-muted">{{timestamp}}</small></th>
-          <th>Today</th>
-          <th>Yesterday</th>
-          <th>This Week</th>
+          <th>Today{{#if today.late}} *{{/if}}</th>
+          <th>Yesterday{{#if yesterday.late}} *{{/if}}</th>
+          <th>This Week{{#if week.late}} *{{/if}}</th>
         </tr>
         <tr>
           <th>Skill</th>

@@ -1,16 +1,6 @@
 const fs = require("fs").promises;
 const path = require("path");
 
-const alignToLength = (value, length, side = "left") => {
-  let output = `${value}`;
-
-  while (output.length < length) {
-    output = side === "right" ? ` ${output}` : `${output} `;
-  }
-
-  return output;
-};
-
 const statKeys = [
   "overall",
   "attack",
@@ -55,6 +45,16 @@ const calculateGainz = ({ from, to }) =>
     }),
     {}
   );
+
+const alignToLength = (value, length, side = "left") => {
+  let output = `${value}`;
+
+  while (output.length < length) {
+    output = side === "right" ? ` ${output}` : `${output} `;
+  }
+
+  return output;
+};
 
 module.exports = {
   builder: (command) =>
@@ -133,10 +133,10 @@ module.exports = {
       return;
     }
 
-    const currentStats = await redis.getStatsByRsn(rsn);
-    const todayStats = await redis.getTodayStatsByRsn(rsn);
-    const yesterdayStats = await redis.getYesterdayStatsByRsn(rsn);
-    const weekStats = await redis.getWeekStatsByRsn(rsn);
+    const currentStats = (await redis.getStatsByRsn(rsn)) || {};
+    const todayStats = (await redis.getTodayStatsByRsn(rsn)) || {};
+    const yesterdayStats = (await redis.getYesterdayStatsByRsn(rsn)) || {};
+    const weekStats = (await redis.getWeekStatsByRsn(rsn)) || {};
 
     const datetime = new Date(currentStats.timestamp * 1000);
 
@@ -144,18 +144,29 @@ module.exports = {
       rsn,
       timestamp: datetime.toUTCString(),
     };
+
     gainz.today = calculateGainz({
       from: todayStats || {},
       to: currentStats || {},
     });
+    gainz.today.late = todayStats.late !== false;
+
     gainz.yesterday = calculateGainz({
       from: yesterdayStats || {},
       to: todayStats || {},
     });
+    gainz.yesterday.late = yesterdayStats.late !== false;
+
     gainz.week = calculateGainz({
       from: weekStats || {},
       to: currentStats || {},
     });
+    gainz.week.late = weekStats.late !== false;
+
+    gainz.lateMessage =
+      gainz.today.late || gainz.yesterday.late || gainz.week.late
+        ? "* Data was not pulled on time and may be incorrect"
+        : "";
 
     const output = await interaction.options.getString("output");
     switch (output && output.toLowerCase()) {
@@ -307,7 +318,7 @@ module.exports = {
         const filepath = path.join(
           process.env.PWD,
           "resources",
-          `${date}_${interaction.id}.png`
+          `gainz_${date}_${interaction.id}.png`
         );
 
         await page.setViewport({
@@ -332,7 +343,7 @@ module.exports = {
         const filepath = path.join(
           process.env.PWD,
           "resources",
-          `${date}_${interaction.id}.csv`
+          `gainz_${date}_${interaction.id}.csv`
         );
 
         let csv = `${rsn},${datetime.toISOString()}\n`;
