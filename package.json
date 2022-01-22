@@ -11,7 +11,7 @@
     "deploy": "node ./src/index.js --deploy",
     "fetch": "node ./src/index.js --fetch",
     "messages": "node ./src/index.js --messages",
-    
+    "cron": "node ./src/cron.js",
     "seed": "node ./seed.js"
   },
   "keywords": [
@@ -29,10 +29,12 @@
     "@discordjs/rest": "^0.2.0-canary.0",
     "axios": "^0.24.0",
     "commander": "^8.3.0",
+    "cronitor": "^2.2.3",
     "discord-api-types": "^0.26.1",
     "discord.js": "^13.6.0",
     "dotenv": "^14.2.0",
     "handlebars": "^4.7.7",
+    "node-cron": "^3.0.0",
     "puppeteer": "^13.1.1",
     "redis": "^4.0.2"
   },
