@@ -38,12 +38,13 @@ const compileTemplates = async () => {
   }, {});
 };
 
-const buildCommands = async () => {
+const buildHandlers = async () => {
   const command = new SlashCommandBuilder()
     .setName(process.env.COMMAND_NAME)
     .setDescription("Custom commands for the TLC Discord");
 
-  const executors = [];
+  const commandExecutors = new Map();
+  const selectMenuHandlers = new Map();
 
   const commandFiles = await fs.readdir(COMMANDS_DIR);
 
@@ -56,15 +57,23 @@ const buildCommands = async () => {
         return;
       }
 
-      command.addSubcommand(subcommand.builder);
+      if (subcommand.builder) {
+        command.addSubcommand(subcommand.builder);
 
-      executors.push([
-        command.options[command.options.length - 1].name,
-        subcommand.execute,
-      ]);
+        commandExecutors.set(
+          command.options[command.options.length - 1].name,
+          subcommand.execute
+        );
+      }
+
+      if (subcommand.selectMenuHandlers) {
+        subcommand.selectMenuHandlers.forEach(([name, handler]) =>
+          selectMenuHandlers.set(name, handler)
+        );
+      }
     });
 
-  return executors;
+  return { commandExecutors, selectMenuHandlers };
 };
 
 const setupEvents = async (client, redis, browser, templates) => {
@@ -106,10 +115,10 @@ const setupClient = async () => {
     ],
   });
 
-  client.executors = new Map();
+  const { commandExecutors, selectMenuHandlers } = await buildHandlers();
 
-  const executors = await buildCommands();
-  executors.forEach(([name, executor]) => client.executors.set(name, executor));
+  client.commandExecutors = commandExecutors;
+  client.selectMenuHandlers = selectMenuHandlers;
 
   const redis = await connectRedisClient();
 

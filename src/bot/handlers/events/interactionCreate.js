@@ -2,22 +2,34 @@ module.exports = {
   name: "interactionCreate",
   execute: async ({ client, ...rest }, interaction) => {
     if (
-      !interaction.isCommand() ||
-      interaction.commandName !== process.env.COMMAND_NAME
+      interaction.isCommand() &&
+      interaction.commandName === process.env.COMMAND_NAME
     ) {
-      return;
-    }
+      const execute = client.commandExecutors.get(
+        interaction.options.getSubcommand()
+      );
 
-    const execute = client.executors.get(interaction.options.getSubcommand());
+      if (!execute) {
+        return;
+      }
 
-    if (!execute) {
-      return;
-    }
+      try {
+        await execute({ client, ...rest }, interaction);
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (interaction.isSelectMenu()) {
+      const handle = client.selectMenuHandlers.get(interaction.customId);
 
-    try {
-      await execute({ client, ...rest }, interaction);
-    } catch (error) {
-      console.error(error);
+      if (!handle) {
+        return;
+      }
+
+      try {
+        await handle({ client, ...rest }, interaction);
+      } catch (error) {
+        console.error(error);
+      }
     }
   },
 };
