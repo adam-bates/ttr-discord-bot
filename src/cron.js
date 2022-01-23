@@ -6,8 +6,8 @@ const { fetchData, sendMessages } = require("./bot");
 
 cronitor.wraps(cron);
 
-// Every 3 hours
-cronitor.schedule("Fetch data", "0 */3 * * *", () => fetchData());
+// Every 30 minutes
+cronitor.schedule("Fetch data", "*/30 * * * *", () => fetchData());
 
 // Every day at midnight
 cronitor.schedule("Fetch daily data", "0 0 * * *", () =>
