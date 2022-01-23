@@ -61,7 +61,7 @@ Assigning custom roles at an MEE6 level:
 - /tlc getlevel
 - /tlc listroles
 
-Having issues? Contact a staff member or reach out directly to Convergent#2207
+Having issues? Contact a staff member, or reach out directly to Convergent#2207
 \`\`\``;
 
     await interaction.reply({ content, ephemeral: !isPublic });
