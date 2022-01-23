@@ -265,13 +265,17 @@ module.exports = {
         const week_inv = alignToLength(gainz.week.invention, 11, "right");
         const week_arc = alignToLength(gainz.week.archaeology, 11, "right");
 
+        const tod = gainz.today.late ? "TODAY*" : "TODAY ";
+        const yesterd = gainz.yesterday.late ? "YESTERDAY*" : "YESTERDAY ";
+        const thisWee = gainz.week.late ? "THIS WEEK*" : "THIS WEEK ";
+
         // TODO: Shrink today and yesterday numbers >= 10m to use notation, like "11.43 M"
         // TODO: Shrink this week numbers >= 100m to use notation, like "100.24 M"
         const content = `\`\`\`
 .-----------------------------------------------------.
 | ${f_rs_name}          ${formatted__utc___timestamp} |
 |-----------------------------------------------------|
-|     SKILL     |   TODAY   | YESTERDAY |  THIS WEEK  |
+|     SKILL     |   ${tod}  | ${yesterd}|  ${thisWee} |
 |---------------|-------------------------------------|
 | Overall       | ${to_ovr} | ${ye_ovr} | ${week_ovr} |
 | Attack        | ${to_att} | ${ye_att} | ${week_att} |
@@ -304,10 +308,17 @@ module.exports = {
 | Archaeology   | ${to_arc} | ${ye_arc} | ${week_arc} |
 '-----------------------------------------------------'
 \`\`\``;
-        await interaction.reply({
+
+        const reply = await interaction.reply({
           content,
           ephemeral: !isPublic,
+          fetchReply: true,
         });
+
+        if (gainz.lateMessage.length > 0 && isPublic) {
+          await reply.reply(`\`${gainz.lateMessage}\``);
+        }
+
         break;
       }
       case "png": {
