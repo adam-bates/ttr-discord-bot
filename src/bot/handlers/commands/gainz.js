@@ -316,8 +316,13 @@ module.exports = {
         const date = datetime.toISOString().split("T")[0];
 
         const filepath = path.join(
-          process.env.PWD,
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "..",
           "resources",
+          "temp",
           `gainz_${date}_${interaction.id}.png`
         );
 
@@ -327,22 +332,35 @@ module.exports = {
           deviceScaleFactor: 2,
         });
         await page.setContent(htmlContent);
-        await page.screenshot({ path: filepath });
 
-        await interaction.reply({
-          ephemeral: !isPublic,
-          files: [filepath],
-        });
+        try {
+          await page.screenshot({ path: filepath });
 
-        await fs.rm(filepath);
+          await interaction.reply({
+            ephemeral: !isPublic,
+            files: [filepath],
+          });
+        } finally {
+          try {
+            await fs.rm(filepath);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+
         break;
       }
       case "csv": {
         const date = datetime.toISOString().split("T")[0];
 
         const filepath = path.join(
-          process.env.PWD,
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "..",
           "resources",
+          "temp",
           `gainz_${date}_${interaction.id}.csv`
         );
 
@@ -378,14 +396,21 @@ module.exports = {
         csv += `Invention,${gainz.today.invention},${gainz.yesterday.invention},${gainz.week.invention}\n`;
         csv += `Archaeology,${gainz.today.archaeology},${gainz.yesterday.archaeology},${gainz.week.archaeology}\n`;
 
-        await fs.writeFile(filepath, csv);
+        try {
+          await fs.writeFile(filepath, csv);
 
-        await interaction.reply({
-          ephemeral: !isPublic,
-          files: [filepath],
-        });
+          await interaction.reply({
+            ephemeral: !isPublic,
+            files: [filepath],
+          });
+        } finally {
+          try {
+            await fs.rm(filepath);
+          } catch (e) {
+            console.error(e);
+          }
+        }
 
-        await fs.rm(filepath);
         break;
       }
       default: {

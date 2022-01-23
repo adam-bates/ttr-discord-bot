@@ -182,8 +182,13 @@ module.exports = {
         const date = datetime.toISOString().split("T")[0];
 
         const filepath = path.join(
-          process.env.PWD,
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "..",
           "resources",
+          "temp",
           `stats_${date}_${interaction.id}.png`
         );
 
@@ -193,22 +198,34 @@ module.exports = {
           deviceScaleFactor: 2,
         });
         await page.setContent(htmlContent);
-        await page.screenshot({ path: filepath });
 
-        await interaction.reply({
-          ephemeral: !isPublic,
-          files: [filepath],
-        });
+        try {
+          await page.screenshot({ path: filepath });
 
-        await fs.rm(filepath);
+          await interaction.reply({
+            ephemeral: !isPublic,
+            files: [filepath],
+          });
+        } finally {
+          try {
+            await fs.rm(filepath);
+          } catch (e) {
+            console.error(e);
+          }
+        }
         break;
       }
       case "csv": {
         const date = datetime.toISOString().split("T")[0];
 
         const filepath = path.join(
-          process.env.PWD,
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "..",
           "resources",
+          "temp",
           `stats_${date}_${interaction.id}.csv`
         );
 
@@ -244,14 +261,21 @@ module.exports = {
         csv += `Invention,${stats.total.invention.level},${stats.total.invention.xp},${stats.total.invention.rank},${stats.today.invention.level},${stats.today.invention.xp},${stats.today.invention.rank},${stats.today.late},${stats.yesterday.invention.level},${stats.yesterday.invention.xp},${stats.yesterday.invention.rank},${stats.yesterday.late},${stats.week.invention.level},${stats.week.invention.xp},${stats.week.invention.rank},${stats.week.late}\n`;
         csv += `Archaeology,${stats.total.archaeology.level},${stats.total.archaeology.xp},${stats.total.archaeology.rank},${stats.today.archaeology.level},${stats.today.archaeology.xp},${stats.today.archaeology.rank},${stats.today.late},${stats.yesterday.archaeology.level},${stats.yesterday.archaeology.xp},${stats.yesterday.archaeology.rank},${stats.yesterday.late},${stats.week.archaeology.level},${stats.week.archaeology.xp},${stats.week.archaeology.rank},${stats.week.late}\n`;
 
-        await fs.writeFile(filepath, csv);
+        try {
+          await fs.writeFile(filepath, csv);
 
-        await interaction.reply({
-          ephemeral: !isPublic,
-          files: [filepath],
-        });
+          await interaction.reply({
+            ephemeral: !isPublic,
+            files: [filepath],
+          });
+        } finally {
+          try {
+            await fs.rm(filepath);
+          } catch (e) {
+            console.error(e);
+          }
+        }
 
-        await fs.rm(filepath);
         break;
       }
       default: {
