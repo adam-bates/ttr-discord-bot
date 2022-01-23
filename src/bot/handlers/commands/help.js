@@ -16,10 +16,10 @@ module.exports = {
     const isPublic = interaction.options.getBoolean("public");
 
     const content = `\`\`\`
-Custom Discord Bot for the Runescape clan: The Last Citadel.
+Custom Discord Bot for the Runescape clan: The Last Citadel
 
 - All commands are accessed using /tlc
-- As you type out a command, Discord shows the documentation for that command and it's options
+- As you type out a command, Discord shows the documentation for that command and its options
 
 Ping the bot to ensure it's ready:
 - /tlc ping
@@ -57,7 +57,9 @@ Creating & interacting with voting polls:
 Assigning custom roles at an MEE6 level:
 - /tlc setrole
 - /tlc delrole
-- /tlc getroles
+- /tlc getrole
+- /tlc getlevel
+- /tlc listroles
 
 Created by Convergent#2207
 \`\`\``;
