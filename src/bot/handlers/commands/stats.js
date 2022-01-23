@@ -137,6 +137,8 @@ module.exports = {
       return;
     }
 
+    await interaction.deferReply({ ephemeral: !isPublic });
+
     const currentStats = (await redis.getStatsByRsn(rsn)) || {};
     const todayStats = (await redis.getTodayStatsByRsn(rsn)) || {};
     const yesterdayStats = (await redis.getYesterdayStatsByRsn(rsn)) || {};
@@ -202,7 +204,7 @@ module.exports = {
         try {
           await page.screenshot({ path: filepath });
 
-          await interaction.reply({
+          await interaction.editReply({
             ephemeral: !isPublic,
             files: [filepath],
           });
@@ -264,7 +266,7 @@ module.exports = {
         try {
           await fs.writeFile(filepath, csv);
 
-          await interaction.reply({
+          await interaction.editReply({
             ephemeral: !isPublic,
             files: [filepath],
           });
@@ -279,7 +281,7 @@ module.exports = {
         break;
       }
       default: {
-        await interaction.reply({
+        await interaction.editReply({
           content: `Error: Invalid output: ${output}. Expected "Image", or "CSV".`,
           ephemeral: true,
         });

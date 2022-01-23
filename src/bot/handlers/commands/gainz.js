@@ -133,6 +133,10 @@ module.exports = {
       return;
     }
 
+    await interaction.deferReply({
+      ephemeral: !isPublic,
+    });
+
     const currentStats = (await redis.getStatsByRsn(rsn)) || {};
     const todayStats = (await redis.getTodayStatsByRsn(rsn)) || {};
     const yesterdayStats = (await redis.getYesterdayStatsByRsn(rsn)) || {};
@@ -235,35 +239,35 @@ module.exports = {
         const ye_inv = alignToLength(gainz.yesterday.invention, 9, "right");
         const ye_arc = alignToLength(gainz.yesterday.archaeology, 9, "right");
 
-        const week_ovr = alignToLength(gainz.week.overall, 11, "right");
-        const week_att = alignToLength(gainz.week.attack, 11, "right");
-        const week_def = alignToLength(gainz.week.defence, 11, "right");
-        const week_str = alignToLength(gainz.week.strength, 11, "right");
-        const week_cst = alignToLength(gainz.week.constitution, 11, "right");
-        const week_rng = alignToLength(gainz.week.ranged, 11, "right");
-        const week_pry = alignToLength(gainz.week.prayer, 11, "right");
-        const week_mag = alignToLength(gainz.week.magic, 11, "right");
-        const week_cok = alignToLength(gainz.week.cooking, 11, "right");
-        const week_wod = alignToLength(gainz.week.woodcutting, 11, "right");
-        const week_fch = alignToLength(gainz.week.fletching, 11, "right");
-        const week_fsh = alignToLength(gainz.week.fishing, 11, "right");
-        const week_fir = alignToLength(gainz.week.firemaking, 11, "right");
-        const week_crf = alignToLength(gainz.week.crafting, 11, "right");
-        const week_smt = alignToLength(gainz.week.smithing, 11, "right");
-        const week_min = alignToLength(gainz.week.mining, 11, "right");
-        const week_hrb = alignToLength(gainz.week.herblore, 11, "right");
-        const week_agl = alignToLength(gainz.week.agility, 11, "right");
-        const week_thv = alignToLength(gainz.week.thieving, 11, "right");
-        const week_sly = alignToLength(gainz.week.slayer, 11, "right");
-        const week_frm = alignToLength(gainz.week.farming, 11, "right");
-        const week_rnc = alignToLength(gainz.week.runecrafting, 11, "right");
-        const week_hnt = alignToLength(gainz.week.hunter, 11, "right");
-        const week_con = alignToLength(gainz.week.construction, 11, "right");
-        const week_sum = alignToLength(gainz.week.summoning, 11, "right");
-        const week_dng = alignToLength(gainz.week.dungeoneering, 11, "right");
-        const week_div = alignToLength(gainz.week.divination, 11, "right");
-        const week_inv = alignToLength(gainz.week.invention, 11, "right");
-        const week_arc = alignToLength(gainz.week.archaeology, 11, "right");
+        const wk_ovr = alignToLength(gainz.week.overall, 9, "right");
+        const wk_att = alignToLength(gainz.week.attack, 9, "right");
+        const wk_def = alignToLength(gainz.week.defence, 9, "right");
+        const wk_str = alignToLength(gainz.week.strength, 9, "right");
+        const wk_cst = alignToLength(gainz.week.constitution, 9, "right");
+        const wk_rng = alignToLength(gainz.week.ranged, 9, "right");
+        const wk_pry = alignToLength(gainz.week.prayer, 9, "right");
+        const wk_mag = alignToLength(gainz.week.magic, 9, "right");
+        const wk_cok = alignToLength(gainz.week.cooking, 9, "right");
+        const wk_wod = alignToLength(gainz.week.woodcutting, 9, "right");
+        const wk_fch = alignToLength(gainz.week.fletching, 9, "right");
+        const wk_fsh = alignToLength(gainz.week.fishing, 9, "right");
+        const wk_fir = alignToLength(gainz.week.firemaking, 9, "right");
+        const wk_crf = alignToLength(gainz.week.crafting, 9, "right");
+        const wk_smt = alignToLength(gainz.week.smithing, 9, "right");
+        const wk_min = alignToLength(gainz.week.mining, 9, "right");
+        const wk_hrb = alignToLength(gainz.week.herblore, 9, "right");
+        const wk_agl = alignToLength(gainz.week.agility, 9, "right");
+        const wk_thv = alignToLength(gainz.week.thieving, 9, "right");
+        const wk_sly = alignToLength(gainz.week.slayer, 9, "right");
+        const wk_frm = alignToLength(gainz.week.farming, 9, "right");
+        const wk_rnc = alignToLength(gainz.week.runecrafting, 9, "right");
+        const wk_hnt = alignToLength(gainz.week.hunter, 9, "right");
+        const wk_con = alignToLength(gainz.week.construction, 9, "right");
+        const wk_sum = alignToLength(gainz.week.summoning, 9, "right");
+        const wk_dng = alignToLength(gainz.week.dungeoneering, 9, "right");
+        const wk_div = alignToLength(gainz.week.divination, 9, "right");
+        const wk_inv = alignToLength(gainz.week.invention, 9, "right");
+        const wk_arc = alignToLength(gainz.week.archaeology, 9, "right");
 
         const tod = gainz.today.late ? "TODAY*" : "TODAY ";
         const yesterd = gainz.yesterday.late ? "YESTERDAY*" : "YESTERDAY ";
@@ -271,53 +275,52 @@ module.exports = {
 
         // TODO: Shrink today and yesterday numbers >= 10m to use notation, like "11.43 M"
         // TODO: Shrink this week numbers >= 100m to use notation, like "100.24 M"
-        const content = `\`\`\`
-.-----------------------------------------------------.
-| ${f_rs_name}          ${formatted__utc___timestamp} |
-|-----------------------------------------------------|
-|     SKILL     |   ${tod}  | ${yesterd}|  ${thisWee} |
-|---------------|-------------------------------------|
-| Overall       | ${to_ovr} | ${ye_ovr} | ${week_ovr} |
-| Attack        | ${to_att} | ${ye_att} | ${week_att} |
-| Defence       | ${to_def} | ${ye_def} | ${week_def} |
-| Strength      | ${to_str} | ${ye_str} | ${week_str} |
-| Constitution  | ${to_cst} | ${ye_cst} | ${week_cst} |
-| Ranged        | ${to_rng} | ${ye_rng} | ${week_rng} |
-| Prayer        | ${to_pry} | ${ye_pry} | ${week_pry} |
-| Magic         | ${to_mag} | ${ye_mag} | ${week_mag} |
-| Cooking       | ${to_cok} | ${ye_cok} | ${week_cok} |
-| Woodcutting   | ${to_wod} | ${ye_wod} | ${week_wod} |
-| Fletching     | ${to_fch} | ${ye_fch} | ${week_fch} |
-| Fishing       | ${to_fsh} | ${ye_fsh} | ${week_fsh} |
-| Firemaking    | ${to_fir} | ${ye_fir} | ${week_fir} |
-| Crafting      | ${to_crf} | ${ye_crf} | ${week_crf} |
-| Smithing      | ${to_smt} | ${ye_smt} | ${week_smt} |
-| Mining        | ${to_min} | ${ye_min} | ${week_min} |
-| Herblore      | ${to_hrb} | ${ye_hrb} | ${week_hrb} |
-| Agility       | ${to_agl} | ${ye_agl} | ${week_agl} |
-| Thieving      | ${to_thv} | ${ye_thv} | ${week_thv} |
-| Slayer        | ${to_sly} | ${ye_sly} | ${week_sly} |
-| Farming       | ${to_frm} | ${ye_frm} | ${week_frm} |
-| Runecrafting  | ${to_rnc} | ${ye_rnc} | ${week_rnc} |
-| Hunter        | ${to_hnt} | ${ye_hnt} | ${week_hnt} |
-| Construction  | ${to_con} | ${ye_con} | ${week_con} |
-| Summoning     | ${to_sum} | ${ye_sum} | ${week_sum} |
-| Dungeoneering | ${to_dng} | ${ye_dng} | ${week_dng} |
-| Divination    | ${to_div} | ${ye_div} | ${week_div} |
-| Invention     | ${to_inv} | ${ye_inv} | ${week_inv} |
-| Archaeology   | ${to_arc} | ${ye_arc} | ${week_arc} |
-'-----------------------------------------------------'
-\`\`\``;
+        let content = `
+.---------------------------------------------------.
+| ${f_rs_name}        ${formatted__utc___timestamp} |
+|---------------------------------------------------|
+|     SKILL     |   ${tod}  | ${yesterd}| ${thisWee}|
+|---------------|-----------------------------------|
+| Overall       | ${to_ovr} | ${ye_ovr} | ${wk_ovr} |
+| Attack        | ${to_att} | ${ye_att} | ${wk_att} |
+| Defence       | ${to_def} | ${ye_def} | ${wk_def} |
+| Strength      | ${to_str} | ${ye_str} | ${wk_str} |
+| Constitution  | ${to_cst} | ${ye_cst} | ${wk_cst} |
+| Ranged        | ${to_rng} | ${ye_rng} | ${wk_rng} |
+| Prayer        | ${to_pry} | ${ye_pry} | ${wk_pry} |
+| Magic         | ${to_mag} | ${ye_mag} | ${wk_mag} |
+| Cooking       | ${to_cok} | ${ye_cok} | ${wk_cok} |
+| Woodcutting   | ${to_wod} | ${ye_wod} | ${wk_wod} |
+| Fletching     | ${to_fch} | ${ye_fch} | ${wk_fch} |
+| Fishing       | ${to_fsh} | ${ye_fsh} | ${wk_fsh} |
+| Firemaking    | ${to_fir} | ${ye_fir} | ${wk_fir} |
+| Crafting      | ${to_crf} | ${ye_crf} | ${wk_crf} |
+| Smithing      | ${to_smt} | ${ye_smt} | ${wk_smt} |
+| Mining        | ${to_min} | ${ye_min} | ${wk_min} |
+| Herblore      | ${to_hrb} | ${ye_hrb} | ${wk_hrb} |
+| Agility       | ${to_agl} | ${ye_agl} | ${wk_agl} |
+| Thieving      | ${to_thv} | ${ye_thv} | ${wk_thv} |
+| Slayer        | ${to_sly} | ${ye_sly} | ${wk_sly} |
+| Farming       | ${to_frm} | ${ye_frm} | ${wk_frm} |
+| Runecrafting  | ${to_rnc} | ${ye_rnc} | ${wk_rnc} |
+| Hunter        | ${to_hnt} | ${ye_hnt} | ${wk_hnt} |
+| Construction  | ${to_con} | ${ye_con} | ${wk_con} |
+| Summoning     | ${to_sum} | ${ye_sum} | ${wk_sum} |
+| Dungeoneering | ${to_dng} | ${ye_dng} | ${wk_dng} |
+| Divination    | ${to_div} | ${ye_div} | ${wk_div} |
+| Invention     | ${to_inv} | ${ye_inv} | ${wk_inv} |
+| Archaeology   | ${to_arc} | ${ye_arc} | ${wk_arc} |
+'---------------------------------------------------'`;
 
-        const reply = await interaction.reply({
-          content,
+        if (gainz.lateMessage.length > 0) {
+          content = `${content}\n${gainz.lateMessage}`;
+        }
+
+        await interaction.editReply({
+          content: `\`\`\`${content}\`\`\``,
           ephemeral: !isPublic,
           fetchReply: true,
         });
-
-        if (gainz.lateMessage.length > 0 && isPublic) {
-          await reply.reply(`\`${gainz.lateMessage}\``);
-        }
 
         break;
       }
@@ -347,7 +350,7 @@ module.exports = {
         try {
           await page.screenshot({ path: filepath });
 
-          await interaction.reply({
+          await interaction.editReply({
             ephemeral: !isPublic,
             files: [filepath],
           });
@@ -410,7 +413,7 @@ module.exports = {
         try {
           await fs.writeFile(filepath, csv);
 
-          await interaction.reply({
+          await interaction.editReply({
             ephemeral: !isPublic,
             files: [filepath],
           });
@@ -425,10 +428,7 @@ module.exports = {
         break;
       }
       default: {
-        await interaction.reply({
-          content: `Error: Invalid output: ${output}. Expected "Text", "Image", or "CSV".`,
-          ephemeral: true,
-        });
+        // UNREACHABLE
         break;
       }
     }
