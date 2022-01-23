@@ -1,5 +1,4 @@
-const LEVEL_UP_PATTERN =
-  /^GG <@![0-9]+>, you just advanced to level ([0-9]+)!$/;
+const LEVEL_UP_PATTERN = /^GG <.*?>, you just advanced to level ([0-9]+)!$/;
 
 module.exports = {
   name: "messageCreate",
