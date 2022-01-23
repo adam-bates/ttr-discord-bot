@@ -1,3 +1,5 @@
+const { requireMasterUser } = require("./helpers/roles");
+
 module.exports = {
   builder: (command) =>
     command
@@ -24,7 +26,7 @@ module.exports = {
           .setRequired(false)
       ),
 
-  execute: async ({ client, redis }, interaction) => {
+  execute: requireMasterUser(async ({ client, redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
     const level = interaction.options.getInteger("level");
@@ -201,5 +203,5 @@ module.exports = {
         ephemeral: !isPublic,
       });
     }
-  },
+  }),
 };

@@ -1,3 +1,5 @@
+const { isMasterUser } = require("./helpers/roles");
+
 module.exports = {
   builder: (command) =>
     command
@@ -26,13 +28,17 @@ module.exports = {
           .setRequired(false)
       ),
 
-  execute: async ({ redis }, interaction) => {
+  execute: async ({ client, redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
     let target = interaction.options.getUser("target");
 
     if (target) {
-      // TODO: Check role / permissions, and message target about who made the change
+      const isMaster = await isMasterUser(client, interaction);
+
+      if (!isMaster) {
+        return;
+      }
     } else {
       target = interaction.user;
     }

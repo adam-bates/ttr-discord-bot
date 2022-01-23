@@ -1,3 +1,5 @@
+const { isMasterUser } = require("./helpers/roles");
+
 module.exports = {
   builder: (command) =>
     command
@@ -61,7 +63,11 @@ module.exports = {
     let target = interaction.options.getUser("target");
 
     if (target) {
-      // TODO: Check role / permissions, and message target about who made the change
+      const isMaster = await isMasterUser(client, interaction);
+
+      if (!isMaster) {
+        return;
+      }
     } else {
       target = interaction.user;
     }
@@ -78,9 +84,7 @@ module.exports = {
 
       const forceTarget = interaction.options.getBoolean("force-target");
 
-      if (forceTarget) {
-        // TODO: Check role / permissions
-      } else {
+      if (!forceTarget) {
         await interaction.reply({
           content: `Error: ${target} is already assigned to RSN: ${targetCurrentRsn}`,
           ephemeral: true,
@@ -95,14 +99,14 @@ module.exports = {
     if (rsnCurrentTargetId) {
       const forceRsn = interaction.options.getBoolean("force-rsn");
 
-      if (forceRsn) {
-        // TODO: Check role / permissions, and message rsnCurrentTarget about who made the change
-      } else if (rsnCurrentTarget) {
-        await interaction.reply({
-          content: `Error: RSN ${rsn} is already assigned to: ${rsnCurrentTarget}`,
-        });
-        return;
-      } else {
+      if (!forceRsn) {
+        if (rsnCurrentTarget) {
+          await interaction.reply({
+            content: `Error: RSN ${rsn} is already assigned to: ${rsnCurrentTarget}`,
+          });
+          return;
+        }
+
         await interaction.reply({
           content: `Error: RSN ${rsn} is already assigned to User with ID: ${rsnCurrentTargetId}`,
         });
