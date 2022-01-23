@@ -173,7 +173,7 @@ module.exports = {
       case null:
       case "text": {
         const f_rs_name = alignToLength(rsn, 12);
-        const formatted__utc___timestamp = new Date().toUTCString();
+        const formatted__utc___timestamp = gainz.timestamp;
 
         const to_ovr = alignToLength(gainz.today.overall, 9, "right");
         const to_att = alignToLength(gainz.today.attack, 9, "right");
