@@ -1,15 +1,9 @@
 const LEVEL_UP_PATTERN =
   /^GG <@![0-9]+>, you just advanced to level ([0-9]+)!$/;
 
-const levelRoleIds = {
-  1: "934460159567233034",
-  2: "934460323493195846",
-  3: "934460409270898689",
-};
-
 module.exports = {
   name: "messageCreate",
-  execute: async ({ client }, message) => {
+  execute: async ({ client, redis }, message) => {
     // Only listen to MEE6 for level ups
     if (message.author.id !== process.env.MEE6_USER_ID) {
       return;
@@ -25,8 +19,16 @@ module.exports = {
       return;
     }
 
-    const roleId = levelRoleIds[level];
+    const roleId = await redis.getRoleIdByLevel(level);
     if (!roleId) {
+      return;
+    }
+
+    if (!message.guildId) {
+      await message.reply({
+        content: `Error: No guild found`,
+        ephemeral: true,
+      });
       return;
     }
 
@@ -58,17 +60,41 @@ module.exports = {
 
     await member.roles.add(role);
 
-    const prevRoleId = levelRoleIds[level - 1];
-    if (!prevRoleId) {
-      return;
+    let prevRoleLevel = level - 1;
+
+    while (prevRoleLevel > 0) {
+      // eslint-disable-next-line no-await-in-loop
+      const prevRoleId = await redis.getRoleIdByLevel(prevRoleLevel);
+
+      if (prevRoleId) {
+        // eslint-disable-next-line no-await-in-loop
+        const prevRole = await guild.roles.cache.get(prevRoleId);
+
+        if (!prevRole) {
+          // eslint-disable-next-line no-await-in-loop
+          await message.reply(
+            `Error: Couldn't find role with ID: ${prevRoleId}`
+          );
+          return;
+        }
+
+        if (!member.roles.cache.some((r) => prevRole.id === r.id)) {
+          break;
+        }
+
+        // eslint-disable-next-line no-await-in-loop
+        await member.roles.remove(prevRole);
+
+        // eslint-disable-next-line no-await-in-loop
+        await message.reply(
+          `${user} was promoted from ${prevRole} to ${role}!`
+        );
+        return;
+      }
+
+      prevRoleLevel -= 1;
     }
 
-    const prevRole = await guild.roles.cache.get(prevRoleId);
-    if (!prevRole) {
-      await message.reply(`Error: Couldn't find role with ID: ${prevRoleId}`);
-      return;
-    }
-
-    await member.roles.remove(prevRole);
+    await message.reply(`${user} was promoted to ${role}!`);
   },
 };

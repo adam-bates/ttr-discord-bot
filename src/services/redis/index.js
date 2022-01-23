@@ -18,6 +18,8 @@ const GET_EVENT_DETAILS = "GetEventDetails";
 const GET_EVENT_START_SNAPSHOT = "GetEventStartSnapshot";
 const GET_EVENT_END_SNAPSHOT = "GetEventStartSnapshot";
 
+const GET_ROLE_ID = "GetRoleId";
+
 const key = (...parts) => parts.join("/");
 const { parse, stringify } = JSON;
 
@@ -98,6 +100,34 @@ const Redis = (client) => {
     await Promise.all(promises);
   };
 
+  const getRoleIdByLevel = async (level) => client.get(key(GET_ROLE_ID, level));
+
+  const setRoleIdByLevel = async (level, roleId) =>
+    client.set(key(GET_ROLE_ID, level), roleId);
+
+  const deleteRoleIdByLevel = async (level) =>
+    client.del(key(GET_ROLE_ID, level));
+
+  const getAllLevelRoleIdAssignments = async () => {
+    const keys = await client.sendCommand(["KEYS", `${GET_ROLE_ID}/*`]);
+
+    const promises = keys.map(async (k) => {
+      const level = k.split("/")[1];
+      const roleId = await client.get(k);
+      return { level, roleId };
+    });
+
+    return Promise.all(promises);
+  };
+
+  const searchForLevelWithRoleId = async (roleId) => {
+    const assignments = await getAllLevelRoleIdAssignments();
+
+    const res = assignments.find((assignment) => assignment.roleId === roleId);
+
+    return res && res.level;
+  };
+
   client.getAllRsns = getAllRsns;
   client.updatePlayersByRsns = updatePlayersByRsns;
   client.getRsnByUserId = getRsnByUserId;
@@ -117,6 +147,11 @@ const Redis = (client) => {
   client.deleteStatsSnapshotByRsnAndTimestamp =
     deleteStatsSnapshotByRsnAndTimestamp;
   client.getStatSnapshotTimestampsByRsn = getStatSnapshotTimestampsByRsn;
+  client.getRoleIdByLevel = getRoleIdByLevel;
+  client.setRoleIdByLevel = setRoleIdByLevel;
+  client.deleteRoleIdByLevel = deleteRoleIdByLevel;
+  client.getAllLevelRoleIdAssignments = getAllLevelRoleIdAssignments;
+  client.searchForLevelWithRoleId = searchForLevelWithRoleId;
 
   return client;
 };
