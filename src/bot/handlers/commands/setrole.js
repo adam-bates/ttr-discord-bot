@@ -3,7 +3,7 @@ const { requireMasterUser } = require("./helpers/roles");
 module.exports = {
   builder: (command) =>
     command
-      .setName("setroles")
+      .setName("setrole")
       .setDescription("Set the role assigned to a MEE6 level")
       .addIntegerOption((option) =>
         option
@@ -15,7 +15,7 @@ module.exports = {
         option
           .setName("role")
           .setDescription("Role to set at the level")
-          .setRequired(false)
+          .setRequired(true)
       )
       .addBooleanOption((option) =>
         option
@@ -40,56 +40,6 @@ module.exports = {
     }
 
     const role = interaction.options.getRole("role");
-
-    if (!role) {
-      const oldRoleId = await redis.getRoleIdByLevel(level);
-
-      if (!oldRoleId) {
-        await interaction.reply({
-          content: `There is no role assigned at level ${level}. Nothing interested happened.`,
-          ephemeral: !isPublic,
-        });
-        return;
-      }
-
-      await redis.deleteRoleIdByLevel(level);
-
-      if (!interaction.guildId) {
-        await interaction.reply({
-          content: `Error: No guild found`,
-          ephemeral: true,
-        });
-        return;
-      }
-
-      const guild = await client.guilds.cache.get(interaction.guildId);
-      if (!guild) {
-        console.error(`Error: Couldn't find guild with ID: ${guild.guildId}`);
-
-        await interaction.reply({
-          content: `Removed previous role from level ${level}.`,
-          ephemeral: !isPublic,
-        });
-        return;
-      }
-
-      const oldRole = await guild.roles.cache.get(oldRoleId);
-      if (!oldRole) {
-        console.error(`Error: Couldn't find role with ID: ${oldRoleId}`);
-
-        await interaction.reply({
-          content: `Removed previous role from level ${level}.`,
-          ephemeral: !isPublic,
-        });
-        return;
-      }
-
-      await interaction.reply({
-        content: `Successfully removed ${oldRole} from level ${level}.`,
-        ephemeral: !isPublic,
-      });
-      return;
-    }
 
     const oldLevel = await redis.searchForLevelWithRoleId(role.id);
 
