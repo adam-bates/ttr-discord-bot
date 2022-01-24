@@ -133,9 +133,6 @@ const expectedToday = (timestamp) => {
   return unixTimestamp(dropTime(date));
 };
 
-// 10 minute buffer
-const isLate = (actual, expected) => Math.abs(actual - expected) > 10 * 60;
-
 const determineRenames = async ({ redis, removedPlayers, addedPlayers }) => {
   const addedRsnStatsMap = new Map();
 
@@ -266,7 +263,7 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       if (!isWeekStart) {
         const week = await redis.getWeekStatsByRsn(player.rsn);
 
-        if (!week || isLate(week.timestamp, expectedWeek(timestamp))) {
+        if (!week || week.timestamp < expectedWeek(timestamp)) {
           isLateWeek = true;
         }
       }
@@ -274,22 +271,16 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       const today = await redis.getTodayStatsByRsn(player.rsn);
 
       if (!isDayStart) {
-        if (!today || isLate(today.timestamp, expectedToday(timestamp))) {
+        if (!today || today.timestamp < expectedToday(timestamp)) {
           isLateToday = true;
         }
 
         const yesterday = await redis.getYesterdayStatsByRsn(player.rsn);
 
-        if (
-          !yesterday ||
-          isLate(yesterday.timestamp, expectedYesterday(timestamp))
-        ) {
+        if (!yesterday || yesterday.timestamp < expectedYesterday(timestamp)) {
           isLateYesterday = true;
         }
-      } else if (
-        !today ||
-        isLate(today.timestamp, expectedYesterday(timestamp))
-      ) {
+      } else if (!today || today.timestamp < expectedYesterday(timestamp)) {
         // if `isDayStart`, then `today` actually represents yesterday
         isLateYesterday = true;
       }
