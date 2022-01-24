@@ -8,6 +8,16 @@ const padStringToLength = (string, length) => {
   return output;
 };
 
+const padNumberWithZero = (number, length) => {
+  let output = `${number}`;
+
+  while (output.length < length) {
+    output = `0${output}`;
+  }
+
+  return output;
+};
+
 const formatNumberToLength = (number, length) => {
   let output = `${number}`;
 
@@ -17,14 +27,14 @@ const formatNumberToLength = (number, length) => {
     const thousands = Math.floor(number / 1000) % 1000;
     const hundreds = Math.floor(number / 1) % 1000;
 
-    output = `${thousands},${hundreds}`;
+    output = `${thousands},${padNumberWithZero(hundreds, 3)}`;
 
     if (output.length > length) {
-      const precision2 = Math.floor(hundreds / 10);
+      const precision2 = padNumberWithZero(Math.floor(hundreds / 10), 3);
       output = `${thousands}.${precision2} K`;
 
       if (output.length > length) {
-        const precision1 = Math.floor(hundreds / 100);
+        const precision1 = padNumberWithZero(Math.floor(hundreds / 100), 3);
         output = `${thousands}.${precision1} K`;
 
         if (output.length > length) {
@@ -37,26 +47,35 @@ const formatNumberToLength = (number, length) => {
     const thousands = Math.floor(number / 1000) % 1000;
     const hundreds = Math.floor(number / 1) % 1000;
 
-    output = `${millions},${thousands},${hundreds}`;
+    output = `${millions},${padNumberWithZero(
+      thousands,
+      3
+    )},${padNumberWithZero(hundreds, 3)}`;
 
     if (output.length > length) {
-      const precision5 = Math.floor(hundreds / 10);
-      output = `${millions}.${thousands}${precision5} M`;
+      const precision5 = padNumberWithZero(Math.floor(hundreds / 10), 3);
+      output = `${millions}.${padNumberWithZero(thousands, 3)}${precision5} M`;
 
       if (output.length > length) {
-        const precision4 = Math.floor(hundreds / 100);
-        output = `${millions}.${thousands}${precision4} M`;
+        const precision4 = padNumberWithZero(Math.floor(hundreds / 100), 3);
+        output = `${millions}.${padNumberWithZero(
+          thousands,
+          3
+        )}${precision4} M`;
 
         if (output.length > length) {
-          const precision3 = thousands;
+          const precision3 = padNumberWithZero(thousands, 3);
           output = `${millions}.${precision3} M`;
 
           if (output.length > length) {
-            const precision2 = Math.floor(thousands / 10);
+            const precision2 = padNumberWithZero(Math.floor(thousands / 10), 3);
             output = `${millions}.${precision2} M`;
 
             if (output.length > length) {
-              const precision1 = Math.floor(thousands / 100);
+              const precision1 = padNumberWithZero(
+                Math.floor(thousands / 100),
+                3
+              );
               output = `${millions}.${precision1} M`;
 
               if (output.length > length) {
@@ -73,38 +92,65 @@ const formatNumberToLength = (number, length) => {
     const thousands = Math.floor(number / 1000) % 1000;
     const hundreds = Math.floor(number / 1) % 1000;
 
-    output = `${billions},${millions},${thousands},${hundreds}`;
+    output = `${billions},${padNumberWithZero(millions, 3)},${padNumberWithZero(
+      thousands,
+      3
+    )},${padNumberWithZero(hundreds, 3)}`;
 
     if (output.length > length) {
-      const precision8 = Math.floor(hundreds / 10);
-      output = `${billions}.${millions}${thousands}${precision8} B`;
+      const precision8 = padNumberWithZero(Math.floor(hundreds / 10), 3);
+      output = `${billions}.${padNumberWithZero(
+        millions,
+        3
+      )}${padNumberWithZero(thousands, 3)}${precision8} B`;
 
       if (output.length > length) {
-        const precision7 = Math.floor(hundreds / 100);
-        output = `${billions}.${millions}${thousands}${precision7} B`;
+        const precision7 = padNumberWithZero(Math.floor(hundreds / 100), 3);
+        output = `${billions}.${padNumberWithZero(
+          millions,
+          3
+        )}${padNumberWithZero(thousands, 3)}${precision7} B`;
 
         if (output.length > length) {
-          const precision6 = thousands;
-          output = `${billions}.${millions}${precision6} B`;
+          const precision6 = padNumberWithZero(thousands, 3);
+          output = `${billions}.${padNumberWithZero(
+            millions,
+            3
+          )}${precision6} B`;
 
           if (output.length > length) {
-            const precision5 = Math.floor(thousands / 10);
-            output = `${billions}.${millions}${precision5} B`;
+            const precision5 = padNumberWithZero(Math.floor(thousands / 10), 3);
+            output = `${billions}.${padNumberWithZero(
+              millions,
+              3
+            )}${precision5} B`;
 
             if (output.length > length) {
-              const precision4 = Math.floor(thousands / 100);
-              output = `${billions}.${millions}${precision4} B`;
+              const precision4 = padNumberWithZero(
+                Math.floor(thousands / 100),
+                3
+              );
+              output = `${billions}.${padNumberWithZero(
+                millions,
+                3
+              )}${precision4} B`;
 
               if (output.length > length) {
-                const precision3 = millions;
+                const precision3 = padNumberWithZero(millions, 3);
                 output = `${billions}.${precision3} B`;
 
                 if (output.length > length) {
-                  const precision2 = Math.floor(millions / 10);
+                  const precision2 = padNumberWithZero(
+                    Math.floor(millions / 10),
+                    3
+                  );
                   output = `${billions}.${precision2} B`;
 
                   if (output.length > length) {
-                    const precision1 = Math.floor(millions / 100);
+                    const precision1 = padNumberWithZero(
+                      Math.floor(millions / 100),
+                      3
+                    );
                     output = `${billions}.${precision1} B`;
 
                     if (output.length > length) {
@@ -125,50 +171,107 @@ const formatNumberToLength = (number, length) => {
     const thousands = Math.floor(number / 1000) % 1000;
     const hundreds = Math.floor(number / 1) % 1000;
 
-    output = `${trillions},${billions},${millions},${thousands},${hundreds}`;
+    output = `${trillions},${padNumberWithZero(
+      billions,
+      3
+    )},${padNumberWithZero(millions, 3)},${padNumberWithZero(
+      thousands,
+      3
+    )},${padNumberWithZero(hundreds, 3)}`;
 
     if (output.length > length) {
-      const precision11 = Math.floor(hundreds / 10);
-      output = `${trillions}.${billions}${millions}${thousands}${precision11} T`;
+      const precision11 = padNumberWithZero(Math.floor(hundreds / 10), 3);
+      output = `${trillions}.${padNumberWithZero(
+        billions,
+        3
+      )}${padNumberWithZero(millions, 3)}${padNumberWithZero(
+        thousands,
+        3
+      )}${precision11} T`;
 
       if (output.length > length) {
-        const precision10 = Math.floor(hundreds / 100);
-        output = `${trillions}.${billions}${millions}${thousands}${precision10} T`;
+        const precision10 = padNumberWithZero(Math.floor(hundreds / 100), 3);
+        output = `${trillions}.${padNumberWithZero(
+          billions,
+          3
+        )}${padNumberWithZero(millions, 3)}${padNumberWithZero(
+          thousands,
+          3
+        )}${precision10} T`;
 
         if (output.length > length) {
-          const precision9 = thousands;
-          output = `${trillions}.${billions}${millions}${precision9} T`;
+          const precision9 = padNumberWithZero(thousands, 3);
+          output = `${trillions}.${padNumberWithZero(
+            billions,
+            3
+          )}${padNumberWithZero(millions, 3)}${padNumberWithZero(
+            precision9,
+            3
+          )} T`;
 
           if (output.length > length) {
-            const precision8 = Math.floor(thousands / 10);
-            output = `${trillions}.${billions}${millions}${precision8} T`;
+            const precision8 = padNumberWithZero(Math.floor(thousands / 10), 3);
+            output = `${trillions}.${padNumberWithZero(
+              billions,
+              3
+            )}${padNumberWithZero(millions, 3)}${padNumberWithZero(
+              precision8,
+              3
+            )} T`;
 
             if (output.length > length) {
-              const precision7 = Math.floor(thousands / 100);
-              output = `${trillions}.${billions}${millions}${precision7} T`;
+              const precision7 = padNumberWithZero(
+                Math.floor(thousands / 100),
+                3
+              );
+              output = `${trillions}.${padNumberWithZero(
+                billions,
+                3
+              )}${padNumberWithZero(millions, 3)}${precision7} T`;
 
               if (output.length > length) {
-                const precision6 = millions;
-                output = `${trillions}.${billions}${precision6} T`;
+                const precision6 = padNumberWithZero(millions, 3);
+                output = `${trillions}.${padNumberWithZero(
+                  billions,
+                  3
+                )}${precision6} T`;
 
                 if (output.length > length) {
-                  const precision5 = Math.floor(millions / 10);
-                  output = `${trillions}.${billions}${precision5} T`;
+                  const precision5 = padNumberWithZero(
+                    Math.floor(millions / 10),
+                    3
+                  );
+                  output = `${trillions}.${padNumberWithZero(
+                    billions,
+                    3
+                  )}${precision5} T`;
 
                   if (output.length > length) {
-                    const precision4 = Math.floor(millions / 100);
-                    output = `${trillions}.${billions}${precision4} T`;
+                    const precision4 = padNumberWithZero(
+                      Math.floor(millions / 100),
+                      3
+                    );
+                    output = `${trillions}.${padNumberWithZero(
+                      billions,
+                      3
+                    )}${precision4} T`;
 
                     if (output.length > length) {
-                      const precision3 = billions;
+                      const precision3 = padNumberWithZero(billions, 3);
                       output = `${trillions}.${precision3} T`;
 
                       if (output.length > length) {
-                        const precision2 = Math.floor(billions / 10);
+                        const precision2 = padNumberWithZero(
+                          Math.floor(billions / 10),
+                          3
+                        );
                         output = `${trillions}.${precision2} T`;
 
                         if (output.length > length) {
-                          const precision1 = Math.floor(billions / 100);
+                          const precision1 = padNumberWithZero(
+                            Math.floor(billions / 100),
+                            3
+                          );
                           output = `${trillions}.${precision1} T`;
 
                           if (output.length > length) {
