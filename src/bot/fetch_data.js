@@ -7,6 +7,103 @@ const { connectRedisClient } = require("../services/redis");
 const { forEachAsyncOrdered } = require("../utils/promises");
 const { unixTimestamp, fromUnixTimestamp, dropTime } = require("../utils/time");
 
+const OVERALL_KEY = "Overall";
+const SKILL_KEYS = [
+  "Attack",
+  "Defence",
+  "Strength",
+  "Constitution",
+  "Ranged",
+  "Prayer",
+  "Magic",
+  "Cooking",
+  "Woodcutting",
+  "Fletching",
+  "Fishing",
+  "Firemaking",
+  "Crafting",
+  "Smithing",
+  "Mining",
+  "Herblore",
+  "Agility",
+  "Thieving",
+  "Slayer",
+  "Farming",
+  "Runecrafting",
+  "Hunter",
+  "Construction",
+  "Summoning",
+  "Dungeoneering",
+  "Divination",
+  "Invention",
+  "Archaeology",
+];
+const CLUE_SCROLL_KEYS = [
+  "Clue Scrolls Easy",
+  "Clue Scrolls Medium",
+  "Clue Scrolls Hard",
+  "Clue Scrolls Elite",
+  "Clue Scrolls Master",
+];
+
+const getRenameStatBuffer = (key, value) => {
+  if (SKILL_KEYS.includes(key)) {
+    if (value > 13000000) {
+      return 12000000;
+    }
+    if (value > 1000000) {
+      return 6000000;
+    }
+    if (value > 6000000) {
+      return 3000000;
+    }
+    if (value > 3000000) {
+      return 1500000;
+    }
+    if (value > 1500000) {
+      return 750000;
+    }
+
+    return 400000;
+  }
+
+  if (key === OVERALL_KEY) {
+    if (value > 50000000) {
+      return 500000000;
+    }
+    if (value > 20000000) {
+      return 200000000;
+    }
+    if (value > 13000000) {
+      return 12000000;
+    }
+    if (value > 1000000) {
+      return 6000000;
+    }
+    if (value > 6000000) {
+      return 3000000;
+    }
+    if (value > 3000000) {
+      return 1500000;
+    }
+    if (value > 1500000) {
+      return 750000;
+    }
+
+    return 400000;
+  }
+
+  if (CLUE_SCROLL_KEYS.includes(key)) {
+    if (value > 500) {
+      return 250;
+    }
+
+    return 150;
+  }
+
+  return null;
+};
+
 const wait = promisify(setTimeout);
 
 const expectedWeek = (timestamp) => {
@@ -36,13 +133,101 @@ const expectedToday = (timestamp) => {
   return unixTimestamp(dropTime(date));
 };
 
+const determineRenames = async ({ redis, removedPlayers, addedPlayers }) => {
+  const addedRsnStatsMap = new Map();
+
+  await Promise.all(
+    addedPlayers.map(async ({ rsn, rank }) => {
+      const stats = await fetchPlayerStats(rsn);
+      if (stats) {
+        addedRsnStatsMap.set(rsn, {
+          ...stats,
+          rank,
+        });
+      }
+    })
+  );
+
+  const renames = [];
+
+  const promises = removedPlayers.map(async (removedPlayer) => {
+    const removedPlayerStats = await redis.getStatsByRsn(removedPlayer.rsn);
+
+    if (!removedPlayerStats) {
+      return;
+    }
+
+    const res = Array.from(addedRsnStatsMap.entries()).find(
+      ([, addedRsnStats]) => {
+        if (
+          !Object.keys(removedPlayerStats).some((key) =>
+            Object.keys(addedRsnStats).includes(key)
+          )
+        ) {
+          return false;
+        }
+
+        const match = Object.entries(removedPlayerStats)
+          .filter(([key]) => !["rsn", "timestamp"].includes(key))
+          .every(([key, value]) => {
+            const buffer = getRenameStatBuffer(key, value);
+
+            console.log({
+              key,
+              value,
+              cmp: addedRsnStats[key],
+              buffer,
+              result:
+                value <= addedRsnStats[key] &&
+                (!buffer || value >= addedRsnStats[key] + buffer),
+            });
+
+            return (
+              value <= addedRsnStats[key] &&
+              (!buffer || value >= addedRsnStats[key] + buffer)
+            );
+          });
+
+        console.log(match);
+
+        return match;
+      }
+    );
+
+    if (res) {
+      const [addedRsn] = res;
+
+      addedRsnStatsMap.delete(addedRsn);
+      renames.push(removedPlayer.rsn, addedRsn);
+    }
+  });
+
+  await Promise.all(promises);
+
+  return renames;
+};
+
 const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
   const redis = await connectRedisClient();
 
-  const players = await fetchClanInfo(process.env.CLAN_NAME);
+  const players = (await fetchClanInfo(process.env.CLAN_NAME)).map(
+    ({ rsn, ...rest }) => ({ rsn, ...rest })
+  );
+  const rsnsSet = new Set(players.map(({ rsn }) => rsn));
 
-  const rsns = players.map(({ rsn }) => rsn);
-  await redis.updatePlayersByRsns(rsns);
+  const oldPlayers = await redis.getAllPlayers();
+  const oldRsnsSet = new Set(oldPlayers.map(({ rsn }) => rsn));
+
+  const removedPlayers = oldPlayers.filter(({ rsn }) => !rsnsSet.has(rsn));
+  const addedPlayers = players.filter(({ rsn }) => !oldRsnsSet.has(rsn));
+
+  const renames = await determineRenames({
+    redis,
+    removedPlayers,
+    addedPlayers,
+  });
+
+  await redis.updatePlayers(players, { renames });
 
   const timestamp = unixTimestamp();
 

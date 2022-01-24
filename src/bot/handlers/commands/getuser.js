@@ -36,7 +36,7 @@ module.exports = {
       return;
     }
 
-    const userId = await redis.get(`GetUserIdByRsn/${rsn}`);
+    const userId = await redis.searchForUserIdWithRsn(rsn);
 
     if (!userId) {
       await interaction.reply({

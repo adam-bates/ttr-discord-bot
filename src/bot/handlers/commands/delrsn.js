@@ -63,7 +63,7 @@ module.exports = {
       return;
     }
 
-    await redis.deleteRsnByUserId(target.id, rsn);
+    await redis.deleteRsnByUserId(target.id);
 
     await interaction.reply({
       content: `Removed RSN assignment from: ${target}`,

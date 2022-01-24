@@ -1,3 +1,5 @@
+const { isMasterUser } = require("./helpers/roles");
+
 module.exports = {
   builder: (command) =>
     command
@@ -12,11 +14,10 @@ module.exports = {
           .setRequired(false)
       ),
 
-  execute: async (_, interaction) => {
+  execute: async ({ client }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
-    const content =
-      `\`\`\`
+    let content = `\`\`\`
 Custom Discord Bot for the Runescape clan: The Last Citadel
 
 - All commands are accessed using /tlc
@@ -37,8 +38,8 @@ Assigning RSN to Discord user:
 
 Get player information:
 - /tlc gainz
-- /tlc stats` +
-      /*
+- /tlc stats`;
+    /*
 - /tlc log (Planned)
 - /tlc quests (Planned)
 
@@ -56,14 +57,27 @@ Creating & interacting with events:
 - /tlc events (Planned)
 
 Creating & interacting with voting polls:
-- /tlc polls (Planned) */ `
+- /tlc polls (Planned) */
+
+    if (!isPublic && isMasterUser(client, interaction)) {
+      content += `
 
 Assigning custom roles at an MEE6 level:
 - /tlc setrole
 - /tlc delrole
 - /tlc getrole
 - /tlc getlevel
-- /tlc listroles
+- /tlc listroles`;
+    } else {
+      content += `
+
+Get custom roles for MEE6 levels:
+- /tlc getrole
+- /tlc getlevel
+- /tlc listroles`;
+    }
+
+    content += `
 
 Having issues? Contact a staff member, or reach out directly to Convergent#2207
 \`\`\``;

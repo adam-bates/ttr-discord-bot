@@ -19,7 +19,7 @@ module.exports = {
     const map = new Map();
 
     const promises = rsns.map(async (rsn) => {
-      const userId = await redis.getUserIdByRsn(rsn);
+      const userId = await redis.searchForUserIdWithRsn(rsn);
 
       if (userId) {
         const user = await client.users.cache.get(userId);
