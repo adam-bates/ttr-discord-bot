@@ -230,6 +230,11 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
   await redis.updatePlayers(players, { renames });
 
   const timestamp = unixTimestamp();
+  const expected = {
+    today: expectedToday(timestamp),
+    yesterday: expectedYesterday(timestamp),
+    week: expectedWeek(timestamp),
+  };
 
   let success = 0;
 
@@ -266,7 +271,7 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       if (!isWeekStart) {
         const week = await redis.getWeekStatsByRsn(player.rsn);
 
-        if (!week || expectedWeek(timestamp) - week.timestamp > TIME_BUFFER) {
+        if (!week || expected.week - week.timestamp > TIME_BUFFER) {
           isLateWeek = true;
         }
       }
@@ -274,10 +279,7 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       const today = await redis.getTodayStatsByRsn(player.rsn);
 
       if (!isDayStart) {
-        if (
-          !today ||
-          expectedToday(timestamp) - today.timestamp > TIME_BUFFER
-        ) {
+        if (!today || expected.today - today.timestamp > TIME_BUFFER) {
           isLateToday = true;
         }
 
@@ -285,14 +287,11 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
 
         if (
           !yesterday ||
-          expectedYesterday(timestamp) - yesterday.timestamp > TIME_BUFFER
+          expected.yesterday - yesterday.timestamp > TIME_BUFFER
         ) {
           isLateYesterday = true;
         }
-      } else if (
-        !today ||
-        expectedYesterday(timestamp) - today.timestamp > TIME_BUFFER
-      ) {
+      } else if (!today || expected.yesterday - today.timestamp > TIME_BUFFER) {
         // if `isDayStart`, then `today` actually represents yesterday
         isLateYesterday = true;
       }
@@ -344,3 +343,51 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
 module.exports = {
   fetchData,
 };
+
+(async () => {
+  const redis = await connectRedisClient();
+
+  const rsns = await redis.getAllRsns();
+
+  const timestamp = unixTimestamp();
+  const expected = {
+    today: expectedToday(timestamp),
+    yesterday: expectedYesterday(timestamp),
+    week: expectedWeek(timestamp),
+  };
+
+  await Promise.all(
+    rsns.map(async (rsn) => {
+      console.log("Fixing %s", rsn);
+
+      const today = await redis.getTodayStatsByRsn(rsn);
+      const yesterday = await redis.getYesterdayStatsByRsn(rsn);
+      const week = await redis.getWeekStatsByRsn(rsn);
+
+      let fixed = false;
+
+      if (today && today.late && today.timestamp - expected.today <= 10 * 60) {
+        await redis.setTodayStatsByRsn(rsn, { ...today, late: false });
+        fixed = true;
+      }
+
+      if (
+        yesterday &&
+        yesterday.late &&
+        yesterday.timestamp - expected.yesterday <= 10 * 60
+      ) {
+        await redis.setYesterdayStatsByRsn(rsn, { ...yesterday, late: false });
+        fixed = true;
+      }
+
+      if (week && week.late && week.timestamp - expected.week <= 10 * 60) {
+        await redis.setWeekStatsByRsn(rsn, { ...week, late: false });
+        fixed = true;
+      }
+
+      console.log(fixed ? "Fixed!" : "Nothing to fix.");
+    })
+  );
+
+  await redis.disconnect();
+})();
