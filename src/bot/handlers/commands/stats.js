@@ -1,5 +1,6 @@
 const fs = require("fs").promises;
 const path = require("path");
+const { capitalizeFirst } = require("../../../utils/format");
 
 const statKeys = [
   "overall",
@@ -38,45 +39,65 @@ const formatDiff = (value) =>
     ? `+ ${value.toLocaleString()}`
     : `- ${Math.abs(value).toLocaleString()}`;
 
+const getClass = (value) => {
+  if (value < 0) {
+    return "text-danger";
+  }
+
+  if (value === 0) {
+    return "text-muted";
+  }
+
+  return "text-success";
+};
+
 const calculateGainz = ({ from, to }) =>
-  statKeys.reduce(
-    (gainz, key) => ({
-      ...gainz,
-      [key]:
-        !from[key] || !to[key]
-          ? { level: "-", xp: "-", rank: "-" }
-          : {
-              level:
-                !from[key].level || !to[key].level
-                  ? "-"
-                  : formatDiff(
-                      Math.max(
-                        parseInt(to[key].level.replace(/,/g, ""), 10) -
-                          parseInt(from[key].level.replace(/,/g, ""), 10),
-                        0
-                      )
-                    ),
-              xp:
-                !from[key].xp || !to[key].xp
-                  ? "-"
-                  : formatDiff(
-                      Math.max(
-                        parseInt(to[key].xp.replace(/,/g, ""), 10) -
-                          parseInt(from[key].xp.replace(/,/g, ""), 10),
-                        0
-                      )
-                    ),
-              rank:
-                !from[key].rank || !to[key].rank
-                  ? "-"
-                  : formatDiff(
-                      parseInt(to[key].rank.replace(/,/g, ""), 10) -
-                        parseInt(from[key].rank.replace(/,/g, ""), 10)
-                    ),
-            },
-    }),
-    {}
-  );
+  statKeys.reduce((gainz, key) => {
+    const xp =
+      from[key] &&
+      from[key].xp &&
+      to[key] &&
+      to[key].xp &&
+      Math.max(
+        parseInt(to[key].xp.replace(/,/g, ""), 10) -
+          parseInt(from[key].xp.replace(/,/g, ""), 10),
+        0
+      );
+
+    const level =
+      from[key] &&
+      from[key].level &&
+      to[key] &&
+      to[key].level &&
+      Math.max(
+        parseInt(to[key].level.replace(/,/g, ""), 10) -
+          parseInt(from[key].level.replace(/,/g, ""), 10),
+        0
+      );
+
+    const rank =
+      from[key] &&
+      from[key].rank &&
+      to[key] &&
+      to[key].rank &&
+      parseInt(to[key].rank.replace(/,/g, ""), 10) -
+        parseInt(from[key].rank.replace(/,/g, ""), 10);
+
+    const gain =
+      !from[key] || !to[key]
+        ? { level: "-", xp: "-", rank: "-" }
+        : {
+            xp: !from[key].xp || !to[key].xp ? "-" : formatDiff(xp),
+            xpClass: !from[key].xp || !to[key].xp ? "-" : getClass(xp),
+            level: !from[key].level || !to[key].level ? "-" : formatDiff(level),
+            levelClass:
+              !from[key].level || !to[key].level ? "-" : getClass(level),
+            rank: !from[key].rank || !to[key].rank ? "-" : formatDiff(rank),
+            rankClass: !from[key].rank || !to[key].rank ? "-" : getClass(rank),
+          };
+
+    return { ...gainz, [key]: gain };
+  }, {});
 
 module.exports = {
   builder: (command) =>
@@ -196,7 +217,27 @@ module.exports = {
     switch (output && output.toLowerCase()) {
       case null:
       case "png": {
-        const htmlContent = templates.stats(stats);
+        const handlebars = {
+          ...stats,
+          rows: statKeys.map((statKey) => ({
+            name: capitalizeFirst(statKey),
+            snapshots: [
+              {
+                ...stats.total[statKey],
+                xp: parseInt(stats.total[statKey].xp, 10).toLocaleString(),
+                level: parseInt(
+                  stats.total[statKey].level,
+                  10
+                ).toLocaleString(),
+                rank: parseInt(stats.total[statKey].rank, 10).toLocaleString(),
+              },
+              stats.today[statKey],
+              stats.yesterday[statKey],
+              stats.week[statKey],
+            ],
+          })),
+        };
+        const htmlContent = templates.stats(handlebars);
 
         const date = datetime.toISOString().split("T")[0];
 
@@ -213,7 +254,7 @@ module.exports = {
 
         await page.setViewport({
           width: 1920,
-          height: 1369,
+          height: 1545,
           deviceScaleFactor: 2,
         });
         await page.setContent(htmlContent);

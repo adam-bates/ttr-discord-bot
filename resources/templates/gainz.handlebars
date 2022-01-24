@@ -18,196 +18,30 @@
     <table class="table table-bordered table-striped table-dark caption-top" style="margin: 0">
       <thead class="thead-light">
         <tr>
-          <th colspan="4"><h1>{{rsn}}</h1><div style="width: 100%; display: flex; justify-content: space-between;"><span>RS3 XP Gainz</span><span class="text-right text-muted">{{lateMessage}}</span></div></th>
+          <th colspan="4"><h1>{{rsn}}</h1><div style="width: 100%; display: flex; justify-content: space-between;" class="h3"><span>RS3 Gainz</span><span class="text-right text-muted">{{lateMessage}}</span></div></th>
         </tr>
         <tr>
-          <th><small class="text-muted">{{timestamp}}</small></th>
-          <th>Today{{#if today.late}} *{{/if}}</th>
-          <th>Yesterday{{#if yesterday.late}} *{{/if}}</th>
-          <th>This Week{{#if week.late}} *{{/if}}</th>
+          <th><small class="text-muted h3">{{timestamp}}</small></th>
+          <th class="h3">Today{{#if today.late}} *{{/if}}</th>
+          <th class="h3">Yesterday{{#if yesterday.late}} *{{/if}}</th>
+          <th class="h3">This Week{{#if week.late}} *{{/if}}</th>
         </tr>
         <tr>
-          <th>Skill</th>
-          <th>XP</th>
-          <th>XP</th>
-          <th>XP</th>
+          <th class="h3">Skill</th>
+          <th class="h3">XP</th>
+          <th class="h3">XP</th>
+          <th class="h3">XP</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Overall</td>
-          <td>{{today.overall}}</td>
-          <td>{{yesterday.overall}}</td>
-          <td>{{week.overall}}</td>
-        </tr>
-        <tr>
-          <td>Attack</td>
-          <td>{{today.attack}}</td>
-          <td>{{yesterday.attack}}</td>
-          <td>{{week.attack}}</td>
-        </tr>
-        <tr>
-          <td>Defence</td>
-          <td>{{today.defence}}</td>
-          <td>{{yesterday.defence}}</td>
-          <td>{{week.defence}}</td>
-        </tr>
-        <tr>
-          <td>Strength</td>
-          <td>{{today.strength}}</td>
-          <td>{{yesterday.strength}}</td>
-          <td>{{week.strength}}</td>
-        </tr>
-        <tr>
-          <td>Constitution</td>
-          <td>{{today.constitution}}</td>
-          <td>{{yesterday.constitution}}</td>
-          <td>{{week.constitution}}</td>
-        </tr>
-        <tr>
-          <td>Ranged</td>
-          <td>{{today.ranged}}</td>
-          <td>{{yesterday.ranged}}</td>
-          <td>{{week.ranged}}</td>
-        </tr>
-        <tr>
-          <td>Prayer</td>
-          <td>{{today.prayer}}</td>
-          <td>{{yesterday.prayer}}</td>
-          <td>{{week.prayer}}</td>
-        </tr>
-        <tr>
-          <td>Magic</td>
-          <td>{{today.magic}}</td>
-          <td>{{yesterday.magic}}</td>
-          <td>{{week.magic}}</td>
-        </tr>
-        <tr>
-          <td>Cooking</td>
-          <td>{{today.cooking}}</td>
-          <td>{{yesterday.cooking}}</td>
-          <td>{{week.cooking}}</td>
-        </tr>
-        <tr>
-          <td>Woodcutting</td>
-          <td>{{today.woodcutting}}</td>
-          <td>{{yesterday.woodcutting}}</td>
-          <td>{{week.woodcutting}}</td>
-        </tr>
-        <tr>
-          <td>Fletching</td>
-          <td>{{today.fletching}}</td>
-          <td>{{yesterday.fletching}}</td>
-          <td>{{week.fletching}}</td>
-        </tr>
-        <tr>
-          <td>Fishing</td>
-          <td>{{today.fishing}}</td>
-          <td>{{yesterday.fishing}}</td>
-          <td>{{week.fishing}}</td>
-        </tr>
-        <tr>
-          <td>Firemaking</td>
-          <td>{{today.firemaking}}</td>
-          <td>{{yesterday.firemaking}}</td>
-          <td>{{week.firemaking}}</td>
-        </tr>
-        <tr>
-          <td>Crafting</td>
-          <td>{{today.crafting}}</td>
-          <td>{{yesterday.crafting}}</td>
-          <td>{{week.crafting}}</td>
-        </tr>
-        <tr>
-          <td>Smithing</td>
-          <td>{{today.smithing}}</td>
-          <td>{{yesterday.smithing}}</td>
-          <td>{{week.smithing}}</td>
-        </tr>
-        <tr>
-          <td>Mining</td>
-          <td>{{today.mining}}</td>
-          <td>{{yesterday.mining}}</td>
-          <td>{{week.mining}}</td>
-        </tr>
-        <tr>
-          <td>Herblore</td>
-          <td>{{today.herblore}}</td>
-          <td>{{yesterday.herblore}}</td>
-          <td>{{week.herblore}}</td>
-        </tr>
-        <tr>
-          <td>Agility</td>
-          <td>{{today.agility}}</td>
-          <td>{{yesterday.agility}}</td>
-          <td>{{week.agility}}</td>
-        </tr>
-        <tr>
-          <td>Thieving</td>
-          <td>{{today.thieving}}</td>
-          <td>{{yesterday.thieving}}</td>
-          <td>{{week.thieving}}</td>
-        </tr>
-        <tr>
-          <td>Slayer</td>
-          <td>{{today.slayer}}</td>
-          <td>{{yesterday.slayer}}</td>
-          <td>{{week.slayer}}</td>
-        </tr>
-        <tr>
-          <td>Farming</td>
-          <td>{{today.farming}}</td>
-          <td>{{yesterday.farming}}</td>
-          <td>{{week.farming}}</td>
-        </tr>
-        <tr>
-          <td>Runecrafting</td>
-          <td>{{today.runecrafting}}</td>
-          <td>{{yesterday.runecrafting}}</td>
-          <td>{{week.runecrafting}}</td>
-        </tr>
-        <tr>
-          <td>Hunter</td>
-          <td>{{today.hunter}}</td>
-          <td>{{yesterday.hunter}}</td>
-          <td>{{week.hunter}}</td>
-        </tr>
-        <tr>
-          <td>Construction</td>
-          <td>{{today.construction}}</td>
-          <td>{{yesterday.construction}}</td>
-          <td>{{week.construction}}</td>
-        </tr>
-        <tr>
-          <td>Summoning</td>
-          <td>{{today.summoning}}</td>
-          <td>{{yesterday.summoning}}</td>
-          <td>{{week.summoning}}</td>
-        </tr>
-        <tr>
-          <td>Dungeoneering</td>
-          <td>{{today.dungeoneering}}</td>
-          <td>{{yesterday.dungeoneering}}</td>
-          <td>{{week.dungeoneering}}</td>
-        </tr>
-        <tr>
-          <td>Divination</td>
-          <td>{{today.divination}}</td>
-          <td>{{yesterday.divination}}</td>
-          <td>{{week.divination}}</td>
-        </tr>
-        <tr>
-          <td>Invention</td>
-          <td>{{today.invention}}</td>
-          <td>{{yesterday.invention}}</td>
-          <td>{{week.invention}}</td>
-        </tr>
-        <tr>
-          <td>Archaeology</td>
-          <td>{{today.archaeology}}</td>
-          <td>{{yesterday.archaeology}}</td>
-          <td>{{week.archaeology}}</td>
-        </tr>
+        {{#rows}}
+          <tr>
+            <td class="h4">{{name}}</td>
+            {{#snapshots}}
+              <td class="{{xpClass}} h5" style="text-align: right; padding-right: 2rem;">{{xp}}</td>
+            {{/snapshots}}
+          </tr>
+        {{/rows}}
       </tbody>
     </table>
   </body>

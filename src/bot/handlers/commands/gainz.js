@@ -3,6 +3,7 @@ const path = require("path");
 const {
   padStringToLength,
   formatNumberToLength,
+  capitalizeFirst,
 } = require("../../../utils/format");
 
 const statKeys = [
@@ -322,7 +323,32 @@ module.exports = {
         break;
       }
       case "png": {
-        const htmlContent = templates.gainz(gainz);
+        const handlebars = {
+          ...gainz,
+          rows: statKeys.map((statKey) => ({
+            name: capitalizeFirst(statKey),
+            snapshots: [
+              {
+                xp: gainz.today[statKey].toLocaleString(),
+                xpClass:
+                  gainz.today[statKey] === 0 ? "text-muted" : "text-success",
+              },
+              {
+                xp: gainz.yesterday[statKey].toLocaleString(),
+                xpClass:
+                  gainz.yesterday[statKey] === 0
+                    ? "text-muted"
+                    : "text-success",
+              },
+              {
+                xp: gainz.week[statKey].toLocaleString(),
+                xpClass:
+                  gainz.week[statKey] === 0 ? "text-muted" : "text-success",
+              },
+            ],
+          })),
+        };
+        const htmlContent = templates.gainz(handlebars);
 
         const date = datetime.toISOString().split("T")[0];
 
@@ -338,8 +364,8 @@ module.exports = {
         );
 
         await page.setViewport({
-          width: 650,
-          height: 1358,
+          width: 1200,
+          height: 1545,
           deviceScaleFactor: 2,
         });
         await page.setContent(htmlContent);

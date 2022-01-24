@@ -297,7 +297,11 @@ const formatNumberToLength = (number, length) => {
   return output;
 };
 
+const capitalizeFirst = (string) =>
+  string.charAt(0).toUpperCase() + string.slice(1);
+
 module.exports = {
   padStringToLength,
   formatNumberToLength,
+  capitalizeFirst,
 };
