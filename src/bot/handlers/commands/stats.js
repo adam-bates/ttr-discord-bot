@@ -33,6 +33,11 @@ const statKeys = [
   "archaeology",
 ];
 
+const formatDiff = (value) =>
+  value >= 0
+    ? `+ ${value.toLocaleString()}`
+    : `- ${Math.abs(value).toLocaleString()}`;
+
 const calculateGainz = ({ from, to }) =>
   statKeys.reduce(
     (gainz, key) => ({
@@ -44,18 +49,30 @@ const calculateGainz = ({ from, to }) =>
               level:
                 !from[key].level || !to[key].level
                   ? "-"
-                  : parseInt(to[key].level.replace(/,/g, ""), 10) -
-                    parseInt(from[key].level.replace(/,/g, ""), 10),
+                  : formatDiff(
+                      Math.max(
+                        parseInt(to[key].level.replace(/,/g, ""), 10) -
+                          parseInt(from[key].level.replace(/,/g, ""), 10),
+                        0
+                      )
+                    ),
               xp:
                 !from[key].xp || !to[key].xp
                   ? "-"
-                  : parseInt(to[key].xp.replace(/,/g, ""), 10) -
-                    parseInt(from[key].xp.replace(/,/g, ""), 10),
+                  : formatDiff(
+                      Math.max(
+                        parseInt(to[key].xp.replace(/,/g, ""), 10) -
+                          parseInt(from[key].xp.replace(/,/g, ""), 10),
+                        0
+                      )
+                    ),
               rank:
                 !from[key].rank || !to[key].rank
                   ? "-"
-                  : parseInt(to[key].rank.replace(/,/g, ""), 10) -
-                    parseInt(from[key].rank.replace(/,/g, ""), 10),
+                  : formatDiff(
+                      parseInt(to[key].rank.replace(/,/g, ""), 10) -
+                        parseInt(from[key].rank.replace(/,/g, ""), 10)
+                    ),
             },
     }),
     {}
