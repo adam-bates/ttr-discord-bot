@@ -1,5 +1,7 @@
 const axios = require("axios");
 
+// Note: ID of skill is XP_STAT_KEYS index - 1
+// ie. XP_STAT_KEYS[3] = "Strength", and ID for Strength is 2
 const XP_STAT_KEYS = [
   "Overall",
   "Attack",
@@ -178,16 +180,27 @@ const fetchPlayerStats = async (rsn) => {
   return stats;
 };
 
-const fetchMonthlyPlayerStatsByRsn = async (rsn) => {};
+// const fetchMonthlyPlayerStatsByRsn = async (rsn) => {
+//   const promises = XP_STAT_KEYS.slice(1).map(async (skill, idx) => {
+//     const skillId = idx - 1;
 
-const fetchPlayerProfile = async (rsn) => {};
+//     const raw = await getDataOrNull(
+//       `https://apps.runescape.com/runemetrics/xp-monthly?searchName=${rsn}&skillid=${skillId}`
+//     );
+//     console.log(raw);
+//   });
 
-const fetchPlayerQuests = async (rsn) => {};
+//   await Promise.all(promises);
+// };
+
+// const fetchPlayerProfile = async (rsn) => {};
+
+// const fetchPlayerQuests = async (rsn) => {};
 
 module.exports = {
   fetchClanInfo,
   fetchPlayerStats,
-  fetchMonthlyPlayerStatsByRsn,
-  fetchPlayerProfile,
-  fetchPlayerQuests,
+  // fetchMonthlyPlayerStatsByRsn,
+  // fetchPlayerProfile,
+  // fetchPlayerQuests,
 };
