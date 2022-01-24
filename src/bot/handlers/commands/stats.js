@@ -1,5 +1,8 @@
 const fs = require("fs").promises;
 const path = require("path");
+const {
+  fetchMonthlyPlayerStatsByRsn,
+} = require("../../../services/runescape-api");
 
 const statKeys = [
   "overall",
@@ -143,6 +146,10 @@ module.exports = {
     const todayStats = (await redis.getTodayStatsByRsn(rsn)) || {};
     const yesterdayStats = (await redis.getYesterdayStatsByRsn(rsn)) || {};
     const weekStats = (await redis.getWeekStatsByRsn(rsn)) || {};
+
+    const monthlyStats = (await fetchMonthlyPlayerStatsByRsn(rsn)) || {};
+
+    console.log({ monthlyStats });
 
     const datetime = new Date(currentStats.timestamp * 1000);
 

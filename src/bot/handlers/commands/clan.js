@@ -3,8 +3,8 @@ module.exports = {
 
   builder: (command) =>
     command
-      .setName("info")
-      .setDescription("TODO")
+      .setName("clan")
+      .setDescription("Get information about the clan")
       .addBooleanOption((option) =>
         option
           .setName("public")
@@ -17,6 +17,11 @@ module.exports = {
   execute: async (_, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
-    await interaction.reply({ content: "TODO", ephemeral: !isPublic });
+    const content = `**The Last Citadel** (a.k.a TLC)
+
+TODO
+`;
+
+    await interaction.reply({ content, ephemeral: !isPublic });
   },
 };

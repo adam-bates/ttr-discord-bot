@@ -5,7 +5,7 @@ const {
 } = require("../services/runescape-api");
 const { connectRedisClient } = require("../services/redis");
 const { forEachAsyncOrdered } = require("../utils/promises");
-const { unixTimestamp, fromUnixTimestamp } = require("../utils/time");
+const { unixTimestamp, fromUnixTimestamp, dropTime } = require("../utils/time");
 
 const wait = promisify(setTimeout);
 
@@ -20,7 +20,7 @@ const expectedWeek = (timestamp) => {
     dayOfWeek = date.getDay();
   }
 
-  return unixTimestamp(new Date(date.toDateString()));
+  return unixTimestamp(dropTime(date));
 };
 
 const expectedYesterday = (timestamp) => {
@@ -28,12 +28,12 @@ const expectedYesterday = (timestamp) => {
 
   date.setDate(date.getDate() - 1);
 
-  return unixTimestamp(new Date(date.toDateString()));
+  return unixTimestamp(dropTime(date));
 };
 
 const expectedToday = (timestamp) => {
   const date = fromUnixTimestamp(timestamp);
-  return unixTimestamp(new Date(date.toDateString()));
+  return unixTimestamp(dropTime(date));
 };
 
 const fetchData = async ({ isWeekStart, isDayStart } = {}) => {

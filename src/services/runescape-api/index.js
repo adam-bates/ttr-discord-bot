@@ -178,16 +178,16 @@ const fetchPlayerStats = async (rsn) => {
   return stats;
 };
 
-const fetchPlayerProfile = async (rsn) => {};
+const fetchMonthlyPlayerStatsByRsn = async (rsn) => {};
 
-const fetchPlayerMonthlyXp = async (rsn) => {};
+const fetchPlayerProfile = async (rsn) => {};
 
 const fetchPlayerQuests = async (rsn) => {};
 
 module.exports = {
   fetchClanInfo,
   fetchPlayerStats,
+  fetchMonthlyPlayerStatsByRsn,
   fetchPlayerProfile,
-  fetchPlayerMonthlyXp,
   fetchPlayerQuests,
 };

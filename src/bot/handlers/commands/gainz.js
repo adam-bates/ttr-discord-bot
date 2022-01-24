@@ -1,5 +1,9 @@
 const fs = require("fs").promises;
 const path = require("path");
+const {
+  padStringToLength,
+  formatNumberToLength,
+} = require("../../../utils/format");
 
 const statKeys = [
   "overall",
@@ -45,16 +49,6 @@ const calculateGainz = ({ from, to }) =>
     }),
     {}
   );
-
-const alignToLength = (value, length, side = "left") => {
-  let output = `${value}`;
-
-  while (output.length < length) {
-    output = side === "right" ? ` ${output}` : `${output} `;
-  }
-
-  return output;
-};
 
 module.exports = {
   builder: (command) =>
@@ -176,98 +170,98 @@ module.exports = {
     switch (output && output.toLowerCase()) {
       case null:
       case "text": {
-        const f_rs_name = alignToLength(rsn, 12);
+        const f_rs_name = padStringToLength(rsn, 12);
         const formatted__utc___timestamp = gainz.timestamp;
 
-        const to_ovr = alignToLength(gainz.today.overall, 9, "right");
-        const to_att = alignToLength(gainz.today.attack, 9, "right");
-        const to_def = alignToLength(gainz.today.defence, 9, "right");
-        const to_str = alignToLength(gainz.today.strength, 9, "right");
-        const to_cst = alignToLength(gainz.today.constitution, 9, "right");
-        const to_rng = alignToLength(gainz.today.ranged, 9, "right");
-        const to_pry = alignToLength(gainz.today.prayer, 9, "right");
-        const to_mag = alignToLength(gainz.today.magic, 9, "right");
-        const to_cok = alignToLength(gainz.today.cooking, 9, "right");
-        const to_wod = alignToLength(gainz.today.woodcutting, 9, "right");
-        const to_fch = alignToLength(gainz.today.fletching, 9, "right");
-        const to_fsh = alignToLength(gainz.today.fishing, 9, "right");
-        const to_fir = alignToLength(gainz.today.firemaking, 9, "right");
-        const to_crf = alignToLength(gainz.today.crafting, 9, "right");
-        const to_smt = alignToLength(gainz.today.smithing, 9, "right");
-        const to_min = alignToLength(gainz.today.mining, 9, "right");
-        const to_hrb = alignToLength(gainz.today.herblore, 9, "right");
-        const to_agl = alignToLength(gainz.today.agility, 9, "right");
-        const to_thv = alignToLength(gainz.today.thieving, 9, "right");
-        const to_sly = alignToLength(gainz.today.slayer, 9, "right");
-        const to_frm = alignToLength(gainz.today.farming, 9, "right");
-        const to_rnc = alignToLength(gainz.today.runecrafting, 9, "right");
-        const to_hnt = alignToLength(gainz.today.hunter, 9, "right");
-        const to_con = alignToLength(gainz.today.construction, 9, "right");
-        const to_sum = alignToLength(gainz.today.summoning, 9, "right");
-        const to_dng = alignToLength(gainz.today.dungeoneering, 9, "right");
-        const to_div = alignToLength(gainz.today.divination, 9, "right");
-        const to_inv = alignToLength(gainz.today.invention, 9, "right");
-        const to_arc = alignToLength(gainz.today.archaeology, 9, "right");
+        const to_ovr = formatNumberToLength(gainz.today.overall, 9);
+        const to_att = formatNumberToLength(gainz.today.attack, 9);
+        const to_def = formatNumberToLength(gainz.today.defence, 9);
+        const to_str = formatNumberToLength(gainz.today.strength, 9);
+        const to_cst = formatNumberToLength(gainz.today.constitution, 9);
+        const to_rng = formatNumberToLength(gainz.today.ranged, 9);
+        const to_pry = formatNumberToLength(gainz.today.prayer, 9);
+        const to_mag = formatNumberToLength(gainz.today.magic, 9);
+        const to_cok = formatNumberToLength(gainz.today.cooking, 9);
+        const to_wod = formatNumberToLength(gainz.today.woodcutting, 9);
+        const to_fch = formatNumberToLength(gainz.today.fletching, 9);
+        const to_fsh = formatNumberToLength(gainz.today.fishing, 9);
+        const to_fir = formatNumberToLength(gainz.today.firemaking, 9);
+        const to_crf = formatNumberToLength(gainz.today.crafting, 9);
+        const to_smt = formatNumberToLength(gainz.today.smithing, 9);
+        const to_min = formatNumberToLength(gainz.today.mining, 9);
+        const to_hrb = formatNumberToLength(gainz.today.herblore, 9);
+        const to_agl = formatNumberToLength(gainz.today.agility, 9);
+        const to_thv = formatNumberToLength(gainz.today.thieving, 9);
+        const to_sly = formatNumberToLength(gainz.today.slayer, 9);
+        const to_frm = formatNumberToLength(gainz.today.farming, 9);
+        const to_rnc = formatNumberToLength(gainz.today.runecrafting, 9);
+        const to_hnt = formatNumberToLength(gainz.today.hunter, 9);
+        const to_con = formatNumberToLength(gainz.today.construction, 9);
+        const to_sum = formatNumberToLength(gainz.today.summoning, 9);
+        const to_dng = formatNumberToLength(gainz.today.dungeoneering, 9);
+        const to_div = formatNumberToLength(gainz.today.divination, 9);
+        const to_inv = formatNumberToLength(gainz.today.invention, 9);
+        const to_arc = formatNumberToLength(gainz.today.archaeology, 9);
 
-        const ye_ovr = alignToLength(gainz.yesterday.overall, 9, "right");
-        const ye_att = alignToLength(gainz.yesterday.attack, 9, "right");
-        const ye_def = alignToLength(gainz.yesterday.defence, 9, "right");
-        const ye_str = alignToLength(gainz.yesterday.strength, 9, "right");
-        const ye_cst = alignToLength(gainz.yesterday.constitution, 9, "right");
-        const ye_rng = alignToLength(gainz.yesterday.ranged, 9, "right");
-        const ye_pry = alignToLength(gainz.yesterday.prayer, 9, "right");
-        const ye_mag = alignToLength(gainz.yesterday.magic, 9, "right");
-        const ye_cok = alignToLength(gainz.yesterday.cooking, 9, "right");
-        const ye_wod = alignToLength(gainz.yesterday.woodcutting, 9, "right");
-        const ye_fch = alignToLength(gainz.yesterday.fletching, 9, "right");
-        const ye_fsh = alignToLength(gainz.yesterday.fishing, 9, "right");
-        const ye_fir = alignToLength(gainz.yesterday.firemaking, 9, "right");
-        const ye_crf = alignToLength(gainz.yesterday.crafting, 9, "right");
-        const ye_smt = alignToLength(gainz.yesterday.smithing, 9, "right");
-        const ye_min = alignToLength(gainz.yesterday.mining, 9, "right");
-        const ye_hrb = alignToLength(gainz.yesterday.herblore, 9, "right");
-        const ye_agl = alignToLength(gainz.yesterday.agility, 9, "right");
-        const ye_thv = alignToLength(gainz.yesterday.thieving, 9, "right");
-        const ye_sly = alignToLength(gainz.yesterday.slayer, 9, "right");
-        const ye_frm = alignToLength(gainz.yesterday.farming, 9, "right");
-        const ye_rnc = alignToLength(gainz.yesterday.runecrafting, 9, "right");
-        const ye_hnt = alignToLength(gainz.yesterday.hunter, 9, "right");
-        const ye_con = alignToLength(gainz.yesterday.construction, 9, "right");
-        const ye_sum = alignToLength(gainz.yesterday.summoning, 9, "right");
-        const ye_dng = alignToLength(gainz.yesterday.dungeoneering, 9, "right");
-        const ye_div = alignToLength(gainz.yesterday.divination, 9, "right");
-        const ye_inv = alignToLength(gainz.yesterday.invention, 9, "right");
-        const ye_arc = alignToLength(gainz.yesterday.archaeology, 9, "right");
+        const ye_ovr = formatNumberToLength(gainz.yesterday.overall, 9);
+        const ye_att = formatNumberToLength(gainz.yesterday.attack, 9);
+        const ye_def = formatNumberToLength(gainz.yesterday.defence, 9);
+        const ye_str = formatNumberToLength(gainz.yesterday.strength, 9);
+        const ye_cst = formatNumberToLength(gainz.yesterday.constitution, 9);
+        const ye_rng = formatNumberToLength(gainz.yesterday.ranged, 9);
+        const ye_pry = formatNumberToLength(gainz.yesterday.prayer, 9);
+        const ye_mag = formatNumberToLength(gainz.yesterday.magic, 9);
+        const ye_cok = formatNumberToLength(gainz.yesterday.cooking, 9);
+        const ye_wod = formatNumberToLength(gainz.yesterday.woodcutting, 9);
+        const ye_fch = formatNumberToLength(gainz.yesterday.fletching, 9);
+        const ye_fsh = formatNumberToLength(gainz.yesterday.fishing, 9);
+        const ye_fir = formatNumberToLength(gainz.yesterday.firemaking, 9);
+        const ye_crf = formatNumberToLength(gainz.yesterday.crafting, 9);
+        const ye_smt = formatNumberToLength(gainz.yesterday.smithing, 9);
+        const ye_min = formatNumberToLength(gainz.yesterday.mining, 9);
+        const ye_hrb = formatNumberToLength(gainz.yesterday.herblore, 9);
+        const ye_agl = formatNumberToLength(gainz.yesterday.agility, 9);
+        const ye_thv = formatNumberToLength(gainz.yesterday.thieving, 9);
+        const ye_sly = formatNumberToLength(gainz.yesterday.slayer, 9);
+        const ye_frm = formatNumberToLength(gainz.yesterday.farming, 9);
+        const ye_rnc = formatNumberToLength(gainz.yesterday.runecrafting, 9);
+        const ye_hnt = formatNumberToLength(gainz.yesterday.hunter, 9);
+        const ye_con = formatNumberToLength(gainz.yesterday.construction, 9);
+        const ye_sum = formatNumberToLength(gainz.yesterday.summoning, 9);
+        const ye_dng = formatNumberToLength(gainz.yesterday.dungeoneering, 9);
+        const ye_div = formatNumberToLength(gainz.yesterday.divination, 9);
+        const ye_inv = formatNumberToLength(gainz.yesterday.invention, 9);
+        const ye_arc = formatNumberToLength(gainz.yesterday.archaeology, 9);
 
-        const wk_ovr = alignToLength(gainz.week.overall, 9, "right");
-        const wk_att = alignToLength(gainz.week.attack, 9, "right");
-        const wk_def = alignToLength(gainz.week.defence, 9, "right");
-        const wk_str = alignToLength(gainz.week.strength, 9, "right");
-        const wk_cst = alignToLength(gainz.week.constitution, 9, "right");
-        const wk_rng = alignToLength(gainz.week.ranged, 9, "right");
-        const wk_pry = alignToLength(gainz.week.prayer, 9, "right");
-        const wk_mag = alignToLength(gainz.week.magic, 9, "right");
-        const wk_cok = alignToLength(gainz.week.cooking, 9, "right");
-        const wk_wod = alignToLength(gainz.week.woodcutting, 9, "right");
-        const wk_fch = alignToLength(gainz.week.fletching, 9, "right");
-        const wk_fsh = alignToLength(gainz.week.fishing, 9, "right");
-        const wk_fir = alignToLength(gainz.week.firemaking, 9, "right");
-        const wk_crf = alignToLength(gainz.week.crafting, 9, "right");
-        const wk_smt = alignToLength(gainz.week.smithing, 9, "right");
-        const wk_min = alignToLength(gainz.week.mining, 9, "right");
-        const wk_hrb = alignToLength(gainz.week.herblore, 9, "right");
-        const wk_agl = alignToLength(gainz.week.agility, 9, "right");
-        const wk_thv = alignToLength(gainz.week.thieving, 9, "right");
-        const wk_sly = alignToLength(gainz.week.slayer, 9, "right");
-        const wk_frm = alignToLength(gainz.week.farming, 9, "right");
-        const wk_rnc = alignToLength(gainz.week.runecrafting, 9, "right");
-        const wk_hnt = alignToLength(gainz.week.hunter, 9, "right");
-        const wk_con = alignToLength(gainz.week.construction, 9, "right");
-        const wk_sum = alignToLength(gainz.week.summoning, 9, "right");
-        const wk_dng = alignToLength(gainz.week.dungeoneering, 9, "right");
-        const wk_div = alignToLength(gainz.week.divination, 9, "right");
-        const wk_inv = alignToLength(gainz.week.invention, 9, "right");
-        const wk_arc = alignToLength(gainz.week.archaeology, 9, "right");
+        const wk_ovr = formatNumberToLength(gainz.week.overall, 9);
+        const wk_att = formatNumberToLength(gainz.week.attack, 9);
+        const wk_def = formatNumberToLength(gainz.week.defence, 9);
+        const wk_str = formatNumberToLength(gainz.week.strength, 9);
+        const wk_cst = formatNumberToLength(gainz.week.constitution, 9);
+        const wk_rng = formatNumberToLength(gainz.week.ranged, 9);
+        const wk_pry = formatNumberToLength(gainz.week.prayer, 9);
+        const wk_mag = formatNumberToLength(gainz.week.magic, 9);
+        const wk_cok = formatNumberToLength(gainz.week.cooking, 9);
+        const wk_wod = formatNumberToLength(gainz.week.woodcutting, 9);
+        const wk_fch = formatNumberToLength(gainz.week.fletching, 9);
+        const wk_fsh = formatNumberToLength(gainz.week.fishing, 9);
+        const wk_fir = formatNumberToLength(gainz.week.firemaking, 9);
+        const wk_crf = formatNumberToLength(gainz.week.crafting, 9);
+        const wk_smt = formatNumberToLength(gainz.week.smithing, 9);
+        const wk_min = formatNumberToLength(gainz.week.mining, 9);
+        const wk_hrb = formatNumberToLength(gainz.week.herblore, 9);
+        const wk_agl = formatNumberToLength(gainz.week.agility, 9);
+        const wk_thv = formatNumberToLength(gainz.week.thieving, 9);
+        const wk_sly = formatNumberToLength(gainz.week.slayer, 9);
+        const wk_frm = formatNumberToLength(gainz.week.farming, 9);
+        const wk_rnc = formatNumberToLength(gainz.week.runecrafting, 9);
+        const wk_hnt = formatNumberToLength(gainz.week.hunter, 9);
+        const wk_con = formatNumberToLength(gainz.week.construction, 9);
+        const wk_sum = formatNumberToLength(gainz.week.summoning, 9);
+        const wk_dng = formatNumberToLength(gainz.week.dungeoneering, 9);
+        const wk_div = formatNumberToLength(gainz.week.divination, 9);
+        const wk_inv = formatNumberToLength(gainz.week.invention, 9);
+        const wk_arc = formatNumberToLength(gainz.week.archaeology, 9);
 
         const tod = gainz.today.late ? "TODAY*" : "TODAY ";
         const yesterd = gainz.yesterday.late ? "YESTERDAY*" : "YESTERDAY ";

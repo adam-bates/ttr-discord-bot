@@ -15,7 +15,8 @@ module.exports = {
   execute: async (_, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
-    const content = `\`\`\`
+    const content =
+      `\`\`\`
 Custom Discord Bot for the Runescape clan: The Last Citadel
 
 - All commands are accessed using /tlc
@@ -23,6 +24,9 @@ Custom Discord Bot for the Runescape clan: The Last Citadel
 
 Ping the bot to ensure it's ready:
 - /tlc ping
+
+Display this help message:
+- /tlc help
 
 Assigning RSN to Discord user:
 - /tlc setrsn
@@ -33,14 +37,14 @@ Assigning RSN to Discord user:
 
 Get player information:
 - /tlc gainz
-- /tlc stats
+- /tlc stats` +
+      /*
 - /tlc log (Planned)
 - /tlc quests (Planned)
 
 Get clan information:
-- /tlc info (Planned)
+- /tlc clan (Planned)
 - /tlc members (Planned)
-- /tlc citadel (Planned)
 
 Creating & comparing snapshots of levels & xp
 - /tlc snapshots (Planned)
@@ -52,7 +56,7 @@ Creating & interacting with events:
 - /tlc events (Planned)
 
 Creating & interacting with voting polls:
-- /tlc polls (Planned)
+- /tlc polls (Planned) */ `
 
 Assigning custom roles at an MEE6 level:
 - /tlc setrole
