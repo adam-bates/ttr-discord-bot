@@ -260,10 +260,13 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       let isLateYesterday = false;
       let isLateToday = false;
 
+      // 10 minutes
+      const TIME_BUFFER = 10 * 60;
+
       if (!isWeekStart) {
         const week = await redis.getWeekStatsByRsn(player.rsn);
 
-        if (!week || week.timestamp < expectedWeek(timestamp)) {
+        if (!week || expectedWeek(timestamp) - week.timestamp > TIME_BUFFER) {
           isLateWeek = true;
         }
       }
@@ -271,16 +274,25 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       const today = await redis.getTodayStatsByRsn(player.rsn);
 
       if (!isDayStart) {
-        if (!today || today.timestamp < expectedToday(timestamp)) {
+        if (
+          !today ||
+          expectedToday(timestamp) - today.timestamp > TIME_BUFFER
+        ) {
           isLateToday = true;
         }
 
         const yesterday = await redis.getYesterdayStatsByRsn(player.rsn);
 
-        if (!yesterday || yesterday.timestamp < expectedYesterday(timestamp)) {
+        if (
+          !yesterday ||
+          expectedYesterday(timestamp) - yesterday.timestamp > TIME_BUFFER
+        ) {
           isLateYesterday = true;
         }
-      } else if (!today || today.timestamp < expectedYesterday(timestamp)) {
+      } else if (
+        !today ||
+        expectedYesterday(timestamp) - today.timestamp > TIME_BUFFER
+      ) {
         // if `isDayStart`, then `today` actually represents yesterday
         isLateYesterday = true;
       }
