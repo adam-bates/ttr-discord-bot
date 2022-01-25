@@ -41,10 +41,11 @@ Get player information:
 - /tlc stats`;
     /*
 - /tlc log (Planned)
-- /tlc quests (Planned)
+- /tlc quests (Planned) */
+    content += `
 
 Get clan information:
-- /tlc clan (Planned)
+- /tlc clan (Planned)`; /*
 - /tlc members (Planned)
 
 Creating & comparing snapshots of levels & xp
