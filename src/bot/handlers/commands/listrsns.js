@@ -34,28 +34,34 @@ module.exports = {
         const user = await guild.members.fetch(userId);
         if (user) {
           map.set(rsn, user);
-        } else {
-          map.set(rsn, { userId, isId: true });
         }
-      } else {
-        map.set(rsn, { userId, isId: true });
       }
     });
     await Promise.all(promises);
 
-    let isEmpty = true;
+    let count = 0;
+    let isTooBig = false;
+
+    const tooBigMessageLength = `\nAnd ${map.size} more ...`.length;
+
     let content = "Assigned RSNs:";
 
     map.forEach((user, rsn) => {
-      isEmpty = false;
-      if (user.isId) {
-        content = `${content}\n- User with ID ${user.userId} is assigned to RSN: ${rsn}`;
-      } else {
-        content = `${content}\n- ${user} is assigned to RSN: ${rsn}`;
+      const nextLine = `\n- ${user} is assigned to RSN: ${rsn}`;
+
+      isTooBig = content.length + nextLine.length + tooBigMessageLength > 2000;
+
+      if (!isTooBig) {
+        count += 1;
+        content += nextLine;
       }
     });
 
-    if (isEmpty) {
+    if (isTooBig) {
+      content += `\nAnd ${map.size - count} more ...`;
+    }
+
+    if (count === 0) {
       await interaction.reply({
         content: "No users have been assigned to any RSNs.",
         ephemeral: !isPublic,
