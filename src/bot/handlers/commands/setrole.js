@@ -33,7 +33,7 @@ module.exports = {
 
     if (parseInt(level, 10) < 1) {
       await interaction.reply({
-        content: "Error: Level cannot be less than 1",
+        content: "Error! Level cannot be less than 1.",
         ephemeral: true,
       });
       return;
@@ -50,7 +50,7 @@ module.exports = {
         await redis.setRoleIdByLevel(level, role.id);
 
         await interaction.reply({
-          content: `Successfully assigned ${role} to level ${level}`,
+          content: `Successfully assigned ${role} to level ${level}.`,
           ephemeral: !isPublic,
         });
         return;
@@ -59,10 +59,10 @@ module.exports = {
       await redis.setRoleIdByLevel(level, role.id);
 
       if (!interaction.guildId) {
-        console.error("Error: No guild found");
+        console.error("Error! No guild found.");
 
         await interaction.reply({
-          content: `Replaced previous role with ${role} at level ${level}`,
+          content: `Replaced previous role with ${role} at level ${level}.`,
           ephemeral: !isPublic,
         });
         return;
@@ -70,10 +70,10 @@ module.exports = {
 
       const guild = await client.guilds.cache.get(interaction.guildId);
       if (!guild) {
-        console.error(`Error: Couldn't find guild with ID: ${guild.guildId}`);
+        console.error(`Error! Couldn't find guild with ID ${guild.guildId}.`);
 
         await interaction.reply({
-          content: `Replaced previous role with ${role} at level ${level}`,
+          content: `Replaced previous role with ${role} at level ${level}.`,
           ephemeral: !isPublic,
         });
         return;
@@ -81,17 +81,17 @@ module.exports = {
 
       const oldRole = await guild.roles.cache.get(oldRoleId);
       if (!oldRole) {
-        console.error(`Error: Couldn't find role with ID: ${oldRoleId}`);
+        console.error(`Error! Couldn't find role with ID ${oldRoleId}.`);
 
         await interaction.reply({
-          content: `Replaced previous role with ${role} at level ${level}`,
+          content: `Replaced previous role with ${role} at level ${level}.`,
           ephemeral: !isPublic,
         });
         return;
       }
 
       await interaction.reply({
-        content: `Successfully replaced ${oldRole} with ${role} at level ${level}`,
+        content: `Successfully replaced ${oldRole} with ${role} at level ${level}.`,
         ephemeral: !isPublic,
       });
     } else {
@@ -110,17 +110,17 @@ module.exports = {
 
       if (!oldRoleId || oldRoleId === role.id) {
         await interaction.reply({
-          content: `Successfully moved ${role} from level ${oldLevel} to level ${level}`,
+          content: `Successfully moved ${role} from level ${oldLevel} to level ${level}.`,
           ephemeral: !isPublic,
         });
         return;
       }
 
       if (!interaction.guildId) {
-        console.error("Error: No guild found");
+        console.error("Error! No guild found.");
 
         await interaction.reply({
-          content: `Moved ${role} from level ${oldLevel} to level ${level}, replacing previous role`,
+          content: `Moved ${role} from level ${oldLevel} to level ${level}, replacing previous role.`,
           ephemeral: !isPublic,
         });
         return;
@@ -128,10 +128,10 @@ module.exports = {
 
       const guild = await client.guilds.cache.get(interaction.guildId);
       if (!guild) {
-        console.error(`Error: Couldn't find guild with ID: ${guild.guildId}`);
+        console.error(`Error! Couldn't find guild with ID ${guild.guildId}.`);
 
         await interaction.reply({
-          content: `Moved ${role} from level ${oldLevel} to level ${level}, replacing previous role`,
+          content: `Moved ${role} from level ${oldLevel} to level ${level}, replacing previous role.`,
           ephemeral: !isPublic,
         });
         return;
@@ -139,17 +139,17 @@ module.exports = {
 
       const oldRole = await guild.roles.cache.get(oldRoleId);
       if (!oldRole) {
-        console.error(`Error: Couldn't find role with ID: ${oldRoleId}`);
+        console.error(`Error! Couldn't find role with ID ${oldRoleId}.`);
 
         await interaction.reply({
-          content: `Moved ${role} from level ${oldLevel} to level ${level}, replacing previous role`,
+          content: `Moved ${role} from level ${oldLevel} to level ${level}, replacing previous role.`,
           ephemeral: !isPublic,
         });
         return;
       }
 
       await interaction.reply({
-        content: `Successfully moved ${role} from level ${oldLevel} to level ${level}, replacing ${oldRole}`,
+        content: `Successfully moved ${role} from level ${oldLevel} to level ${level}, replacing ${oldRole}.`,
         ephemeral: !isPublic,
       });
     }

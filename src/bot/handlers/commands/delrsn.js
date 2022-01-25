@@ -13,14 +13,6 @@ module.exports = {
       )
       .addBooleanOption((option) =>
         option
-          .setName("force")
-          .setDescription(
-            "Force the change, even if the RSN is already assigned to another target"
-          )
-          .setRequired(false)
-      )
-      .addBooleanOption((option) =>
-        option
           .setName("public")
           .setDescription(
             "Make the output of this command public to the server"
@@ -53,20 +45,10 @@ module.exports = {
       return;
     }
 
-    const force = interaction.options.getBoolean("force");
-
-    if (!force) {
-      await interaction.reply({
-        content: `Error: User ${target} is assigned to RSN: ${rsn}. Use the force option to override this.`,
-        ephemeral: true,
-      });
-      return;
-    }
-
     await redis.deleteRsnByUserId(target.id);
 
     await interaction.reply({
-      content: `Removed RSN assignment from: ${target}`,
+      content: `Successfully unassigned ${target} from RSN: ${rsn}.`,
       ephemeral: !isPublic,
     });
   },

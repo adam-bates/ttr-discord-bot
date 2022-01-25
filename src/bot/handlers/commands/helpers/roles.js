@@ -1,4 +1,4 @@
-const isMasterUser = async (client, interaction) => {
+const isMasterUser = async (client, interaction, shouldReply = true) => {
   if (!interaction.guildId) {
     await interaction.reply({
       content: `Error: Protected commands must be run within a server`,
@@ -19,9 +19,9 @@ const isMasterUser = async (client, interaction) => {
     (r) => process.env.MASTER_ROLE_ID === r.id
   );
 
-  if (!isMaster) {
+  if (!isMaster && shouldReply) {
     await interaction.reply({
-      content: "Error: Invalid permissions!",
+      content: "Error! Invalid permissions.",
       ephemeral: true,
     });
   }

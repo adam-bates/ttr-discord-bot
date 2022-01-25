@@ -30,11 +30,18 @@ module.exports = {
     });
     await Promise.all(promises);
 
-    let content = "**Known RSNs:**";
+    if (map.size === 0) {
+      await interaction.reply({
+        content: "No users have been assigned to any RSNs.",
+        ephemeral: !isPublic,
+      });
+    }
+
+    let content = "Assigned RSNs:";
 
     map.forEach((user, rsn) => {
       if (user) {
-        content = `${content}\n${user}: ${rsn}`;
+        content = `${content}\n- ${user} is assigned to RSN: ${rsn}`;
       }
     });
 

@@ -27,12 +27,12 @@ module.exports = {
 
     if (rsn) {
       await interaction.reply({
-        content: `${user} is assigned to RSN: ${rsn}`,
+        content: `${user} is assigned to RSN: ${rsn}.`,
         ephemeral: !isPublic,
       });
     } else {
       await interaction.reply({
-        content: `${user} has no assigned RSN.`,
+        content: `${user} has no assigned RSN.\n\nYou can use the command \`/tlc setrsn\` to assign your Discord user to your Runescape name.`,
         ephemeral: !isPublic,
       });
     }

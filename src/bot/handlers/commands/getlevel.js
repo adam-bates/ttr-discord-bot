@@ -24,14 +24,14 @@ module.exports = {
 
     if (!roleLevel) {
       await interaction.reply({
-        content: `${role} is not assigned at any level`,
+        content: `${role} is not assigned at any level.`,
         ephemeral: true,
       });
       return;
     }
 
     await interaction.reply({
-      content: `${role} is assigned at level ${roleLevel}`,
+      content: `${role} is assigned at level ${roleLevel}.`,
       ephemeral: !isPublic,
     });
   },

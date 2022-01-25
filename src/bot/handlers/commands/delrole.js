@@ -27,7 +27,7 @@ module.exports = {
 
     if (parseInt(level, 10) < 1) {
       await interaction.reply({
-        content: "Error: Level cannot be less than 1",
+        content: "Error! Level cannot be less than 1.",
         ephemeral: true,
       });
       return;
@@ -47,7 +47,7 @@ module.exports = {
 
     if (!interaction.guildId) {
       await interaction.reply({
-        content: `Error: No guild found`,
+        content: `Error! No guild found!`,
         ephemeral: true,
       });
       return;
@@ -55,7 +55,7 @@ module.exports = {
 
     const guild = await client.guilds.cache.get(interaction.guildId);
     if (!guild) {
-      console.error(`Error: Couldn't find guild with ID: ${guild.guildId}`);
+      console.error(`Error! Couldn't find guild with ID ${guild.guildId}.`);
 
       await interaction.reply({
         content: `Removed previous role from level ${level}.`,
@@ -66,7 +66,7 @@ module.exports = {
 
     const oldRole = await guild.roles.cache.get(oldRoleId);
     if (!oldRole) {
-      console.error(`Error: Couldn't find role with ID: ${oldRoleId}`);
+      console.error(`Error! Couldn't find role with ID ${oldRoleId}.`);
 
       await interaction.reply({
         content: `Removed previous role from level ${level}.`,

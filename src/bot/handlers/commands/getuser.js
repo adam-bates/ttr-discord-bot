@@ -30,7 +30,7 @@ module.exports = {
 
     if (!rsn) {
       await interaction.reply({
-        content: `Error: Couldn't find RSN ${requestedRsn} in the clan: ${process.env.CLAN_NAME}`,
+        content: `Error! Couldn't find RSN ${requestedRsn} in ${process.env.CLAN_NAME}.`,
         ephemeral: true,
       });
       return;
@@ -40,7 +40,7 @@ module.exports = {
 
     if (!userId) {
       await interaction.reply({
-        content: `RSN ${rsn} has no assigned User.`,
+        content: `There is no user assigned to RSN: ${rsn}.\n\nYou can use the command \`/tlc setrsn\` to assign your Discord user to your Runescape name.`,
         ephemeral: !isPublic,
       });
       return;
@@ -50,12 +50,12 @@ module.exports = {
 
     if (user) {
       await interaction.reply({
-        content: `RSN ${rsn} is assigned to: ${user}`,
+        content: `${user} is assigned to RSN: ${rsn}.`,
         ephemeral: !isPublic,
       });
     } else {
       await interaction.reply({
-        content: `RSN ${rsn} is assigned to User with ID: ${userId}`,
+        content: `User with ID ${userId} is assign to RSN: ${rsn}.`,
         ephemeral: !isPublic,
       });
     }

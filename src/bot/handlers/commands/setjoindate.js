@@ -34,7 +34,7 @@ module.exports = {
 
     if (Number.isNaN(requestedDate.getTime())) {
       await interaction.reply({
-        content: "Error: Invalid date",
+        content: "Error! Invalid date.",
         ephemeral: true,
       });
       return;
@@ -62,7 +62,7 @@ module.exports = {
 
     if (!rsn) {
       await interaction.reply({
-        content: `Error: Couldn't find RSN ${requestedRsn} in the clan: ${process.env.CLAN_NAME}`,
+        content: `Error! Couldn't find RSN: ${requestedRsn} in ${process.env.CLAN_NAME}.`,
       });
       return;
     }
@@ -72,7 +72,7 @@ module.exports = {
     const utcDate = date.toUTCString().substring(0, 16);
 
     await interaction.reply({
-      content: `Successfully set join date for RSN ${rsn} to: ${utcDate}`,
+      content: `Successfully set join-date for RSN: ${rsn} to ${utcDate}`,
       ephemeral: !isPublic,
     });
   }),

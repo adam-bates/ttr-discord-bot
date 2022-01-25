@@ -141,7 +141,7 @@ module.exports = {
 
       if (!rsn) {
         await interaction.reply({
-          content: `Error: RSN ${requestedRsn} is not in the clan: ${process.env.CLAN_NAME}`,
+          content: `Error! RSN: ${requestedRsn} is not in ${process.env.CLAN_NAME}.`,
           ephemeral: true,
         });
         return;
@@ -155,7 +155,7 @@ module.exports = {
 
       if (rsn && rsn.toLowerCase() !== userRsn.toLowerCase()) {
         await interaction.reply({
-          content: `Error: RSN ${rsn} is not assigned to: ${user}`,
+          content: `Error! ${user} is not assigned to RSN: ${rsn}`,
           ephemeral: true,
         });
         return;
@@ -169,7 +169,7 @@ module.exports = {
 
     if (!rsn) {
       await interaction.reply({
-        content: `Error: ${user} has no assigned RSN`,
+        content: `${user} has no assigned RSN.\n\nYou can pass in an RSN instead, or use the command \`/tlc setrsn\` to assign a Discord user to a Runescape name.`,
         ephemeral: true,
       });
       return;

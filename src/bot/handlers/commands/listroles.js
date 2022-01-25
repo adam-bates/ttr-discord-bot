@@ -17,7 +17,7 @@ module.exports = {
 
     if (!interaction.guildId) {
       await interaction.reply({
-        content: `Error: No guild found`,
+        content: `Error! No guild found!`,
         ephemeral: true,
       });
       return;
@@ -26,7 +26,7 @@ module.exports = {
     const guild = await client.guilds.cache.get(interaction.guildId);
     if (!guild) {
       await interaction.reply({
-        content: `Error: Couldn't find guild with ID: ${interaction.guildId}`,
+        content: `Error! Couldn't find guild with ID ${interaction.guildId}.`,
         ephemeral: true,
       });
       return;
@@ -36,7 +36,7 @@ module.exports = {
 
     if (assignments.length === 0) {
       await interaction.reply({
-        content: `No roles have been assigned to any levels`,
+        content: `No roles have been assigned to any levels.`,
         ephemeral: !isPublic,
       });
       return;
@@ -60,7 +60,7 @@ module.exports = {
 
     if (failedRoleIds.length > 0) {
       await interaction.reply({
-        content: `Error: Couldn't find roles with IDs: ${failedRoleIds}`,
+        content: `Error! Couldn't find roles with IDs ${failedRoleIds}.`,
         ephemeral: true,
       });
       return;
@@ -69,7 +69,7 @@ module.exports = {
     const content = assignments.reduce(
       (output, assignment) =>
         `${output}\n- ${assignment.role} is assigned at level ${assignment.level}`,
-      "Level-role assignments:"
+      "Assigned Roles:"
     );
 
     await interaction.reply({ content, ephemeral: !isPublic });

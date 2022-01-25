@@ -43,6 +43,18 @@ module.exports = {
       ),
 
   execute: async ({ client, redis }, interaction) => {
+    const forceTarget = interaction.options.getBoolean("force-target");
+    const forceRsn = interaction.options.getBoolean("force-rsn");
+    const isMaster = await isMasterUser(client, interaction, false);
+
+    if (!isMaster && (forceTarget || forceRsn)) {
+      await interaction.reply({
+        content: `Error! Invalid permissions. You cannot use the force options.`,
+        ephemeral: true,
+      });
+      return;
+    }
+
     const isPublic = interaction.options.getBoolean("public");
 
     const requestedRsn = interaction.options.getString("rsn");
@@ -54,7 +66,7 @@ module.exports = {
 
     if (!rsn) {
       await interaction.reply({
-        content: `Error: Couldn't find RSN ${requestedRsn} in the clan: ${process.env.CLAN_NAME}`,
+        content: `Error! Couldn't find RSN: ${requestedRsn} in ${process.env.CLAN_NAME}.`,
         ephemeral: true,
       });
       return;
@@ -63,9 +75,11 @@ module.exports = {
     let target = interaction.options.getUser("target");
 
     if (target) {
-      const isMaster = await isMasterUser(client, interaction);
-
       if (!isMaster) {
+        await interaction.reply({
+          content: `Error! Invalid permissions. You can only set a RSN for yourself.`,
+          ephemeral: true,
+        });
         return;
       }
     } else {
@@ -82,11 +96,9 @@ module.exports = {
         return;
       }
 
-      const forceTarget = interaction.options.getBoolean("force-target");
-
       if (!forceTarget) {
         await interaction.reply({
-          content: `Error: ${target} is already assigned to RSN: ${targetCurrentRsn}`,
+          content: `Error! ${target} is already assigned to RSN: ${targetCurrentRsn}. Use the option \`force-target\` to override this.`,
           ephemeral: true,
         });
         return;
@@ -97,18 +109,16 @@ module.exports = {
     const rsnCurrentTarget = await client.users.cache.get(rsnCurrentTargetId);
 
     if (rsnCurrentTargetId) {
-      const forceRsn = interaction.options.getBoolean("force-rsn");
-
       if (!forceRsn) {
         if (rsnCurrentTarget) {
           await interaction.reply({
-            content: `Error: RSN ${rsn} is already assigned to: ${rsnCurrentTarget}`,
+            content: `Error! ${rsnCurrentTarget} is already assigned to RSN: ${rsn}. Use the option \`force-rsn\` to override this.`,
           });
           return;
         }
 
         await interaction.reply({
-          content: `Error: RSN ${rsn} is already assigned to User with ID: ${rsnCurrentTargetId}`,
+          content: `Error! User with ID ${rsnCurrentTargetId} is already assigned to RSN: ${rsn}. Use the option \`force-rsn\` to override this.`,
         });
         return;
       }
@@ -117,7 +127,7 @@ module.exports = {
     await redis.setRsnByUserId(target.id, rsn);
 
     await interaction.reply({
-      content: `Assigned RSN ${rsn} to: ${target}`,
+      content: `Successfully assigned ${target} to RSN: ${rsn}.`,
       ephemeral: !isPublic,
     });
   },
