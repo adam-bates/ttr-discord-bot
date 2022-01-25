@@ -106,7 +106,7 @@ module.exports = {
     }
 
     const rsnCurrentTargetId = await redis.searchForUserIdWithRsn(rsn);
-    const rsnCurrentTarget = await client.users.cache.get(rsnCurrentTargetId);
+    const rsnCurrentTarget = await client.users.fetch(rsnCurrentTargetId);
 
     if (rsnCurrentTargetId) {
       if (!forceRsn) {

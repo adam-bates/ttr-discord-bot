@@ -46,7 +46,7 @@ module.exports = {
       return;
     }
 
-    const user = await client.users.cache.get(userId);
+    const user = await client.users.fetch(userId);
 
     if (user) {
       await interaction.reply({

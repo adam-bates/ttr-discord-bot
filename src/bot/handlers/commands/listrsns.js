@@ -22,10 +22,14 @@ module.exports = {
       const userId = await redis.searchForUserIdWithRsn(rsn);
 
       if (userId) {
-        const user = await client.users.cache.get(userId);
-        map.set(rsn, user);
+        const user = await client.users.fetch(userId);
+        if (user) {
+          map.set(rsn, user);
+        } else {
+          map.set(rsn, { userId, isId: true });
+        }
       } else {
-        map.set(rsn, null);
+        map.set(rsn, { userId, isId: true });
       }
     });
     await Promise.all(promises);
@@ -34,8 +38,10 @@ module.exports = {
     let content = "Assigned RSNs:";
 
     map.forEach((user, rsn) => {
-      if (user) {
-        isEmpty = false;
+      isEmpty = false;
+      if (user.isId) {
+        content = `${content}\n- User with ID ${user.userId} is assigned to RSN: ${rsn}`;
+      } else {
         content = `${content}\n- ${user} is assigned to RSN: ${rsn}`;
       }
     });
