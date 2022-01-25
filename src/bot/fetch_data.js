@@ -172,23 +172,11 @@ const determineRenames = async ({ redis, removedPlayers, addedPlayers }) => {
           .every(([key, value]) => {
             const buffer = getRenameStatBuffer(key, value);
 
-            console.log({
-              key,
-              value,
-              cmp: addedRsnStats[key],
-              buffer,
-              result:
-                value <= addedRsnStats[key] &&
-                (!buffer || value >= addedRsnStats[key] + buffer),
-            });
-
             return (
               value <= addedRsnStats[key] &&
               (!buffer || value >= addedRsnStats[key] + buffer)
             );
           });
-
-        console.log(match);
 
         return match;
       }

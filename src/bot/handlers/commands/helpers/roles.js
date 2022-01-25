@@ -1,7 +1,7 @@
 const isMasterUser = async (client, interaction) => {
   if (!interaction.guildId) {
     await interaction.reply({
-      content: `Error: No guild found`,
+      content: `Error: Protected commands must be run within a server`,
       ephemeral: true,
     });
     return false;

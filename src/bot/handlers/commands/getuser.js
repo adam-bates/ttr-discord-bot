@@ -21,16 +21,16 @@ module.exports = {
   execute: async ({ client, redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
-    const requestedRsn = interaction.options.getString("rsn").toLowerCase();
+    const requestedRsn = interaction.options.getString("rsn");
     const clanRsns = JSON.parse(await redis.get("GetAllRsns")) || [];
 
     const rsn = clanRsns.find(
-      (clannie) => clannie.toLowerCase() === requestedRsn
+      (clannie) => clannie.toLowerCase() === requestedRsn.toLowerCase()
     );
 
     if (!rsn) {
       await interaction.reply({
-        content: `Error: RSN ${requestedRsn} is not in the clan: ${process.env.CLAN_NAME}`,
+        content: `Error: Couldn't find RSN ${requestedRsn} in the clan: ${process.env.CLAN_NAME}`,
         ephemeral: true,
       });
       return;

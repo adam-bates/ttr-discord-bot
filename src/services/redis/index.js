@@ -27,6 +27,9 @@ const Redis = (client) => {
   const getAllPlayers = async () =>
     parse(await client.get(GET_ALL_PLAYERS)) || [];
 
+  const unsafeSetAllPlayers = async (players) =>
+    client.set(key(GET_ALL_PLAYERS), stringify(players));
+
   const getAllRsns = async () => (await getAllPlayers()).map(({ rsn }) => rsn);
 
   const getRsnByUserId = async (userId) => client.get(key(GET_RSN, userId));
@@ -198,6 +201,7 @@ const Redis = (client) => {
   };
 
   client.getAllPlayers = getAllPlayers;
+  client.unsafeSetAllPlayers = unsafeSetAllPlayers;
   client.getAllRsns = getAllRsns;
   client.updatePlayers = updatePlayers;
   client.getRsnByUserId = getRsnByUserId;

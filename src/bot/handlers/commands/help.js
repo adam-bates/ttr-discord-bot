@@ -40,27 +40,28 @@ Get player information:
 - /tlc gainz
 - /tlc stats`;
     /*
-- /tlc log (Planned)
-- /tlc quests (Planned) */
-    content += `
-
-Get clan information:
-- /tlc clan (Planned)`; /*
-- /tlc members (Planned)
+- /tlc log
+- /tlc quests
 
 Creating & comparing snapshots of levels & xp
-- /tlc snapshots (Planned)
+- /tlc snapshots
 
 Creating & interacting with raffles:
-- /tlc raffles (Planned)
+- /tlc raffles
 
 Creating & interacting with events:
-- /tlc events (Planned)
+- /tlc events
 
 Creating & interacting with voting polls:
-- /tlc polls (Planned) */
+- /tlc polls */
 
     if (!isPublic && isMasterUser(client, interaction)) {
+      content += `
+
+Get clan information:
+- /tlc clan`; /*
+- /tlc members */
+
       content += `
 
 Assigning custom roles at an MEE6 level:
@@ -70,6 +71,13 @@ Assigning custom roles at an MEE6 level:
 - /tlc getlevel
 - /tlc listroles`;
     } else {
+      content += `
+
+Clan information:
+- /tlc clan
+- /tlc setjoindate`; /*
+- /tlc members */
+
       content += `
 
 Get custom roles for MEE6 levels:
