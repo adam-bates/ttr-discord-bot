@@ -93,7 +93,7 @@ const calculateGainz = ({ from, to }) =>
             levelClass:
               !from[key].level || !to[key].level ? "-" : getClass(level),
             rank: !from[key].rank || !to[key].rank ? "-" : formatDiff(rank),
-            rankClass: !from[key].rank || !to[key].rank ? "-" : getClass(rank),
+            rankClass: !from[key].rank || !to[key].rank ? "-" : getClass(-rank),
           };
 
     return { ...gainz, [key]: gain };
