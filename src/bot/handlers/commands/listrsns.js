@@ -22,7 +22,16 @@ module.exports = {
       const userId = await redis.searchForUserIdWithRsn(rsn);
 
       if (userId) {
-        const user = await client.users.fetch(userId);
+        const guild = await client.guilds.fetch(interaction.guildId);
+        if (!guild) {
+          await interaction.reply({
+            content: `Error! Guild not found!`,
+            ephemeral: true,
+          });
+          return;
+        }
+
+        const user = await guild.members.fetch(userId);
         if (user) {
           map.set(rsn, user);
         } else {

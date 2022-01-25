@@ -105,20 +105,32 @@ module.exports = {
       }
     }
 
+    const guild = await client.guilds.fetch(interaction.guildId);
+    if (!guild) {
+      await interaction.reply({
+        content: `Error! Guild not found!`,
+        ephemeral: true,
+      });
+      return;
+    }
+
     const rsnCurrentTargetId = await redis.searchForUserIdWithRsn(rsn);
-    const rsnCurrentTarget = await client.users.fetch(rsnCurrentTargetId);
+
+    const rsnCurrentTarget = await guild.members.fetch(rsnCurrentTargetId);
 
     if (rsnCurrentTargetId) {
       if (!forceRsn) {
         if (rsnCurrentTarget) {
           await interaction.reply({
             content: `Error! ${rsnCurrentTarget} is already assigned to RSN: ${rsn}. Use the option \`force-rsn\` to override this.`,
+            ephemeral: true,
           });
           return;
         }
 
         await interaction.reply({
           content: `Error! User with ID ${rsnCurrentTargetId} is already assigned to RSN: ${rsn}. Use the option \`force-rsn\` to override this.`,
+          ephemeral: true,
         });
         return;
       }

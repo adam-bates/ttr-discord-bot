@@ -46,7 +46,16 @@ module.exports = {
       return;
     }
 
-    const user = await client.users.fetch(userId);
+    const guild = await client.guilds.fetch(interaction.guildId);
+    if (!guild) {
+      await interaction.reply({
+        content: `Error! Guild not found!`,
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const user = await guild.members.fetch(userId);
 
     if (user) {
       await interaction.reply({
