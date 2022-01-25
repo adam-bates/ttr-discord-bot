@@ -198,9 +198,7 @@ const determineRenames = async ({ redis, removedPlayers, addedPlayers }) => {
 const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
   const redis = await connectRedisClient();
 
-  const players = (await fetchClanInfo(process.env.CLAN_NAME)).map(
-    ({ rsn, ...rest }) => ({ rsn, ...rest })
-  );
+  const players = await fetchClanInfo(process.env.CLAN_NAME);
   const rsnsSet = new Set(players.map(({ rsn }) => rsn));
 
   const oldPlayers = await redis.getAllPlayers();

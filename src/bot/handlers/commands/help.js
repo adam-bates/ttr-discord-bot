@@ -59,8 +59,8 @@ Creating & interacting with voting polls:
       content += `
 
 Get clan information:
-- /tlc clan`; /*
-- /tlc members */
+- /tlc clan
+- /tlc members`;
 
       content += `
 
@@ -75,8 +75,8 @@ Assigning custom roles at an MEE6 level:
 
 Clan information:
 - /tlc clan
-- /tlc setjoindate`; /*
-- /tlc members */
+- /tlc members
+- /tlc setjoindate`;
 
       content += `
 
