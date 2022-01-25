@@ -58,9 +58,10 @@ Creating & interacting with voting polls:
     if (!isPublic && isMasterUser(client, interaction)) {
       content += `
 
-Get clan information:
+Clan information:
 - /tlc clan
-- /tlc members`;
+- /tlc members
+- /tlc setjoindate`;
 
       content += `
 
@@ -73,10 +74,9 @@ Assigning custom roles at an MEE6 level:
     } else {
       content += `
 
-Clan information:
+Get clan information:
 - /tlc clan
-- /tlc members
-- /tlc setjoindate`;
+- /tlc members`;
 
       content += `
 
