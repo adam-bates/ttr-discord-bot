@@ -215,66 +215,6 @@ module.exports = {
 
     const output = await interaction.options.getString("output");
     switch (output && output.toLowerCase()) {
-      case null:
-      case "png": {
-        const handlebars = {
-          ...stats,
-          rows: statKeys.map((statKey) => ({
-            name: capitalizeFirst(statKey),
-            snapshots: [
-              {
-                ...stats.total[statKey],
-                xp: parseInt(stats.total[statKey].xp, 10).toLocaleString(),
-                level: parseInt(
-                  stats.total[statKey].level,
-                  10
-                ).toLocaleString(),
-                rank: parseInt(stats.total[statKey].rank, 10).toLocaleString(),
-              },
-              stats.today[statKey],
-              stats.yesterday[statKey],
-              stats.week[statKey],
-            ],
-          })),
-        };
-        const htmlContent = templates.stats(handlebars);
-
-        const date = datetime.toISOString().split("T")[0];
-
-        const filepath = path.join(
-          __dirname,
-          "..",
-          "..",
-          "..",
-          "..",
-          "resources",
-          "temp",
-          `stats_${date}_${interaction.id}.png`
-        );
-
-        await page.setViewport({
-          width: 1920,
-          height: 1545,
-          deviceScaleFactor: 2,
-        });
-        await page.setContent(htmlContent);
-
-        try {
-          await page.screenshot({ path: filepath });
-
-          await interaction.editReply({
-            ephemeral: !isPublic,
-            files: [filepath],
-          });
-        } finally {
-          try {
-            await fs.rm(filepath);
-          } catch (e) {
-            console.error(e);
-          }
-        }
-        break;
-      }
       case "csv": {
         const date = datetime.toISOString().split("T")[0];
 
@@ -338,11 +278,64 @@ module.exports = {
 
         break;
       }
+      case "png":
       default: {
-        await interaction.editReply({
-          content: `Error: Invalid output: ${output}. Expected "Image", or "CSV".`,
-          ephemeral: true,
+        const handlebars = {
+          ...stats,
+          rows: statKeys.map((statKey) => ({
+            name: capitalizeFirst(statKey),
+            snapshots: [
+              {
+                ...stats.total[statKey],
+                xp: parseInt(stats.total[statKey].xp, 10).toLocaleString(),
+                level: parseInt(
+                  stats.total[statKey].level,
+                  10
+                ).toLocaleString(),
+                rank: parseInt(stats.total[statKey].rank, 10).toLocaleString(),
+              },
+              stats.today[statKey],
+              stats.yesterday[statKey],
+              stats.week[statKey],
+            ],
+          })),
+        };
+        const htmlContent = templates.stats(handlebars);
+
+        const date = datetime.toISOString().split("T")[0];
+
+        const filepath = path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "..",
+          "resources",
+          "temp",
+          `stats_${date}_${interaction.id}.png`
+        );
+
+        await page.setViewport({
+          width: 1920,
+          height: 1545,
+          deviceScaleFactor: 2,
         });
+        await page.setContent(htmlContent);
+
+        try {
+          await page.screenshot({ path: filepath });
+
+          await interaction.editReply({
+            ephemeral: !isPublic,
+            files: [filepath],
+          });
+        } finally {
+          try {
+            await fs.rm(filepath);
+          } catch (e) {
+            console.error(e);
+          }
+        }
         break;
       }
     }

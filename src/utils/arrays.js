@@ -1,7 +1,13 @@
-const chunkArray = (arr, totalChunks) => {
-  const chunks = [];
+const chunkArray = (arr, options) => {
+  let { perChunk, totalChunks } = options;
 
-  const perChunk = Math.ceil(arr.length / totalChunks);
+  if (perChunk) {
+    totalChunks = Math.ceil(arr.length / perChunk);
+  } else {
+    perChunk = Math.ceil(arr.length / totalChunks);
+  }
+
+  const chunks = [];
 
   for (let chunkIdx = 0; chunkIdx < totalChunks; chunkIdx++) {
     const chunk = [];

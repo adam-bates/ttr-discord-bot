@@ -1,6 +1,9 @@
-module.exports = {
-  disabled: true,
+const fs = require("fs").promises;
+const path = require("path");
+const { unixTimestamp, fromUnixTimestamp } = require("../../../utils/time");
+const { chunkArray } = require("../../../utils/arrays");
 
+module.exports = {
   builder: (command) =>
     command
       .setName("members")
@@ -21,9 +24,121 @@ module.exports = {
           .setRequired(false)
       ),
 
-  execute: async (_, interaction) => {
+  execute: async ({ redis, templates, page }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
-    await interaction.reply({ content: "Pong!", ephemeral: !isPublic });
+    await interaction.deferReply({
+      ephemeral: !isPublic,
+    });
+
+    const players = await redis.getAllPlayers();
+
+    const now = new Date();
+
+    switch (interaction.options.getString("output")) {
+      case "csv": {
+        const date = now.toISOString().split("T")[0];
+
+        const filepath = path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "..",
+          "resources",
+          "temp",
+          `members_${date}_${interaction.id}.csv`
+        );
+
+        let csv = `RSN,RANK,JOINED\n`;
+        players.forEach(({ rsn, rank, dateJoined }) => {
+          csv += `${rsn},${rank},${fromUnixTimestamp(
+            dateJoined
+          ).toISOString()}\n`;
+        });
+
+        try {
+          await fs.writeFile(filepath, csv);
+
+          await interaction.editReply({
+            ephemeral: !isPublic,
+            files: [filepath],
+          });
+        } finally {
+          try {
+            await fs.rm(filepath);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+
+        break;
+      }
+      case "png":
+      default: {
+        const perChunk = 5;
+
+        const headers = " ".repeat(perChunk).split("");
+        const blankHeaders = " ".repeat(perChunk - 1).split("");
+
+        const playerChunks = chunkArray(
+          players.map((player) => ({
+            ...player,
+            dateJoined: fromUnixTimestamp(player.dateJoined)
+              .toUTCString()
+              .substring(0, 16),
+          })),
+          { perChunk }
+        );
+
+        const handleBars = {
+          name: process.env.CLAN_NAME,
+          timestamp: fromUnixTimestamp(unixTimestamp(now)).toUTCString(),
+          total: players.length,
+          headers,
+          blankHeaders,
+          playerChunks,
+        };
+
+        const htmlContent = templates.members(handleBars);
+
+        const date = now.toISOString().split("T")[0];
+
+        const filepath = path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "..",
+          "resources",
+          "temp",
+          `members_${date}_${interaction.id}.png`
+        );
+
+        await page.setViewport({
+          width: 4000,
+          height: 4800,
+          deviceScaleFactor: 2,
+        });
+        await page.setContent(htmlContent);
+
+        try {
+          await page.screenshot({ path: filepath });
+
+          await interaction.editReply({
+            ephemeral: !isPublic,
+            files: [filepath],
+          });
+        } finally {
+          try {
+            await fs.rm(filepath);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+
+        break;
+      }
+    }
   },
 };

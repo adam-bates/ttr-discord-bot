@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=2, shrink-to-fit=yes"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <style>
+      body {
+        background-color: #212529;
+      }
+    </style>
+  </head>
+  <body>
+    <table class="table table-bordered table-striped table-dark caption-top" style="margin: 0">
+      <thead class="thead-light">
+        <tr>
+          <th colspan="4"><h1>{{name}}</h1><div style="width: 100%; display: flex; justify-content: space-between;" class="h3"><span>RS3 Clan<span class="text-muted"> | {{total}} members</span></span><span class="text-right text-muted">{{timestamp}}</span></div></th>
+          {{#blankHeaders}}
+          <th colspan="4" />
+          {{/blankHeaders}}
+        </tr>
+        <tr>
+          {{#headers}}
+          <th class="h3">RSN</th>
+          <th class="h3">Rank</th>
+          <th class="h3">Joined</th>
+          <th class="h3"> </th>
+          {{/headers}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each playerChunks}}
+          <tr>
+            {{#each this}}
+            <td class="h4">{{rsn}}</td>
+            <td class="h4">{{rank}}</td>
+            <td class="h4">{{dateJoined}}</td>
+            <td class="h4"> </td>
+            {{/each}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -172,8 +172,136 @@ module.exports = {
 
     const output = await interaction.options.getString("output");
     switch (output && output.toLowerCase()) {
-      case null:
-      case "text": {
+      case "png": {
+        const handlebars = {
+          ...gainz,
+          rows: statKeys.map((statKey) => ({
+            name: capitalizeFirst(statKey),
+            snapshots: [
+              {
+                xp: gainz.today[statKey].toLocaleString(),
+                xpClass:
+                  gainz.today[statKey] === 0 ? "text-muted" : "text-success",
+              },
+              {
+                xp: gainz.yesterday[statKey].toLocaleString(),
+                xpClass:
+                  gainz.yesterday[statKey] === 0
+                    ? "text-muted"
+                    : "text-success",
+              },
+              {
+                xp: gainz.week[statKey].toLocaleString(),
+                xpClass:
+                  gainz.week[statKey] === 0 ? "text-muted" : "text-success",
+              },
+            ],
+          })),
+        };
+        const htmlContent = templates.gainz(handlebars);
+
+        const date = datetime.toISOString().split("T")[0];
+
+        const filepath = path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "..",
+          "resources",
+          "temp",
+          `gainz_${date}_${interaction.id}.png`
+        );
+
+        await page.setViewport({
+          width: 1200,
+          height: 1545,
+          deviceScaleFactor: 2,
+        });
+        await page.setContent(htmlContent);
+
+        try {
+          await page.screenshot({ path: filepath });
+
+          await interaction.editReply({
+            ephemeral: !isPublic,
+            files: [filepath],
+          });
+        } finally {
+          try {
+            await fs.rm(filepath);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+
+        break;
+      }
+      case "csv": {
+        const date = datetime.toISOString().split("T")[0];
+
+        const filepath = path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "..",
+          "resources",
+          "temp",
+          `gainz_${date}_${interaction.id}.csv`
+        );
+
+        let csv = `${rsn},${datetime.toISOString()}\n`;
+        csv += `SKILL,TODAY,YESTERDAY,THIS_WEEK\n`;
+        csv += `Overall,${gainz.today.overall},${gainz.yesterday.overall},${gainz.week.overall}\n`;
+        csv += `Attack,${gainz.today.attack},${gainz.yesterday.attack},${gainz.week.attack}\n`;
+        csv += `Defence,${gainz.today.defence},${gainz.yesterday.defence},${gainz.week.defence}\n`;
+        csv += `Strength,${gainz.today.strength},${gainz.yesterday.strength},${gainz.week.strength}\n`;
+        csv += `Constitution,${gainz.today.constitution},${gainz.yesterday.constitution},${gainz.week.constitution}\n`;
+        csv += `Ranged,${gainz.today.ranged},${gainz.yesterday.ranged},${gainz.week.ranged}\n`;
+        csv += `Prayer,${gainz.today.prayer},${gainz.yesterday.prayer},${gainz.week.prayer}\n`;
+        csv += `Magic,${gainz.today.magic},${gainz.yesterday.magic},${gainz.week.magic}\n`;
+        csv += `Cooking,${gainz.today.cooking},${gainz.yesterday.cooking},${gainz.week.cooking}\n`;
+        csv += `Woodcutting,${gainz.today.woodcutting},${gainz.yesterday.woodcutting},${gainz.week.woodcutting}\n`;
+        csv += `Fletching,${gainz.today.fletching},${gainz.yesterday.fletching},${gainz.week.fletching}\n`;
+        csv += `Fishing,${gainz.today.fishing},${gainz.yesterday.fishing},${gainz.week.fishing}\n`;
+        csv += `Firemaking,${gainz.today.firemaking},${gainz.yesterday.firemaking},${gainz.week.firemaking}\n`;
+        csv += `Crafting,${gainz.today.crafting},${gainz.yesterday.crafting},${gainz.week.crafting}\n`;
+        csv += `Smithing,${gainz.today.smithing},${gainz.yesterday.smithing},${gainz.week.smithing}\n`;
+        csv += `Mining,${gainz.today.mining},${gainz.yesterday.mining},${gainz.week.mining}\n`;
+        csv += `Herblore,${gainz.today.herblore},${gainz.yesterday.herblore},${gainz.week.herblore}\n`;
+        csv += `Agility,${gainz.today.agility},${gainz.yesterday.agility},${gainz.week.agility}\n`;
+        csv += `Thieving,${gainz.today.thieving},${gainz.yesterday.thieving},${gainz.week.thieving}\n`;
+        csv += `Slayer,${gainz.today.slayer},${gainz.yesterday.slayer},${gainz.week.slayer}\n`;
+        csv += `Farming,${gainz.today.farming},${gainz.yesterday.farming},${gainz.week.farming}\n`;
+        csv += `Runecrafting,${gainz.today.runecrafting},${gainz.yesterday.runecrafting},${gainz.week.runecrafting}\n`;
+        csv += `Hunter,${gainz.today.hunter},${gainz.yesterday.hunter},${gainz.week.hunter}\n`;
+        csv += `Construction,${gainz.today.construction},${gainz.yesterday.construction},${gainz.week.construction}\n`;
+        csv += `Summoning,${gainz.today.summoning},${gainz.yesterday.summoning},${gainz.week.summoning}\n`;
+        csv += `Dungeoneering,${gainz.today.dungeoneering},${gainz.yesterday.dungeoneering},${gainz.week.dungeoneering}\n`;
+        csv += `Divination,${gainz.today.divination},${gainz.yesterday.divination},${gainz.week.divination}\n`;
+        csv += `Invention,${gainz.today.invention},${gainz.yesterday.invention},${gainz.week.invention}\n`;
+        csv += `Archaeology,${gainz.today.archaeology},${gainz.yesterday.archaeology},${gainz.week.archaeology}\n`;
+
+        try {
+          await fs.writeFile(filepath, csv);
+
+          await interaction.editReply({
+            ephemeral: !isPublic,
+            files: [filepath],
+          });
+        } finally {
+          try {
+            await fs.rm(filepath);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+
+        break;
+      }
+      case "text":
+      default: {
         const f_rs_name = padStringToLength(rsn, 12);
         const formatted__utc___timestamp = gainz.timestamp;
 
@@ -320,138 +448,6 @@ module.exports = {
           fetchReply: true,
         });
 
-        break;
-      }
-      case "png": {
-        const handlebars = {
-          ...gainz,
-          rows: statKeys.map((statKey) => ({
-            name: capitalizeFirst(statKey),
-            snapshots: [
-              {
-                xp: gainz.today[statKey].toLocaleString(),
-                xpClass:
-                  gainz.today[statKey] === 0 ? "text-muted" : "text-success",
-              },
-              {
-                xp: gainz.yesterday[statKey].toLocaleString(),
-                xpClass:
-                  gainz.yesterday[statKey] === 0
-                    ? "text-muted"
-                    : "text-success",
-              },
-              {
-                xp: gainz.week[statKey].toLocaleString(),
-                xpClass:
-                  gainz.week[statKey] === 0 ? "text-muted" : "text-success",
-              },
-            ],
-          })),
-        };
-        const htmlContent = templates.gainz(handlebars);
-
-        const date = datetime.toISOString().split("T")[0];
-
-        const filepath = path.join(
-          __dirname,
-          "..",
-          "..",
-          "..",
-          "..",
-          "resources",
-          "temp",
-          `gainz_${date}_${interaction.id}.png`
-        );
-
-        await page.setViewport({
-          width: 1200,
-          height: 1545,
-          deviceScaleFactor: 2,
-        });
-        await page.setContent(htmlContent);
-
-        try {
-          await page.screenshot({ path: filepath });
-
-          await interaction.editReply({
-            ephemeral: !isPublic,
-            files: [filepath],
-          });
-        } finally {
-          try {
-            await fs.rm(filepath);
-          } catch (e) {
-            console.error(e);
-          }
-        }
-
-        break;
-      }
-      case "csv": {
-        const date = datetime.toISOString().split("T")[0];
-
-        const filepath = path.join(
-          __dirname,
-          "..",
-          "..",
-          "..",
-          "..",
-          "resources",
-          "temp",
-          `gainz_${date}_${interaction.id}.csv`
-        );
-
-        let csv = `${rsn},${datetime.toISOString()}\n`;
-        csv += `SKILL,TODAY,YESTERDAY,THIS_WEEK\n`;
-        csv += `Overall,${gainz.today.overall},${gainz.yesterday.overall},${gainz.week.overall}\n`;
-        csv += `Attack,${gainz.today.attack},${gainz.yesterday.attack},${gainz.week.attack}\n`;
-        csv += `Defence,${gainz.today.defence},${gainz.yesterday.defence},${gainz.week.defence}\n`;
-        csv += `Strength,${gainz.today.strength},${gainz.yesterday.strength},${gainz.week.strength}\n`;
-        csv += `Constitution,${gainz.today.constitution},${gainz.yesterday.constitution},${gainz.week.constitution}\n`;
-        csv += `Ranged,${gainz.today.ranged},${gainz.yesterday.ranged},${gainz.week.ranged}\n`;
-        csv += `Prayer,${gainz.today.prayer},${gainz.yesterday.prayer},${gainz.week.prayer}\n`;
-        csv += `Magic,${gainz.today.magic},${gainz.yesterday.magic},${gainz.week.magic}\n`;
-        csv += `Cooking,${gainz.today.cooking},${gainz.yesterday.cooking},${gainz.week.cooking}\n`;
-        csv += `Woodcutting,${gainz.today.woodcutting},${gainz.yesterday.woodcutting},${gainz.week.woodcutting}\n`;
-        csv += `Fletching,${gainz.today.fletching},${gainz.yesterday.fletching},${gainz.week.fletching}\n`;
-        csv += `Fishing,${gainz.today.fishing},${gainz.yesterday.fishing},${gainz.week.fishing}\n`;
-        csv += `Firemaking,${gainz.today.firemaking},${gainz.yesterday.firemaking},${gainz.week.firemaking}\n`;
-        csv += `Crafting,${gainz.today.crafting},${gainz.yesterday.crafting},${gainz.week.crafting}\n`;
-        csv += `Smithing,${gainz.today.smithing},${gainz.yesterday.smithing},${gainz.week.smithing}\n`;
-        csv += `Mining,${gainz.today.mining},${gainz.yesterday.mining},${gainz.week.mining}\n`;
-        csv += `Herblore,${gainz.today.herblore},${gainz.yesterday.herblore},${gainz.week.herblore}\n`;
-        csv += `Agility,${gainz.today.agility},${gainz.yesterday.agility},${gainz.week.agility}\n`;
-        csv += `Thieving,${gainz.today.thieving},${gainz.yesterday.thieving},${gainz.week.thieving}\n`;
-        csv += `Slayer,${gainz.today.slayer},${gainz.yesterday.slayer},${gainz.week.slayer}\n`;
-        csv += `Farming,${gainz.today.farming},${gainz.yesterday.farming},${gainz.week.farming}\n`;
-        csv += `Runecrafting,${gainz.today.runecrafting},${gainz.yesterday.runecrafting},${gainz.week.runecrafting}\n`;
-        csv += `Hunter,${gainz.today.hunter},${gainz.yesterday.hunter},${gainz.week.hunter}\n`;
-        csv += `Construction,${gainz.today.construction},${gainz.yesterday.construction},${gainz.week.construction}\n`;
-        csv += `Summoning,${gainz.today.summoning},${gainz.yesterday.summoning},${gainz.week.summoning}\n`;
-        csv += `Dungeoneering,${gainz.today.dungeoneering},${gainz.yesterday.dungeoneering},${gainz.week.dungeoneering}\n`;
-        csv += `Divination,${gainz.today.divination},${gainz.yesterday.divination},${gainz.week.divination}\n`;
-        csv += `Invention,${gainz.today.invention},${gainz.yesterday.invention},${gainz.week.invention}\n`;
-        csv += `Archaeology,${gainz.today.archaeology},${gainz.yesterday.archaeology},${gainz.week.archaeology}\n`;
-
-        try {
-          await fs.writeFile(filepath, csv);
-
-          await interaction.editReply({
-            ephemeral: !isPublic,
-            files: [filepath],
-          });
-        } finally {
-          try {
-            await fs.rm(filepath);
-          } catch (e) {
-            console.error(e);
-          }
-        }
-
-        break;
-      }
-      default: {
-        // UNREACHABLE
         break;
       }
     }
