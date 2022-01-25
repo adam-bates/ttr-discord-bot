@@ -46,10 +46,14 @@ const Redis = (client) => {
     const keys = await client.sendCommand(["KEYS", key(GET_RSN, "*")]);
 
     const assignments = await Promise.all(
-      keys.map(async (userId) => ({
-        userId,
-        rsn: await client.get(key(GET_RSN, userId)),
-      }))
+      keys.map(async (k) => {
+        const userId = k.split("/")[1];
+
+        return {
+          userId,
+          rsn: await client.get(key(GET_RSN, userId)),
+        };
+      })
     );
 
     const found = assignments.find((assignment) => assignment.rsn === rsn);
