@@ -25,7 +25,7 @@ module.exports = {
 
     let target = interaction.options.getUser("target");
 
-    if (target) {
+    if (target && target !== interaction.user) {
       const isMaster = await isMasterUser(client, interaction);
 
       if (!isMaster) {

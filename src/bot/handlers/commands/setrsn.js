@@ -74,7 +74,7 @@ module.exports = {
 
     let target = interaction.options.getUser("target");
 
-    if (target) {
+    if (target && target !== interaction.user) {
       if (!isMaster) {
         await interaction.reply({
           content: `Error! Invalid permissions. You can only set a RSN for yourself.`,
