@@ -199,21 +199,21 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
   const redis = await connectRedisClient();
 
   const players = await fetchClanInfo(process.env.CLAN_NAME);
-  const rsnsSet = new Set(players.map(({ rsn }) => rsn));
+  // const rsnsSet = new Set(players.map(({ rsn }) => rsn));
 
-  const oldPlayers = await redis.getAllPlayers();
-  const oldRsnsSet = new Set(oldPlayers.map(({ rsn }) => rsn));
+  // const oldPlayers = await redis.getAllPlayers();
+  // const oldRsnsSet = new Set(oldPlayers.map(({ rsn }) => rsn));
 
-  const removedPlayers = oldPlayers.filter(({ rsn }) => !rsnsSet.has(rsn));
-  const addedPlayers = players.filter(({ rsn }) => !oldRsnsSet.has(rsn));
+  // const removedPlayers = oldPlayers.filter(({ rsn }) => !rsnsSet.has(rsn));
+  // const addedPlayers = players.filter(({ rsn }) => !oldRsnsSet.has(rsn));
 
-  const renames = await determineRenames({
-    redis,
-    removedPlayers,
-    addedPlayers,
-  });
+  // const renames = await determineRenames({
+  //   redis,
+  //   removedPlayers,
+  //   addedPlayers,
+  // });
 
-  await redis.updatePlayers(players, { renames });
+  await redis.updatePlayers(players);
 
   const timestamp = unixTimestamp();
   const expected = {
