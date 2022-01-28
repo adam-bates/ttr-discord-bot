@@ -230,7 +230,8 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
     }
 
     console.log(
-      "(%d/%d) Fetching player: %o",
+      "[%d] (%d/%d) Fetching player: %o",
+      timestamp,
       idx + 1,
       players.length,
       player.rsn
@@ -317,7 +318,8 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
   });
 
   console.log(
-    "Done! %d/%d, took ~ %d mins",
+    "[%d] Done! %d/%d, took ~ %d mins",
+    timestamp,
     success,
     players.length,
     Math.round((unixTimestamp() - timestamp) / 60)
