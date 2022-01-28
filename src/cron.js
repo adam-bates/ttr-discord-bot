@@ -11,7 +11,7 @@ ie. Minutes: 10, 18, 26, 34, 42, 50
 
 This maintains a safe distance from the daily / weekly runs, while also being fairly up-to-date
 */
-cronitor.schedule("Fetch data", "10,18,26,34,42,50 0 * * *", () => fetchData());
+cronitor.schedule("Fetch data", "10,18,26,34,42,50 * * * *", () => fetchData());
 
 // Every day at 00:05
 cronitor.schedule("Fetch daily data", "5 0 * * *", () =>
