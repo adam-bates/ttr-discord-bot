@@ -186,7 +186,7 @@ const determineRenames = async ({ redis, removedPlayers, addedPlayers }) => {
       const [addedRsn] = res;
 
       addedRsnStatsMap.delete(addedRsn);
-      renames.push(removedPlayer.rsn, addedRsn);
+      renames.push([removedPlayer.rsn, addedRsn]);
     }
   });
 
