@@ -231,7 +231,7 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
 
     console.log(
       "[%d] (%d/%d) Fetching player: %o",
-      timestamp,
+      unixTimestamp(),
       idx + 1,
       players.length,
       player.rsn
@@ -311,15 +311,22 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
 
       success += 1;
 
-      console.log("Success.");
+      console.log("[%d] %o", unixTimestamp(), {
+        isLateToday,
+        isLateYesterday,
+        isLateWeek,
+        isDayStart,
+        isWeekStart,
+      });
+      console.log("[%d] Success.", unixTimestamp());
     } else {
-      console.log("Not found.");
+      console.log("[%d] Not found.", unixTimestamp());
     }
   });
 
   console.log(
     "[%d] Done! %d/%d, took ~ %d mins",
-    timestamp,
+    unixTimestamp(),
     success,
     players.length,
     Math.round((unixTimestamp() - timestamp) / 60)
