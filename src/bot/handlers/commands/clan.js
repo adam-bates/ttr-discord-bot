@@ -15,13 +15,11 @@ module.exports = {
   execute: async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
-    const rsns = await redis.getAllRsns();
+    // const rsns = await redis.getAllRsns();
 
-    const content = `The Last Citadel (a.k.a TLC)
+    const content = `The Twisted Republic (a.k.a TTR)
 
-A welcoming, diverse, all-purpose clan with a long-standing history.
-
-We currently have ${rsns.length} members, which has helped build us up to the max-tier citadel (tier 7)!
+A fresh and welcoming clan; a republic of amazing people who have been twisted about to where they are now.
 
 Feel free to say hi, contribute to conversations, and ask questions. Also, reach out to any of our friendly staff members if you need help!
 `;

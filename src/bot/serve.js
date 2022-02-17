@@ -41,7 +41,7 @@ const compileTemplates = async () => {
 const buildHandlers = async () => {
   const command = new SlashCommandBuilder()
     .setName(process.env.COMMAND_NAME)
-    .setDescription("Custom commands for the TLC Discord");
+    .setDescription("Custom commands for the TTR Discord");
 
   const commandExecutors = new Map();
   const selectMenuHandlers = new Map();

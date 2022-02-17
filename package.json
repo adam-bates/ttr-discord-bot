@@ -1,7 +1,7 @@
 {
-  "name": "tlc-discord-bot",
+  "name": "ttr-discord-bot",
   "version": "1.0.0",
-  "description": "Custom Discord bot for the Runescape clan: The Last Citadel",
+  "description": "Custom Discord bot for the Runescape clan: The Twisted Republic",
   "main": "index.js",
   "engines": {
     "node": ">=11.14.0"

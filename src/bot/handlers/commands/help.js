@@ -18,72 +18,72 @@ module.exports = {
     const isPublic = interaction.options.getBoolean("public");
 
     let content = `\`\`\`
-Custom Discord Bot for the Runescape clan: The Last Citadel
+Custom Discord Bot for the Runescape clan: The Twisted Republic
 
-- All commands are accessed using /tlc
+- All commands are accessed using /ttr
 - As you type out a command, Discord shows the documentation for that command and its options
 
 Ping the bot to ensure it's ready:
-- /tlc ping
+- /ttr ping
 
 Display this help message:
-- /tlc help
+- /ttr help
 
 Assigning RSN to Discord user:
-- /tlc setrsn
-- /tlc delrsn
-- /tlc getrsn
-- /tlc getuser
-- /tlc listrsns
+- /ttr setrsn
+- /ttr delrsn
+- /ttr getrsn
+- /ttr getuser
+- /ttr listrsns
 
 Get player information:
-- /tlc gainz
-- /tlc stats`;
+- /ttr gainz
+- /ttr stats`;
     /*
-- /tlc log
-- /tlc quests
+- /ttr log
+- /ttr quests
 
 Creating & comparing snapshots of levels & xp
-- /tlc snapshots
+- /ttr snapshots
 
 Creating & interacting with raffles:
-- /tlc raffles
+- /ttr raffles
 
 Creating & interacting with events:
-- /tlc events
+- /ttr events
 
 Creating & interacting with voting polls:
-- /tlc polls */
+- /ttr polls */
 
     if (!isPublic && isMasterUser(client, interaction)) {
       content += `
 
 Clan information:
-- /tlc clan
-- /tlc members
-- /tlc setjoindate`;
+- /ttr clan
+- /ttr members
+- /ttr setjoindate`;
 
       content += `
 
 Assigning custom roles at an MEE6 level:
-- /tlc setrole
-- /tlc delrole
-- /tlc getrole
-- /tlc getlevel
-- /tlc listroles`;
+- /ttr setrole
+- /ttr delrole
+- /ttr getrole
+- /ttr getlevel
+- /ttr listroles`;
     } else {
       content += `
 
 Get clan information:
-- /tlc clan
-- /tlc members`;
+- /ttr clan
+- /ttr members`;
 
       content += `
 
 Get custom roles for MEE6 levels:
-- /tlc getrole
-- /tlc getlevel
-- /tlc listroles`;
+- /ttr getrole
+- /ttr getlevel
+- /ttr listroles`;
     }
 
     content += `

@@ -32,7 +32,7 @@ module.exports = {
       });
     } else {
       await interaction.reply({
-        content: `${user} has no assigned RSN.\n\nYou can use the command \`/tlc setrsn\` to assign your Discord user to your Runescape name.`,
+        content: `${user} has no assigned RSN.\n\nYou can use the command \`/ttr setrsn\` to assign your Discord user to your Runescape name.`,
         ephemeral: !isPublic,
       });
     }

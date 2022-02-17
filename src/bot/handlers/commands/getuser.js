@@ -40,7 +40,7 @@ module.exports = {
 
     if (!userId) {
       await interaction.reply({
-        content: `There is no user assigned to RSN: ${rsn}.\n\nYou can use the command \`/tlc setrsn\` to assign your Discord user to your Runescape name.`,
+        content: `There is no user assigned to RSN: ${rsn}.\n\nYou can use the command \`/ttr setrsn\` to assign your Discord user to your Runescape name.`,
         ephemeral: !isPublic,
       });
       return;

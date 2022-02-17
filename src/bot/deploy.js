@@ -12,7 +12,7 @@ const COMMANDS_DIR = path.join(__dirname, "handlers", "commands");
 const deploy = async () => {
   const command = new SlashCommandBuilder()
     .setName(process.env.COMMAND_NAME)
-    .setDescription("Custom commands for the TLC Discord");
+    .setDescription("Custom commands for the TTR Discord");
   const commandFiles = await fs.readdir(COMMANDS_DIR);
 
   commandFiles
