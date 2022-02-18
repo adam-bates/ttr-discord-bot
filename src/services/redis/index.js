@@ -16,7 +16,7 @@ const GET_SNAPSHOT = "GetSnapshot";
 
 const GET_EVENT_DETAILS = "GetEventDetails";
 const GET_EVENT_START_SNAPSHOT = "GetEventStartSnapshot";
-const GET_EVENT_END_SNAPSHOT = "GetEventStartSnapshot";
+const GET_EVENT_END_SNAPSHOT = "GetEventEndSnapshot";
 
 const GET_ROLE_ID = "GetRoleId";
 
@@ -204,6 +204,53 @@ const Redis = (client) => {
     return found && found.level;
   };
 
+  const startEvent = async ({ name, start }) => {
+    const existing = await client.get(key(GET_EVENT_DETAILS, name));
+
+    if (existing) {
+      return `Event with name "${name}" already exists!`;
+    }
+
+    await client.set(key(GET_EVENT_DETAILS, name), stringify({ name, start }));
+
+    const rsns = await getAllRsns();
+
+    const promises = rsns.map(async (rsn) => {
+      const stats = await getStatsByRsn(rsn);
+
+      client.set(key(GET_EVENT_START_SNAPSHOT, name, rsn), stringify(stats));
+    });
+
+    await Promise.all(promises);
+
+    return null;
+  };
+
+  const endEvent = async ({ name, end }) => {
+    const details = await client.get(key(GET_EVENT_DETAILS, name));
+
+    if (!details) {
+      return `Event with name ${name} doesn't exist!`;
+    }
+
+    await client.set(
+      key(GET_EVENT_DETAILS, name),
+      stringify({ name, start: details.start, end })
+    );
+
+    const rsns = await getAllRsns();
+
+    const promises = rsns.map(async (rsn) => {
+      const stats = await getStatsByRsn(rsn);
+
+      client.set(key(GET_EVENT_END_SNAPSHOT, name, rsn), stringify(stats));
+    });
+
+    await Promise.all(promises);
+
+    return null;
+  };
+
   client.getAllPlayers = getAllPlayers;
   client.unsafeSetAllPlayers = unsafeSetAllPlayers;
   client.getAllRsns = getAllRsns;
@@ -230,6 +277,8 @@ const Redis = (client) => {
   client.deleteRoleIdByLevel = deleteRoleIdByLevel;
   client.getAllLevelRoleIdAssignments = getAllLevelRoleIdAssignments;
   client.searchForLevelWithRoleId = searchForLevelWithRoleId;
+  client.startEvent = startEvent;
+  client.endEvent = endEvent;
 
   return client;
 };
