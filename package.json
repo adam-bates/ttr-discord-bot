@@ -14,7 +14,7 @@
     "cron": "node ./src/cron.js",
     "seed": "node ./seed.js",
     "pm2-start": "pm2 start pm2.config.js",
-    "pm2-restart": "pm2 restart pm2.config.js && npm run fetch"
+    "pm2-restart": "pm2 restart pm2.config.js"
   },
   "keywords": [
     "discord",
