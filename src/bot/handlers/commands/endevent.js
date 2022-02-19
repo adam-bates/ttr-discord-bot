@@ -34,10 +34,13 @@ module.exports = {
       return;
     }
 
-    const formatted = fromUnixTimestamp(end).toUTCString();
+    const details = await redis.getEventDetails(name);
+
+    const formattedStart = fromUnixTimestamp(details.start).toUTCString();
+    const formattedEnd = fromUnixTimestamp(details.end).toUTCString();
 
     await interaction.reply({
-      content: `Successfully ended the event \`${name}\` @ ${formatted}`,
+      content: `\`\`\`SUCCESSFULLY ENDED EVENT\n\n${name}\n- Started: ${formattedStart}\n- Ended: ${formattedEnd}\`\`\``,
       ephemeral: !isPublic,
     });
   }),

@@ -37,7 +37,7 @@ module.exports = {
     const formatted = fromUnixTimestamp(start).toUTCString();
 
     await interaction.reply({
-      content: `Successfully started the event \`${name}\` @ ${formatted}`,
+      content: `\`\`\`SUCCESSFULLY STARTED EVENT\n\n${name}\n- Started: ${formatted}\`\`\``,
       ephemeral: !isPublic,
     });
   }),
