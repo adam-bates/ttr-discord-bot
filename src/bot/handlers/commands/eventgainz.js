@@ -172,68 +172,65 @@ module.exports = {
     const f_evt_name = padStringToLength(name, 13);
     const f_rs_name = padStringToLength(rsn, 12);
 
-    const to_______ovr = formatNumberToLength(gainz.today.overall, 9);
-    const to_______att = formatNumberToLength(gainz.today.attack, 9);
-    const to_______def = formatNumberToLength(gainz.today.defence, 9);
-    const to_______str = formatNumberToLength(gainz.today.strength, 9);
-    const to_______cst = formatNumberToLength(gainz.today.constitution, 9);
-    const to_______rng = formatNumberToLength(gainz.today.ranged, 9);
-    const to_______pry = formatNumberToLength(gainz.today.prayer, 9);
-    const to_______mag = formatNumberToLength(gainz.today.magic, 9);
-    const to_______cok = formatNumberToLength(gainz.today.cooking, 9);
-    const to_______wod = formatNumberToLength(gainz.today.woodcutting, 9);
-    const to_______fch = formatNumberToLength(gainz.today.fletching, 9);
-    const to_______fsh = formatNumberToLength(gainz.today.fishing, 9);
-    const to_______fir = formatNumberToLength(gainz.today.firemaking, 9);
-    const to_______crf = formatNumberToLength(gainz.today.crafting, 9);
-    const to_______smt = formatNumberToLength(gainz.today.smithing, 9);
-    const to_______min = formatNumberToLength(gainz.today.mining, 9);
-    const to_______hrb = formatNumberToLength(gainz.today.herblore, 9);
-    const to_______agl = formatNumberToLength(gainz.today.agility, 9);
-    const to_______thv = formatNumberToLength(gainz.today.thieving, 9);
-    const to_______sly = formatNumberToLength(gainz.today.slayer, 9);
-    const to_______frm = formatNumberToLength(gainz.today.farming, 9);
-    const to_______rnc = formatNumberToLength(gainz.today.runecrafting, 9);
-    const to_______hnt = formatNumberToLength(gainz.today.hunter, 9);
-    const to_______con = formatNumberToLength(gainz.today.construction, 9);
-    const to_______sum = formatNumberToLength(gainz.today.summoning, 9);
-    const to_______dng = formatNumberToLength(gainz.today.dungeoneering, 9);
-    const to_______div = formatNumberToLength(gainz.today.divination, 9);
-    const to_______inv = formatNumberToLength(gainz.today.invention, 9);
-    const to_______arc = formatNumberToLength(gainz.today.archaeology, 9);
+    const to_______ovr = formatNumberToLength(gainz.today.overall, 15);
+    const to_______att = formatNumberToLength(gainz.today.attack, 15);
+    const to_______def = formatNumberToLength(gainz.today.defence, 15);
+    const to_______str = formatNumberToLength(gainz.today.strength, 15);
+    const to_______cst = formatNumberToLength(gainz.today.constitution, 15);
+    const to_______rng = formatNumberToLength(gainz.today.ranged, 15);
+    const to_______pry = formatNumberToLength(gainz.today.prayer, 15);
+    const to_______mag = formatNumberToLength(gainz.today.magic, 15);
+    const to_______cok = formatNumberToLength(gainz.today.cooking, 15);
+    const to_______wod = formatNumberToLength(gainz.today.woodcutting, 15);
+    const to_______fch = formatNumberToLength(gainz.today.fletching, 15);
+    const to_______fsh = formatNumberToLength(gainz.today.fishing, 15);
+    const to_______fir = formatNumberToLength(gainz.today.firemaking, 15);
+    const to_______crf = formatNumberToLength(gainz.today.crafting, 15);
+    const to_______smt = formatNumberToLength(gainz.today.smithing, 15);
+    const to_______min = formatNumberToLength(gainz.today.mining, 15);
+    const to_______hrb = formatNumberToLength(gainz.today.herblore, 15);
+    const to_______agl = formatNumberToLength(gainz.today.agility, 15);
+    const to_______thv = formatNumberToLength(gainz.today.thieving, 15);
+    const to_______sly = formatNumberToLength(gainz.today.slayer, 15);
+    const to_______frm = formatNumberToLength(gainz.today.farming, 15);
+    const to_______rnc = formatNumberToLength(gainz.today.runecrafting, 15);
+    const to_______hnt = formatNumberToLength(gainz.today.hunter, 15);
+    const to_______con = formatNumberToLength(gainz.today.construction, 15);
+    const to_______sum = formatNumberToLength(gainz.today.summoning, 15);
+    const to_______dng = formatNumberToLength(gainz.today.dungeoneering, 15);
+    const to_______div = formatNumberToLength(gainz.today.divination, 15);
+    const to_______inv = formatNumberToLength(gainz.today.invention, 15);
+    const to_______arc = formatNumberToLength(gainz.today.archaeology, 15);
 
-    const ev________ovr = formatNumberToLength(gainz.yesterday.overall, 9);
-    const ev________att = formatNumberToLength(gainz.yesterday.attack, 9);
-    const ev________def = formatNumberToLength(gainz.yesterday.defence, 9);
-    const ev________str = formatNumberToLength(gainz.yesterday.strength, 9);
-    const ev________cst = formatNumberToLength(gainz.yesterday.constitution, 9);
-    const ev________rng = formatNumberToLength(gainz.yesterday.ranged, 9);
-    const ev________pry = formatNumberToLength(gainz.yesterday.prayer, 9);
-    const ev________mag = formatNumberToLength(gainz.yesterday.magic, 9);
-    const ev________cok = formatNumberToLength(gainz.yesterday.cooking, 9);
-    const ev________wod = formatNumberToLength(gainz.yesterday.woodcutting, 9);
-    const ev________fch = formatNumberToLength(gainz.yesterday.fletching, 9);
-    const ev________fsh = formatNumberToLength(gainz.yesterday.fishing, 9);
-    const ev________fir = formatNumberToLength(gainz.yesterday.firemaking, 9);
-    const ev________crf = formatNumberToLength(gainz.yesterday.crafting, 9);
-    const ev________smt = formatNumberToLength(gainz.yesterday.smithing, 9);
-    const ev________min = formatNumberToLength(gainz.yesterday.mining, 9);
-    const ev________hrb = formatNumberToLength(gainz.yesterday.herblore, 9);
-    const ev________agl = formatNumberToLength(gainz.yesterday.agility, 9);
-    const ev________thv = formatNumberToLength(gainz.yesterday.thieving, 9);
-    const ev________sly = formatNumberToLength(gainz.yesterday.slayer, 9);
-    const ev________frm = formatNumberToLength(gainz.yesterday.farming, 9);
-    const ev________rnc = formatNumberToLength(gainz.yesterday.runecrafting, 9);
-    const ev________hnt = formatNumberToLength(gainz.yesterday.hunter, 9);
-    const ev________con = formatNumberToLength(gainz.yesterday.construction, 9);
-    const ev________sum = formatNumberToLength(gainz.yesterday.summoning, 9);
-    const ev________dng = formatNumberToLength(
-      gainz.yesterday.dungeoneering,
-      9
-    );
-    const ev________div = formatNumberToLength(gainz.yesterday.divination, 9);
-    const ev________inv = formatNumberToLength(gainz.yesterday.invention, 9);
-    const ev________arc = formatNumberToLength(gainz.yesterday.archaeology, 9);
+    const ev_______ovr = formatNumberToLength(gainz.event.overall, 15);
+    const ev_______att = formatNumberToLength(gainz.event.attack, 15);
+    const ev_______def = formatNumberToLength(gainz.event.defence, 15);
+    const ev_______str = formatNumberToLength(gainz.event.strength, 15);
+    const ev_______cst = formatNumberToLength(gainz.event.constitution, 15);
+    const ev_______rng = formatNumberToLength(gainz.event.ranged, 15);
+    const ev_______pry = formatNumberToLength(gainz.event.prayer, 15);
+    const ev_______mag = formatNumberToLength(gainz.event.magic, 15);
+    const ev_______cok = formatNumberToLength(gainz.event.cooking, 15);
+    const ev_______wod = formatNumberToLength(gainz.event.woodcutting, 15);
+    const ev_______fch = formatNumberToLength(gainz.event.fletching, 15);
+    const ev_______fsh = formatNumberToLength(gainz.event.fishing, 15);
+    const ev_______fir = formatNumberToLength(gainz.event.firemaking, 15);
+    const ev_______crf = formatNumberToLength(gainz.event.crafting, 15);
+    const ev_______smt = formatNumberToLength(gainz.event.smithing, 15);
+    const ev_______min = formatNumberToLength(gainz.event.mining, 15);
+    const ev_______hrb = formatNumberToLength(gainz.event.herblore, 15);
+    const ev_______agl = formatNumberToLength(gainz.event.agility, 15);
+    const ev_______thv = formatNumberToLength(gainz.event.thieving, 15);
+    const ev_______sly = formatNumberToLength(gainz.event.slayer, 15);
+    const ev_______frm = formatNumberToLength(gainz.event.farming, 15);
+    const ev_______rnc = formatNumberToLength(gainz.event.runecrafting, 15);
+    const ev_______hnt = formatNumberToLength(gainz.event.hunter, 15);
+    const ev_______con = formatNumberToLength(gainz.event.construction, 15);
+    const ev_______sum = formatNumberToLength(gainz.event.summoning, 15);
+    const ev_______dng = formatNumberToLength(gainz.event.dungeoneering, 15);
+    const ev_______div = formatNumberToLength(gainz.event.divination, 15);
+    const ev_______inv = formatNumberToLength(gainz.event.invention, 15);
+    const ev_______arc = formatNumberToLength(gainz.event.archaeology, 15);
 
     const td = "TODAY";
     const ev = "EVENT";
@@ -245,35 +242,35 @@ module.exports = {
 |---------------------------------------------------|
 |     SKILL     |      ${td}      |      ${ev}      |
 |---------------|-----------------------------------|
-| Overall       | ${to_______ovr} | ${ev________ovr}|
-| Attack        | ${to_______att} | ${ev________att}|
-| Defence       | ${to_______def} | ${ev________def}|
-| Strength      | ${to_______str} | ${ev________str}|
-| Constitution  | ${to_______cst} | ${ev________cst}|
-| Ranged        | ${to_______rng} | ${ev________rng}|
-| Prayer        | ${to_______pry} | ${ev________pry}|
-| Magic         | ${to_______mag} | ${ev________mag}|
-| Cooking       | ${to_______cok} | ${ev________cok}|
-| Woodcutting   | ${to_______wod} | ${ev________wod}|
-| Fletching     | ${to_______fch} | ${ev________fch}|
-| Fishing       | ${to_______fsh} | ${ev________fsh}|
-| Firemaking    | ${to_______fir} | ${ev________fir}|
-| Crafting      | ${to_______crf} | ${ev________crf}|
-| Smithing      | ${to_______smt} | ${ev________smt}|
-| Mining        | ${to_______min} | ${ev________min}|
-| Herblore      | ${to_______hrb} | ${ev________hrb}|
-| Agility       | ${to_______agl} | ${ev________agl}|
-| Thieving      | ${to_______thv} | ${ev________thv}|
-| Slayer        | ${to_______sly} | ${ev________sly}|
-| Farming       | ${to_______frm} | ${ev________frm}|
-| Runecrafting  | ${to_______rnc} | ${ev________rnc}|
-| Hunter        | ${to_______hnt} | ${ev________hnt}|
-| Construction  | ${to_______con} | ${ev________con}|
-| Summoning     | ${to_______sum} | ${ev________sum}|
-| Dungeoneering | ${to_______dng} | ${ev________dng}|
-| Divination    | ${to_______div} | ${ev________div}|
-| Invention     | ${to_______inv} | ${ev________inv}|
-| Archaeology   | ${to_______arc} | ${ev________arc}|
+| Overall       | ${to_______ovr} | ${ev_______ovr} |
+| Attack        | ${to_______att} | ${ev_______att} |
+| Defence       | ${to_______def} | ${ev_______def} |
+| Strength      | ${to_______str} | ${ev_______str} |
+| Constitution  | ${to_______cst} | ${ev_______cst} |
+| Ranged        | ${to_______rng} | ${ev_______rng} |
+| Prayer        | ${to_______pry} | ${ev_______pry} |
+| Magic         | ${to_______mag} | ${ev_______mag} |
+| Cooking       | ${to_______cok} | ${ev_______cok} |
+| Woodcutting   | ${to_______wod} | ${ev_______wod} |
+| Fletching     | ${to_______fch} | ${ev_______fch} |
+| Fishing       | ${to_______fsh} | ${ev_______fsh} |
+| Firemaking    | ${to_______fir} | ${ev_______fir} |
+| Crafting      | ${to_______crf} | ${ev_______crf} |
+| Smithing      | ${to_______smt} | ${ev_______smt} |
+| Mining        | ${to_______min} | ${ev_______min} |
+| Herblore      | ${to_______hrb} | ${ev_______hrb} |
+| Agility       | ${to_______agl} | ${ev_______agl} |
+| Thieving      | ${to_______thv} | ${ev_______thv} |
+| Slayer        | ${to_______sly} | ${ev_______sly} |
+| Farming       | ${to_______frm} | ${ev_______frm} |
+| Runecrafting  | ${to_______rnc} | ${ev_______rnc} |
+| Hunter        | ${to_______hnt} | ${ev_______hnt} |
+| Construction  | ${to_______con} | ${ev_______con} |
+| Summoning     | ${to_______sum} | ${ev_______sum} |
+| Dungeoneering | ${to_______dng} | ${ev_______dng} |
+| Divination    | ${to_______div} | ${ev_______div} |
+| Invention     | ${to_______inv} | ${ev_______inv} |
+| Archaeology   | ${to_______arc} | ${ev_______arc} |
 '---------------------------------------------------'`;
 
     await interaction.editReply({
