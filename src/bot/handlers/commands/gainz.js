@@ -399,8 +399,6 @@ module.exports = {
         const yesterd = gainz.yesterday.late ? "YESTERDAY*" : "YESTERDAY ";
         const thisWee = gainz.week.late ? "THIS WEEK*" : "THIS WEEK ";
 
-        // TODO: Shrink today and yesterday numbers >= 10m to use notation, like "11.43 M"
-        // TODO: Shrink this week numbers >= 100m to use notation, like "100.24 M"
         let content = `
 .---------------------------------------------------.
 | ${f_rs_name}        ${formatted__utc___timestamp} |
@@ -445,7 +443,6 @@ module.exports = {
         await interaction.editReply({
           content: `\`\`\`${content}\`\`\``,
           ephemeral: !isPublic,
-          fetchReply: true,
         });
 
         break;
