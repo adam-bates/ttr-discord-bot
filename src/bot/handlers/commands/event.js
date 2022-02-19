@@ -33,6 +33,18 @@ module.exports = {
   execute: async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
+    const name = interaction.options.getString("name");
+
+    const details = await redis.getEventDetails(name);
+
+    if (!details) {
+      await interaction.reply({
+        content: `Error: Event \`${name}\` doesn't exist!`,
+        ephemeral: true,
+      });
+      return;
+    }
+
     const lookupType = interaction.options.getString("info");
     const isReport = lookupType === "report";
 
@@ -45,17 +57,9 @@ module.exports = {
       return;
     }
 
-    const name = interaction.options.getString("name");
-
-    const details = await redis.getEventDetails(name);
-
-    if (!details) {
-      await interaction.reply({
-        content: `Error: Event \`${name}\` doesn't exist!`,
-        ephemeral: true,
-      });
-      return;
-    }
+    await interaction.deferReply({
+      ephemeral: !isPublic,
+    });
 
     const start = fromUnixTimestamp(details.start).toUTCString();
 
@@ -168,7 +172,7 @@ module.exports = {
 
     content += "```";
 
-    await interaction.reply({
+    await interaction.editReply({
       content,
       ephemeral: !isPublic,
     });
