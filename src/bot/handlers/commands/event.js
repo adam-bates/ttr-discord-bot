@@ -1,4 +1,5 @@
 const { fromUnixTimestamp } = require("../../../utils/time");
+const { formatNumberToLength } = require("../../../utils/format");
 
 const roundTo2Decimals = (n) => Math.round(n * 100) / 100;
 
@@ -156,7 +157,10 @@ module.exports = {
       content += `\n\nTOP TOTAL XP GAINZ:`;
 
       topTotalXpGainz.forEach(({ rsn, xp }, idx) => {
-        content += `\n${idx + 1}. ${rsn} gained ${xp} xp`;
+        content += `\n${idx + 1}. ${rsn} gained ${formatNumberToLength(
+          xp,
+          15
+        )} xp`;
       });
     }
 
@@ -168,9 +172,9 @@ module.exports = {
       content += `\n\nTOP WEIGHTED XP GAINZ:`;
 
       topWeightedXpGainz.forEach(({ rsn, percent }, idx) => {
-        content += `\n${idx + 1}. ${rsn} gained ${roundTo2Decimals(
-          percent
-        )}% total xp`;
+        content += `\n${
+          idx + 1
+        }. ${rsn} increased their total xp by ${roundTo2Decimals(percent)}%`;
       });
     }
 
