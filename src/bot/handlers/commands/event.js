@@ -101,11 +101,11 @@ module.exports = {
     }
 
     const missingStartRsns = Array.from(allStartStatsMap.entries())
-      .filter(([, value]) => !!value)
+      .filter(([, value]) => !value)
       .map(([rsn]) => rsn);
 
     const missingEndRsns = Array.from(allEndStatsMap.entries())
-      .filter(([, value]) => !!value)
+      .filter(([, value]) => !value)
       .map(([rsn]) => rsn);
 
     console.log({ missingStartRsns, missingEndRsns });
@@ -117,20 +117,22 @@ module.exports = {
       const startStats = allStartStatsMap.get(rsn);
       const endStats = allEndStatsMap.get(rsn);
 
+      if (!startStats || !endStats) {
+        return;
+      }
+
       const totalStartXp = parseInt(
         startStats.overall.xp.replace(/,/g, ""),
         10
       );
 
-      if (endStats.overall) {
-        const totalEndXp = parseInt(endStats.overall.xp.replace(/,/g, ""), 10);
+      const totalEndXp = parseInt(endStats.overall.xp.replace(/,/g, ""), 10);
 
-        const total = totalEndXp - totalStartXp;
-        const weighted = (100 * total) / totalStartXp;
+      const total = totalEndXp - totalStartXp;
+      const weighted = (100 * total) / totalStartXp;
 
-        allTotalXpGainz.push({ rsn, xp: total });
-        allWeightedXpGainz.push({ rsn, percent: weighted });
-      }
+      allTotalXpGainz.push({ rsn, xp: total });
+      allWeightedXpGainz.push({ rsn, percent: weighted });
     });
 
     allTotalXpGainz.sort((a, b) => b.xp - a.xp);
