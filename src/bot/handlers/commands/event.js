@@ -160,7 +160,7 @@ module.exports = {
         content += `\n${idx + 1}. ${rsn} gained ${formatNumberToLength(
           xp,
           15
-        )} xp`;
+        ).trim()} xp`;
       });
     }
 
