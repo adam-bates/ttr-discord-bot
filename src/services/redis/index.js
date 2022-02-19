@@ -212,7 +212,7 @@ const Redis = (client) => {
     const existing = await client.get(key(GET_EVENT_DETAILS, name));
 
     if (existing) {
-      return `Event with name "${name}" already exists!`;
+      return `Event \`${name}\` already exists!`;
     }
 
     await client.set(key(GET_EVENT_DETAILS, name), stringify({ name, start }));
@@ -234,13 +234,13 @@ const Redis = (client) => {
     const details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
 
     if (!details) {
-      return `Event with name "${name}" doesn't exist!`;
+      return `Event \`${name}\` doesn't exist!`;
     }
 
     if (details.end) {
       const formatted = fromUnixTimestamp(details.end).toUTCString();
 
-      return `Event with name "${name}" was already ended at ${formatted}`;
+      return `Event \`${name}\` was already ended at ${formatted}`;
     }
 
     await client.set(
@@ -261,11 +261,78 @@ const Redis = (client) => {
     return null;
   };
 
+  const renameEvent = async (name, to) => {
+    const details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+
+    if (!details) {
+      return `Event \`${name}\` doesn't exist!`;
+    }
+
+    details.name = to;
+    await client.set(key(GET_EVENT_DETAILS, name), stringify(details));
+
+    await client.rename(
+      key(GET_EVENT_DETAILS, name),
+      key(GET_EVENT_DETAILS, to)
+    );
+
+    const eventStartKeys = await client.sendCommand([
+      "KEYS",
+      key(GET_EVENT_START_SNAPSHOT, name, "*"),
+    ]);
+
+    const eventEndKeys = await client.sendCommand([
+      "KEYS",
+      key(GET_EVENT_END_SNAPSHOT, name, "*"),
+    ]);
+
+    await Promise.all(
+      eventStartKeys.map(async (k) => {
+        const rsn = k.split("/")[2];
+        await client.rename(k, key(GET_EVENT_START_SNAPSHOT, to, rsn));
+      })
+    );
+
+    await Promise.all(
+      eventEndKeys.map(async (k) => {
+        const rsn = k.split("/")[2];
+        await client.rename(k, key(GET_EVENT_END_SNAPSHOT, to, rsn));
+      })
+    );
+
+    return null;
+  };
+
+  const delEvent = async (name) => {
+    const details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+
+    if (!details) {
+      return `Event \`${name}\` doesn't exist!`;
+    }
+
+    await client.del(key(GET_EVENT_DETAILS, name));
+
+    const eventStartKeys = await client.sendCommand([
+      "KEYS",
+      key(GET_EVENT_START_SNAPSHOT, name, "*"),
+    ]);
+
+    const eventEndKeys = await client.sendCommand([
+      "KEYS",
+      key(GET_EVENT_END_SNAPSHOT, name, "*"),
+    ]);
+
+    await Promise.all(eventStartKeys.map(async (k) => client.del(k)));
+    await Promise.all(eventEndKeys.map(async (k) => client.del(k)));
+
+    return null;
+  };
+
   const addStatsToEvent = async (name, rsn, stats) => {
     const details = await client.get(key(GET_EVENT_DETAILS, name));
 
     if (!details) {
-      return `Event with name "${name}" doesn't exist!`;
+      return `Event \`${name}\` doesn't exist!`;
     }
 
     await client.set(
@@ -366,6 +433,8 @@ const Redis = (client) => {
   client.searchForLevelWithRoleId = searchForLevelWithRoleId;
   client.startEvent = startEvent;
   client.endEvent = endEvent;
+  client.renameEvent = renameEvent;
+  client.delEvent = delEvent;
   client.addStatsToEvent = addStatsToEvent;
   client.getEventDetails = getEventDetails;
   client.getStartEventStatsByRsn = getStartEventStatsByRsn;
