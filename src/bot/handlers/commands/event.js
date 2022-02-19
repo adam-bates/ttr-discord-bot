@@ -156,7 +156,7 @@ module.exports = {
       content += `\n\nTOP TOTAL XP GAINZ:`;
 
       topTotalXpGainz.forEach(({ rsn, xp }, idx) => {
-        content += `${idx + 1}. ${rsn} gained ${xp} xp`;
+        content += `\n${idx + 1}. ${rsn} gained ${xp} xp`;
       });
     }
 
@@ -168,7 +168,7 @@ module.exports = {
       content += `\n\nTOP WEIGHTED XP GAINZ:`;
 
       topWeightedXpGainz.forEach(({ rsn, percent }, idx) => {
-        content += `${idx + 1}. ${rsn} gained ${roundTo2Decimals(
+        content += `\n${idx + 1}. ${rsn} gained ${roundTo2Decimals(
           percent
         )}% total xp`;
       });
