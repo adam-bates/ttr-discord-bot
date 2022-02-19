@@ -82,7 +82,7 @@ module.exports = {
       ),
 
   execute: async ({ redis }, interaction) => {
-    const isPublic = interaction.options.getBoolean("public") === false;
+    const isPublic = interaction.options.getBoolean("public") !== false;
 
     const name = interaction.options.getString("name");
 
