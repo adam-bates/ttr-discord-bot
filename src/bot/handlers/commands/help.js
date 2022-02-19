@@ -49,9 +49,6 @@ Creating & comparing snapshots of levels & xp
 Creating & interacting with raffles:
 - /ttr raffles
 
-Creating & interacting with events:
-- /ttr events
-
 Creating & interacting with voting polls:
 - /ttr polls */
 
@@ -61,22 +58,40 @@ Creating & interacting with voting polls:
 Clan information:
 - /ttr clan
 - /ttr members
-- /ttr setjoindate`;
+- /ttr setjoindate (admin-only)`;
+
+      content += `
+
+Get and manage events:
+- /ttr listevents
+- /ttr event
+- /ttr eventgainz
+- /ttr startevent (admin-only)
+- /ttr endevent (admin-only)
+- /ttr renameevent (admin-only)
+- /ttr unsafe-delevent (admin-only)`;
 
       content += `
 
 Assigning custom roles at an MEE6 level:
-- /ttr setrole
-- /ttr delrole
 - /ttr getrole
 - /ttr getlevel
-- /ttr listroles`;
+- /ttr listroles
+- /ttr setrole (admin-only)
+- /ttr delrole (admin-only)`;
     } else {
       content += `
 
 Get clan information:
 - /ttr clan
 - /ttr members`;
+
+      content += `
+
+Get event information:
+- /ttr listevents
+- /ttr event
+- /ttr eventgainz`;
 
       content += `
 
