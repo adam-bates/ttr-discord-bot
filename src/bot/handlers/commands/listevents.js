@@ -3,7 +3,7 @@ const { fromUnixTimestamp } = require("../../../utils/time");
 module.exports = {
   builder: (command) =>
     command
-      .setName("events")
+      .setName("listevents")
       .setDescription("Get a list of events")
       .addStringOption((option) =>
         option
