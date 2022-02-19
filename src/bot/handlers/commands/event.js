@@ -100,16 +100,6 @@ module.exports = {
       await Promise.all(promises);
     }
 
-    const missingStartRsns = Array.from(allStartStatsMap.entries())
-      .filter(([, value]) => !value)
-      .map(([rsn]) => rsn);
-
-    const missingEndRsns = Array.from(allEndStatsMap.entries())
-      .filter(([, value]) => !value)
-      .map(([rsn]) => rsn);
-
-    console.log({ missingStartRsns, missingEndRsns });
-
     const allTotalXpGainz = [];
     const allWeightedXpGainz = [];
 
