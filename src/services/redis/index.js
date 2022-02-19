@@ -1,7 +1,11 @@
 /* eslint-disable no-param-reassign */
 
 const { createClient } = require("redis");
-const { unixTimestamp, dropTime } = require("../../utils/time");
+const {
+  unixTimestamp,
+  dropTime,
+  fromUnixTimestamp,
+} = require("../../utils/time");
 
 const GET_ALL_PLAYERS = "GetAllPlayers";
 
@@ -204,7 +208,7 @@ const Redis = (client) => {
     return found && found.level;
   };
 
-  const startEvent = async ({ name, start }) => {
+  const startEvent = async (name, start) => {
     const existing = await client.get(key(GET_EVENT_DETAILS, name));
 
     if (existing) {
@@ -226,11 +230,17 @@ const Redis = (client) => {
     return null;
   };
 
-  const endEvent = async ({ name, end }) => {
-    const details = await client.get(key(GET_EVENT_DETAILS, name));
+  const endEvent = async (name, end) => {
+    const details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
 
     if (!details) {
-      return `Event with name ${name} doesn't exist!`;
+      return `Event with name "${name}" doesn't exist!`;
+    }
+
+    if (details.end) {
+      const formatted = fromUnixTimestamp(details.end).toUTCString();
+
+      return `Event with name "${name}" was already ended at ${formatted}`;
     }
 
     await client.set(
@@ -249,6 +259,83 @@ const Redis = (client) => {
     await Promise.all(promises);
 
     return null;
+  };
+
+  const addStatsToEvent = async (name, rsn, stats) => {
+    const details = await client.get(key(GET_EVENT_DETAILS, name));
+
+    if (!details) {
+      return `Event with name "${name}" doesn't exist!`;
+    }
+
+    await client.set(
+      key(GET_EVENT_START_SNAPSHOT, name, rsn),
+      stringify(stats)
+    );
+
+    return null;
+  };
+
+  const getEventDetails = async (name) =>
+    parse(await client.get(key(GET_EVENT_DETAILS, name)));
+
+  const getStartEventStatsByRsn = async (name, rsn) =>
+    parse(await client.get(key(GET_EVENT_START_SNAPSHOT, name, rsn)));
+
+  const getEndEventStatsByRsn = async (name, rsn) =>
+    parse(await client.get(key(GET_EVENT_END_SNAPSHOT, name, rsn)));
+
+  const getAllEventNames = async () => {
+    const detailKeys = await client.sendCommand([
+      "KEYS",
+      key(GET_EVENT_DETAILS, "*"),
+    ]);
+
+    const allEventNames = detailKeys.map(
+      (detailKey) => detailKey.split("/")[1]
+    );
+
+    return allEventNames;
+  };
+
+  const getAllEventDetails = async () => {
+    const allEventNames = await getAllEventNames();
+
+    const promises = allEventNames.map(async (eventName) =>
+      parse(await client.get(key(GET_EVENT_DETAILS, eventName)))
+    );
+
+    return Promise.all(promises);
+  };
+
+  const getCurrentEventNames = async () => {
+    const allEventNames = await getAllEventNames();
+
+    const currentEventNamesSet = new Set(allEventNames);
+
+    const promises = allEventNames.map(async (eventName) => {
+      const eventEndKeys = await client.sendCommand([
+        "KEYS",
+        key(GET_EVENT_END_SNAPSHOT, eventName, "*"),
+      ]);
+
+      if (eventEndKeys && eventEndKeys.length > 0) {
+        currentEventNamesSet.delete(eventName);
+      }
+    });
+    await Promise.all(promises);
+
+    return Array.from(currentEventNamesSet);
+  };
+
+  const getCurrentEventDetails = async () => {
+    const currentEventNames = await getCurrentEventNames();
+
+    const promises = currentEventNames.map(async (eventName) =>
+      parse(await client.get(key(GET_EVENT_DETAILS, eventName)))
+    );
+
+    return Promise.all(promises);
   };
 
   client.getAllPlayers = getAllPlayers;
@@ -279,6 +366,14 @@ const Redis = (client) => {
   client.searchForLevelWithRoleId = searchForLevelWithRoleId;
   client.startEvent = startEvent;
   client.endEvent = endEvent;
+  client.addStatsToEvent = addStatsToEvent;
+  client.getEventDetails = getEventDetails;
+  client.getStartEventStatsByRsn = getStartEventStatsByRsn;
+  client.getEndEventStatsByRsn = getEndEventStatsByRsn;
+  client.getAllEventNames = getAllEventNames;
+  client.getAllEventDetails = getAllEventDetails;
+  client.getCurrentEventNames = getCurrentEventNames;
+  client.getCurrentEventDetails = getCurrentEventDetails;
 
   return client;
 };

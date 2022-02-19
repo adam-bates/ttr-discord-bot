@@ -4,8 +4,8 @@ const { requireMasterUser } = require("./helpers/roles");
 module.exports = {
   builder: (command) =>
     command
-      .setName("startevent")
-      .setDescription("Start tracking all clan memebers stats for an event")
+      .setName("endevent")
+      .setDescription("End tracking all clan memebers stats for an event")
       .addStringOption((option) =>
         option
           .setName("name")
@@ -25,19 +25,19 @@ module.exports = {
     const isPublic = interaction.options.getBoolean("public");
 
     const name = interaction.options.getString("name");
-    const start = unixTimestamp();
+    const end = unixTimestamp();
 
-    const error = await redis.startEvent(name, start);
+    const error = await redis.endEvent(name, end);
 
     if (error) {
       await interaction.reply({ content: `Error: ${error}`, ephemeral: true });
       return;
     }
 
-    const formatted = fromUnixTimestamp(start).toUTCString();
+    const formatted = fromUnixTimestamp(end).toUTCString();
 
     await interaction.reply({
-      content: `Successfully started the event \`${name}\` @ ${formatted}`,
+      content: `Successfully ended the event \`${name}\` @ ${formatted}`,
       ephemeral: !isPublic,
     });
   }),

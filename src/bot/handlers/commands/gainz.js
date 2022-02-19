@@ -80,13 +80,13 @@ module.exports = {
         option
           .setName("public")
           .setDescription(
-            "Make the output of this command public to the server"
+            "(defaults to True for this command) Make the output of this command public to the server"
           )
           .setRequired(false)
       ),
 
   execute: async ({ redis, page, templates }, interaction) => {
-    const isPublic = interaction.options.getBoolean("public");
+    const isPublic = interaction.options.getBoolean("public") !== false;
 
     const requestedRsn = interaction.options.getString("rsn");
     let rsn = requestedRsn;

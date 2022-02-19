@@ -198,6 +198,9 @@ const determineRenames = async ({ redis, removedPlayers, addedPlayers }) => {
 const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
   const redis = await connectRedisClient();
 
+  const oldRsnsSet = new Set(await redis.getAllRsns());
+  const currentEventNames = await redis.getCurrentEventNames();
+
   const players = await fetchClanInfo(process.env.CLAN_NAME);
   // const rsnsSet = new Set(players.map(({ rsn }) => rsn));
 
@@ -239,89 +242,107 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
 
     const stats = await fetchPlayerStats(player.rsn);
 
-    if (stats) {
-      const playerStats = {
-        ...player,
-        ...stats,
-        timestamp,
-      };
+    if (!stats) {
+      console.log("[%d] Not found.", unixTimestamp());
+      return;
+    }
 
-      await redis.setStatsByRsn(player.rsn, playerStats);
+    const playerStats = {
+      ...player,
+      ...stats,
+      timestamp,
+    };
 
-      let isLateWeek = false;
-      let isLateYesterday = false;
-      let isLateToday = false;
+    await redis.setStatsByRsn(player.rsn, playerStats);
 
-      // 10 minutes
-      const TIME_BUFFER = 10 * 60;
+    const isNew = !oldRsnsSet.has(player.rsn);
 
-      if (!isWeekStart) {
-        const week = await redis.getWeekStatsByRsn(player.rsn);
+    if (isNew) {
+      const promises = currentEventNames.map(async (eventName) => {
+        const error = await redis.addStatsToEvent(
+          eventName,
+          player.rsn,
+          playerStats
+        );
 
-        if (!week || expected.week - week.timestamp > TIME_BUFFER) {
-          isLateWeek = true;
+        if (error) {
+          console.error(`Error: ${error}`);
         }
+      });
+      await Promise.all(promises);
+    }
+
+    let isLateWeek = false;
+    let isLateYesterday = false;
+    let isLateToday = false;
+
+    // 10 minutes
+    const TIME_BUFFER = 10 * 60;
+
+    if (!isWeekStart) {
+      const week = await redis.getWeekStatsByRsn(player.rsn);
+
+      if (!week || expected.week - week.timestamp > TIME_BUFFER) {
+        isLateWeek = true;
+      }
+    }
+
+    const today = await redis.getTodayStatsByRsn(player.rsn);
+
+    if (!isDayStart) {
+      if (!today || expected.today - today.timestamp > TIME_BUFFER) {
+        isLateToday = true;
       }
 
-      const today = await redis.getTodayStatsByRsn(player.rsn);
+      const yesterday = await redis.getYesterdayStatsByRsn(player.rsn);
 
-      if (!isDayStart) {
-        if (!today || expected.today - today.timestamp > TIME_BUFFER) {
-          isLateToday = true;
-        }
-
-        const yesterday = await redis.getYesterdayStatsByRsn(player.rsn);
-
-        if (
-          !yesterday ||
-          expected.yesterday - yesterday.timestamp > TIME_BUFFER
-        ) {
-          isLateYesterday = true;
-        }
-      } else if (!today || expected.yesterday - today.timestamp > TIME_BUFFER) {
-        // if `isDayStart`, then `today` actually represents yesterday
+      if (
+        !yesterday ||
+        expected.yesterday - yesterday.timestamp > TIME_BUFFER
+      ) {
         isLateYesterday = true;
       }
-
-      if (isWeekStart || isLateWeek) {
-        await redis.setWeekStatsByRsn(player.rsn, {
-          ...playerStats,
-          late: isLateWeek,
-        });
-      }
-
-      if (isLateYesterday) {
-        await redis.setYesterdayStatsByRsn(player.rsn, {
-          ...playerStats,
-          late: true,
-        });
-      }
-
-      if (isDayStart || isLateToday) {
-        if (isDayStart) {
-          const yesterday = await redis.getTodayStatsByRsn(player.rsn);
-          await redis.setYesterdayStatsByRsn(player.rsn, yesterday);
-        }
-
-        await redis.setTodayStatsByRsn(player.rsn, {
-          ...playerStats,
-          late: isLateToday,
-        });
-      }
-
-      success += 1;
-
-      console.log("[%d] %o", unixTimestamp(), {
-        isLateToday,
-        isLateYesterday,
-        isLateWeek,
-        isDayStart,
-        isWeekStart,
-      });
-      console.log("[%d] Success.", unixTimestamp());
-    } else {
-      console.log("[%d] Not found.", unixTimestamp());
+    } else if (!today || expected.yesterday - today.timestamp > TIME_BUFFER) {
+      // if `isDayStart`, then `today` actually represents yesterday
+      isLateYesterday = true;
     }
+
+    if (isWeekStart || isLateWeek) {
+      await redis.setWeekStatsByRsn(player.rsn, {
+        ...playerStats,
+        late: isLateWeek,
+      });
+    }
+
+    if (isLateYesterday) {
+      await redis.setYesterdayStatsByRsn(player.rsn, {
+        ...playerStats,
+        late: true,
+      });
+    }
+
+    if (isDayStart || isLateToday) {
+      if (isDayStart) {
+        const yesterday = await redis.getTodayStatsByRsn(player.rsn);
+        await redis.setYesterdayStatsByRsn(player.rsn, yesterday);
+      }
+
+      await redis.setTodayStatsByRsn(player.rsn, {
+        ...playerStats,
+        late: isLateToday,
+      });
+    }
+
+    success += 1;
+
+    console.log("[%d] %o", unixTimestamp(), {
+      isLateToday,
+      isLateYesterday,
+      isLateWeek,
+      isDayStart,
+      isWeekStart,
+    });
+    console.log("[%d] Success.", unixTimestamp());
   });
 
   console.log(

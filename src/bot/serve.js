@@ -8,6 +8,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const puppeteer = require("puppeteer");
 const handlebars = require("handlebars");
 const { connectRedisClient } = require("../services/redis");
+const { createCensorService } = require("../services/censor");
 
 const COMMANDS_DIR = path.join(__dirname, "handlers", "commands");
 const EVENTS_DIR = path.join(__dirname, "handlers", "events");
@@ -76,7 +77,7 @@ const buildHandlers = async () => {
   return { commandExecutors, selectMenuHandlers };
 };
 
-const setupEvents = async (client, redis, browser, templates) => {
+const setupEvents = async ({ client, redis, censor, browser, templates }) => {
   const eventFiles = await fs.readdir(EVENTS_DIR);
 
   const page = await browser.newPage();
@@ -88,11 +89,17 @@ const setupEvents = async (client, redis, browser, templates) => {
 
       if (event.once) {
         client.once(event.name, (...args) =>
-          event.execute({ client, redis, browser, page, templates }, ...args)
+          event.execute(
+            { client, redis, censor, browser, page, templates },
+            ...args
+          )
         );
       } else {
         client.on(event.name, (...args) =>
-          event.execute({ client, redis, browser, page, templates }, ...args)
+          event.execute(
+            { client, redis, censor, browser, page, templates },
+            ...args
+          )
         );
       }
     });
@@ -123,6 +130,8 @@ const setupClient = async () => {
 
   const redis = await connectRedisClient();
 
+  const censor = await createCensorService();
+
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox"],
@@ -130,7 +139,7 @@ const setupClient = async () => {
 
   const templates = await compileTemplates();
 
-  await setupEvents(client, redis, browser, templates);
+  await setupEvents({ client, redis, censor, browser, templates });
 
   return client;
 };
