@@ -82,7 +82,7 @@ const getDataOrNull = async (url, errorHandler = console.warn) => {
 
 const fetchClanInfo = async (clanName) => {
   const raw = await getDataOrNull(
-    `http://services.runescape.com/m=clan-hiscores/members_lite.ws?clanName=${clanName}`
+    `https://services.runescape.com/m=clan-hiscores/members_lite.ws?clanName=${clanName}`
   );
 
   if (!raw) {
@@ -95,8 +95,8 @@ const fetchClanInfo = async (clanName) => {
   lines.shift();
 
   const clan = lines.reduce((arr, line) => {
-    const [rsn, rank] = line.split(",");
-    return [...arr, { rsn, rank }];
+    const [rsn, rank, clanXp] = line.split(",");
+    return [...arr, { rsn, rank, clanXp }];
   }, []);
 
   return clan;

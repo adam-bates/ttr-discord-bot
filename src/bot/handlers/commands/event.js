@@ -12,7 +12,7 @@ module.exports = {
         option
           .setName("name")
           .setDescription("Name of the event")
-          .setRequired(true)
+          .setRequired(false)
       )
       .addStringOption((option) =>
         option
@@ -34,7 +34,27 @@ module.exports = {
   execute: async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
-    const name = interaction.options.getString("name");
+    let name = interaction.options.getString("name");
+
+    if (!name) {
+      const currentEventNames = await redis.getCurrentEventNames();
+
+      if (currentEventNames.length === 1) {
+        [name] = currentEventNames;
+      } else if (currentEventNames.length === 0) {
+        await interaction.reply({
+          content: `Error: There are no events currently running. Please specify a \`name\`.`,
+          ephemeral: true,
+        });
+        return;
+      } else {
+        await interaction.reply({
+          content: `Error: There are multiple events currently running, please specify a \`name\`.`,
+          ephemeral: true,
+        });
+        return;
+      }
+    }
 
     const details = await redis.getEventDetails(name);
 

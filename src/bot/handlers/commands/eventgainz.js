@@ -38,18 +38,24 @@ const statKeys = [
 
 const calculateGainz = ({ from, to }) =>
   statKeys.reduce(
-    (gainz, key) => ({
-      ...gainz,
-      [key]:
-        !from[key] || !from[key].xp || !to[key] || !to[key].xp
-          ? "-"
-          : Math.max(
-              parseInt(to[key].xp.replace(/,/g, ""), 10) -
-                parseInt(from[key].xp.replace(/,/g, ""), 10),
-              0
-            ),
-    }),
-    {}
+    (gainz, key) => {
+      let total = "-";
+      let weighted = "-";
+
+      if (from[key] && from[key].xp && to[key] && to[key].xp) {
+        const fromXp = parseInt(from[key].xp.replace(/,/g, ""), 10);
+        const toXp = parseInt(to[key].xp.replace(/,/g, ""), 10);
+
+        total = Math.max(toXp - fromXp, 0);
+        weighted = total / fromXp;
+      }
+
+      return {
+        event: { ...gainz.event, [key]: total },
+        weighted: { ...gainz.weighted, [key]: weighted },
+      };
+    },
+    { event: {}, weighted: {} }
   );
 
 module.exports = {
@@ -61,7 +67,7 @@ module.exports = {
         option
           .setName("name")
           .setDescription("Name of the event")
-          .setRequired(true)
+          .setRequired(false)
       )
       .addStringOption((option) =>
         option
@@ -84,7 +90,27 @@ module.exports = {
   execute: async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public") !== false;
 
-    const name = interaction.options.getString("name");
+    let name = interaction.options.getString("name");
+
+    if (!name) {
+      const currentEventNames = await redis.getCurrentEventNames();
+
+      if (currentEventNames.length === 1) {
+        [name] = currentEventNames;
+      } else if (currentEventNames.length === 0) {
+        await interaction.reply({
+          content: `Error: There are no events currently running. Please specify a \`name\`.`,
+          ephemeral: true,
+        });
+        return;
+      } else {
+        await interaction.reply({
+          content: `Error: There are multiple events currently running, please specify a \`name\`.`,
+          ephemeral: true,
+        });
+        return;
+      }
+    }
 
     const details = await redis.getEventDetails(name);
 
@@ -153,13 +179,14 @@ module.exports = {
       endStats = await redis.getStatsByRsn(rsn);
     }
 
-    const currentStats = (await redis.getStatsByRsn(rsn)) || {};
-    const todayStats = (await redis.getTodayStatsByRsn(rsn)) || {};
+    const gainz = { rsn, event: null, weighted: null };
 
-    const gainz = { rsn };
-
-    gainz.today = calculateGainz({ from: todayStats, to: currentStats });
-    gainz.event = calculateGainz({ from: startStats, to: endStats });
+    const { event, weighted } = calculateGainz({
+      from: startStats,
+      to: endStats,
+    });
+    gainz.event = event;
+    gainz.weighted = weighted;
 
     const formatted_utc________start = fromUnixTimestamp(
       startStats.timestamp
@@ -171,36 +198,6 @@ module.exports = {
 
     const f_evt_name = padStringToLength(name, 13);
     const f_rs_name = padStringToLength(rsn, 12);
-
-    const to_______ovr = formatNumberToLength(gainz.today.overall, 15);
-    const to_______att = formatNumberToLength(gainz.today.attack, 15);
-    const to_______def = formatNumberToLength(gainz.today.defence, 15);
-    const to_______str = formatNumberToLength(gainz.today.strength, 15);
-    const to_______cst = formatNumberToLength(gainz.today.constitution, 15);
-    const to_______rng = formatNumberToLength(gainz.today.ranged, 15);
-    const to_______pry = formatNumberToLength(gainz.today.prayer, 15);
-    const to_______mag = formatNumberToLength(gainz.today.magic, 15);
-    const to_______cok = formatNumberToLength(gainz.today.cooking, 15);
-    const to_______wod = formatNumberToLength(gainz.today.woodcutting, 15);
-    const to_______fch = formatNumberToLength(gainz.today.fletching, 15);
-    const to_______fsh = formatNumberToLength(gainz.today.fishing, 15);
-    const to_______fir = formatNumberToLength(gainz.today.firemaking, 15);
-    const to_______crf = formatNumberToLength(gainz.today.crafting, 15);
-    const to_______smt = formatNumberToLength(gainz.today.smithing, 15);
-    const to_______min = formatNumberToLength(gainz.today.mining, 15);
-    const to_______hrb = formatNumberToLength(gainz.today.herblore, 15);
-    const to_______agl = formatNumberToLength(gainz.today.agility, 15);
-    const to_______thv = formatNumberToLength(gainz.today.thieving, 15);
-    const to_______sly = formatNumberToLength(gainz.today.slayer, 15);
-    const to_______frm = formatNumberToLength(gainz.today.farming, 15);
-    const to_______rnc = formatNumberToLength(gainz.today.runecrafting, 15);
-    const to_______hnt = formatNumberToLength(gainz.today.hunter, 15);
-    const to_______con = formatNumberToLength(gainz.today.construction, 15);
-    const to_______sum = formatNumberToLength(gainz.today.summoning, 15);
-    const to_______dng = formatNumberToLength(gainz.today.dungeoneering, 15);
-    const to_______div = formatNumberToLength(gainz.today.divination, 15);
-    const to_______inv = formatNumberToLength(gainz.today.invention, 15);
-    const to_______arc = formatNumberToLength(gainz.today.archaeology, 15);
 
     const ev_______ovr = formatNumberToLength(gainz.event.overall, 15);
     const ev_______att = formatNumberToLength(gainz.event.attack, 15);
@@ -232,45 +229,72 @@ module.exports = {
     const ev_______inv = formatNumberToLength(gainz.event.invention, 15);
     const ev_______arc = formatNumberToLength(gainz.event.archaeology, 15);
 
-    const td = "TODAY";
-    const ev = "EVENT";
+    const wt_____ovr = formatNumberToLength(gainz.weighted.overall, 13);
+    const wt_____att = formatNumberToLength(gainz.weighted.attack, 13);
+    const wt_____def = formatNumberToLength(gainz.weighted.defence, 13);
+    const wt_____str = formatNumberToLength(gainz.weighted.strength, 13);
+    const wt_____cst = formatNumberToLength(gainz.weighted.constitution, 13);
+    const wt_____rng = formatNumberToLength(gainz.weighted.ranged, 13);
+    const wt_____pry = formatNumberToLength(gainz.weighted.prayer, 13);
+    const wt_____mag = formatNumberToLength(gainz.weighted.magic, 13);
+    const wt_____cok = formatNumberToLength(gainz.weighted.cooking, 13);
+    const wt_____wod = formatNumberToLength(gainz.weighted.woodcutting, 13);
+    const wt_____fch = formatNumberToLength(gainz.weighted.fletching, 13);
+    const wt_____fsh = formatNumberToLength(gainz.weighted.fishing, 13);
+    const wt_____fir = formatNumberToLength(gainz.weighted.firemaking, 13);
+    const wt_____crf = formatNumberToLength(gainz.weighted.crafting, 13);
+    const wt_____smt = formatNumberToLength(gainz.weighted.smithing, 13);
+    const wt_____min = formatNumberToLength(gainz.weighted.mining, 13);
+    const wt_____hrb = formatNumberToLength(gainz.weighted.herblore, 13);
+    const wt_____agl = formatNumberToLength(gainz.weighted.agility, 13);
+    const wt_____thv = formatNumberToLength(gainz.weighted.thieving, 13);
+    const wt_____sly = formatNumberToLength(gainz.weighted.slayer, 13);
+    const wt_____frm = formatNumberToLength(gainz.weighted.farming, 13);
+    const wt_____rnc = formatNumberToLength(gainz.weighted.runecrafting, 13);
+    const wt_____hnt = formatNumberToLength(gainz.weighted.hunter, 13);
+    const wt_____con = formatNumberToLength(gainz.weighted.construction, 13);
+    const wt_____sum = formatNumberToLength(gainz.weighted.summoning, 13);
+    const wt_____dng = formatNumberToLength(gainz.weighted.dungeoneering, 13);
+    const wt_____div = formatNumberToLength(gainz.weighted.divination, 13);
+    const wt_____inv = formatNumberToLength(gainz.weighted.invention, 13);
+    const wt_____arc = formatNumberToLength(gainz.weighted.archaeology, 13);
 
     const content = `
 .---------------------------------------------------.
 | ${f_evt_name} From: ${formatted_utc________start} |
 | ${f_rs_name}    To: ${formatted_utc__________end} |
 |---------------------------------------------------|
-|     SKILL     |      ${td}      |      ${ev}      |
+|     SKILL     |      TOTAL      |    WEIGHTED     |
 |---------------|-----------------------------------|
-| Overall       | ${to_______ovr} | ${ev_______ovr} |
-| Attack        | ${to_______att} | ${ev_______att} |
-| Defence       | ${to_______def} | ${ev_______def} |
-| Strength      | ${to_______str} | ${ev_______str} |
-| Constitution  | ${to_______cst} | ${ev_______cst} |
-| Ranged        | ${to_______rng} | ${ev_______rng} |
-| Prayer        | ${to_______pry} | ${ev_______pry} |
-| Magic         | ${to_______mag} | ${ev_______mag} |
-| Cooking       | ${to_______cok} | ${ev_______cok} |
-| Woodcutting   | ${to_______wod} | ${ev_______wod} |
-| Fletching     | ${to_______fch} | ${ev_______fch} |
-| Fishing       | ${to_______fsh} | ${ev_______fsh} |
-| Firemaking    | ${to_______fir} | ${ev_______fir} |
-| Crafting      | ${to_______crf} | ${ev_______crf} |
-| Smithing      | ${to_______smt} | ${ev_______smt} |
-| Mining        | ${to_______min} | ${ev_______min} |
-| Herblore      | ${to_______hrb} | ${ev_______hrb} |
-| Agility       | ${to_______agl} | ${ev_______agl} |
-| Thieving      | ${to_______thv} | ${ev_______thv} |
-| Slayer        | ${to_______sly} | ${ev_______sly} |
-| Farming       | ${to_______frm} | ${ev_______frm} |
-| Runecrafting  | ${to_______rnc} | ${ev_______rnc} |
-| Hunter        | ${to_______hnt} | ${ev_______hnt} |
-| Construction  | ${to_______con} | ${ev_______con} |
-| Summoning     | ${to_______sum} | ${ev_______sum} |
-| Dungeoneering | ${to_______dng} | ${ev_______dng} |
-| Divination    | ${to_______div} | ${ev_______div} |
-| Invention     | ${to_______inv} | ${ev_______inv} |
-| Archaeology   | ${to_______arc} | ${ev_______arc} |
+| Overall       | ${ev_______ovr} | ${wt_____ovr} % |
+| Attack        | ${ev_______att} | ${wt_____att} % |
+| Defence       | ${ev_______def} | ${wt_____def} % |
+| Strength      | ${ev_______str} | ${wt_____str} % |
+| Constitution  | ${ev_______cst} | ${wt_____cst} % |
+| Ranged        | ${ev_______rng} | ${wt_____rng} % |
+| Prayer        | ${ev_______pry} | ${wt_____pry} % |
+| Magic         | ${ev_______mag} | ${wt_____mag} % |
+| Cooking       | ${ev_______cok} | ${wt_____cok} % |
+| Woodcutting   | ${ev_______wod} | ${wt_____wod} % |
+| Fletching     | ${ev_______fch} | ${wt_____fch} % |
+| Fishing       | ${ev_______fsh} | ${wt_____fsh} % |
+| Firemaking    | ${ev_______fir} | ${wt_____fir} % |
+| Crafting      | ${ev_______crf} | ${wt_____crf} % |
+| Smithing      | ${ev_______smt} | ${wt_____smt} % |
+| Mining        | ${ev_______min} | ${wt_____min} % |
+| Herblore      | ${ev_______hrb} | ${wt_____hrb} % |
+| Agility       | ${ev_______agl} | ${wt_____agl} % |
+| Thieving      | ${ev_______thv} | ${wt_____thv} % |
+| Slayer        | ${ev_______sly} | ${wt_____sly} % |
+| Farming       | ${ev_______frm} | ${wt_____frm} % |
+| Runecrafting  | ${ev_______rnc} | ${wt_____rnc} % |
+| Hunter        | ${ev_______hnt} | ${wt_____hnt} % |
+| Construction  | ${ev_______con} | ${wt_____con} % |
+| Summoning     | ${ev_______sum} | ${wt_____sum} % |
+| Dungeoneering | ${ev_______dng} | ${wt_____dng} % |
+| Divination    | ${ev_______div} | ${wt_____div} % |
+| Invention     | ${ev_______inv} | ${wt_____inv} % |
+| Archaeology   | ${ev_______arc} | ${wt_____arc} % |
 '---------------------------------------------------'`;
 
     await interaction.editReply({

@@ -8,6 +8,7 @@ const {
 } = require("../../utils/time");
 
 const GET_ALL_PLAYERS = "GetAllPlayers";
+const GET_DELETED_PLAYERS = "GetDeletedPlayers";
 
 const GET_RSN = "GetRsn";
 
@@ -138,6 +139,8 @@ const Redis = (client) => {
         await client.del(key(GET_TODAY_STATS, fromRsn));
         await client.del(key(GET_YESTERDAY_STATS, fromRsn));
         await client.del(key(GET_WEEK_STATS, fromRsn));
+
+        // TODO: Update event keys
       })
     );
 
@@ -145,6 +148,7 @@ const Redis = (client) => {
 
     const rsnsSet = new Set(players.map(({ rsn }) => rsn));
     const removedRsns = oldPlayers.filter(({ rsn }) => !rsnsSet.has(rsn));
+    const removedPlayers = removedRsns.map((rsn) => oldPlayersMap.get(rsn));
 
     await client.set(
       GET_ALL_PLAYERS,
@@ -172,10 +176,12 @@ const Redis = (client) => {
         await client.del(key(GET_RSN, userId));
       }
 
-      // Note: Don't delete snapshots! They may be used in event results.
+      // Note: Don't delete event snapshots to maintain event results
     });
 
     await Promise.all(promises);
+
+    await client.set(GET_DELETED_PLAYERS, stringify(removedPlayers));
   };
 
   const getRoleIdByLevel = async (level) => client.get(key(GET_ROLE_ID, level));
@@ -230,11 +236,42 @@ const Redis = (client) => {
     return null;
   };
 
-  const endEvent = async (name, end) => {
-    const details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+  const findMatchingEventName = async (name) => {
+    const nameLc = name.toLowerCase();
+
+    const eventKeys = await client.sendCommand([
+      "KEYS",
+      key(GET_EVENT_DETAILS, "*"),
+    ]);
+
+    let match = null;
+    eventKeys.some((k) => {
+      const eventName = k.split("/")[1];
+      const isMatch = eventName.toLowerCase() === nameLc;
+
+      if (isMatch) {
+        match = eventName;
+      }
+      return isMatch;
+    });
+
+    return match;
+  };
+
+  const endEvent = async (eventName, end) => {
+    let name = eventName;
+    let details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
 
     if (!details) {
-      return `Event \`${name}\` doesn't exist!`;
+      name = findMatchingEventName(eventName);
+
+      if (name) {
+        details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+      }
+    }
+
+    if (!details) {
+      return `Event \`${eventName}\` doesn't exist!`;
     }
 
     if (details.end) {
@@ -261,11 +298,20 @@ const Redis = (client) => {
     return null;
   };
 
-  const renameEvent = async (name, to) => {
-    const details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+  const renameEvent = async (eventName, to) => {
+    let name = eventName;
+    let details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
 
     if (!details) {
-      return `Event \`${name}\` doesn't exist!`;
+      name = findMatchingEventName(eventName);
+
+      if (name) {
+        details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+      }
+    }
+
+    if (!details) {
+      return `Event \`${eventName}\` doesn't exist!`;
     }
 
     details.name = to;
@@ -303,11 +349,20 @@ const Redis = (client) => {
     return null;
   };
 
-  const delEvent = async (name) => {
-    const details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+  const delEvent = async (eventName) => {
+    let name = eventName;
+    let details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
 
     if (!details) {
-      return `Event \`${name}\` doesn't exist!`;
+      name = findMatchingEventName(eventName);
+
+      if (name) {
+        details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+      }
+    }
+
+    if (!details) {
+      return `Event \`${eventName}\` doesn't exist!`;
     }
 
     await client.del(key(GET_EVENT_DETAILS, name));
@@ -328,11 +383,20 @@ const Redis = (client) => {
     return null;
   };
 
-  const addStatsToEvent = async (name, rsn, stats) => {
-    const details = await client.get(key(GET_EVENT_DETAILS, name));
+  const addStatsToEvent = async (eventName, rsn, stats) => {
+    let name = eventName;
+    let details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
 
     if (!details) {
-      return `Event \`${name}\` doesn't exist!`;
+      name = findMatchingEventName(eventName);
+
+      if (name) {
+        details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+      }
+    }
+
+    if (!details) {
+      return `Event \`${eventName}\` doesn't exist!`;
     }
 
     await client.set(
@@ -343,14 +407,50 @@ const Redis = (client) => {
     return null;
   };
 
-  const getEventDetails = async (name) =>
-    parse(await client.get(key(GET_EVENT_DETAILS, name)));
+  const getEventDetails = async (eventName) => {
+    let name = eventName;
+    let details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
 
-  const getStartEventStatsByRsn = async (name, rsn) =>
-    parse(await client.get(key(GET_EVENT_START_SNAPSHOT, name, rsn)));
+    if (!details) {
+      name = findMatchingEventName(eventName);
 
-  const getEndEventStatsByRsn = async (name, rsn) =>
-    parse(await client.get(key(GET_EVENT_END_SNAPSHOT, name, rsn)));
+      if (name) {
+        details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+      }
+    }
+
+    return details;
+  };
+
+  const getStartEventStatsByRsn = async (eventName) => {
+    let name = eventName;
+    let snapshot = parse(await client.get(key(GET_EVENT_START_SNAPSHOT, name)));
+
+    if (!snapshot) {
+      name = findMatchingEventName(eventName);
+
+      if (name) {
+        snapshot = parse(await client.get(key(GET_EVENT_START_SNAPSHOT, name)));
+      }
+    }
+
+    return snapshot;
+  };
+
+  const getEndEventStatsByRsn = async (eventName) => {
+    let name = eventName;
+    let snapshot = parse(await client.get(key(GET_EVENT_END_SNAPSHOT, name)));
+
+    if (!snapshot) {
+      name = findMatchingEventName(eventName);
+
+      if (name) {
+        snapshot = parse(await client.get(key(GET_EVENT_END_SNAPSHOT, name)));
+      }
+    }
+
+    return snapshot;
+  };
 
   const getAllEventNames = async () => {
     const detailKeys = await client.sendCommand([

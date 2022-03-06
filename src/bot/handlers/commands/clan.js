@@ -12,7 +12,7 @@ module.exports = {
           .setRequired(false)
       ),
 
-  execute: async ({ redis }, interaction) => {
+  execute: async (_, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
     // const rsns = await redis.getAllRsns();
