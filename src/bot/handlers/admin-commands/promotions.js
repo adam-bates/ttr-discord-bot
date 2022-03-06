@@ -136,11 +136,11 @@ module.exports = {
       }
 
       if (toRankTimeLevel > toRankXpLevel) {
-        content += `\n- ${player.rsn}: ${toRankTime} (time in clan)`;
+        content += `\nRSN: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankTime}\n- Reason: Time in clan.\n`;
       } else if (toRankTimeLevel < toRankXpLevel) {
-        content += `\n- ${player.rsn}: ${toRankXp} (clan xp)`;
+        content += `\nRSN: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankXp}\n- Reason: Clan xp.\n`;
       } else {
-        content += `\n- ${player.rsn}: ${toRankTime} (time in clan & clan xp)`;
+        content += `\nRSN: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankTime}\n- Reason: Time in clan & Clan xp.\n`;
       }
     });
 
