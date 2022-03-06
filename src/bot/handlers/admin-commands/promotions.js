@@ -30,6 +30,12 @@ const CAPTAIN_MIN_XP = 100 * 1000000; // 100 mill
 const GENERAL_MIN_DAYS = 24 * 7; // 24 weeks
 const GENERAL_MIN_XP = 200 * 1000000; // 200 mill
 
+const CORPORAL_FMT = `${CORPORAL} (Min 4 weeks or 15 mill clan xp)`;
+const SERGEANT_FMT = `${SERGEANT} (Min 6 weeks or 25 mill clan xp)`;
+const LIEUTENANT_FMT = `${LIEUTENANT} (Min 8 weeks or 50 mill clan xp)`;
+const CAPTAIN_FMT = `${CAPTAIN} (Min 12 weeks or 100 mill clan xp)`;
+const GENERAL_FMT = `${GENERAL} (Min 24 weeks or 200 mill clan xp)`;
+
 module.exports = {
   builder: (command) =>
     command
@@ -98,19 +104,19 @@ module.exports = {
       let toRankTimeLevel = 0;
       if (isTime) {
         if (days >= GENERAL_MIN_DAYS) {
-          toRankTime = GENERAL;
+          toRankTime = GENERAL_FMT;
           toRankTimeLevel = 5;
         } else if (days >= CAPTAIN_MIN_DAYS) {
-          toRankTime = CAPTAIN;
+          toRankTime = CAPTAIN_FMT;
           toRankTimeLevel = 4;
         } else if (days >= LIEUTENANT_MIN_DAYS) {
-          toRankTime = LIEUTENANT;
+          toRankTime = LIEUTENANT_FMT;
           toRankTimeLevel = 3;
         } else if (days >= SERGEANT_MIN_DAYS) {
-          toRankTime = SERGEANT;
+          toRankTime = SERGEANT_FMT;
           toRankTimeLevel = 2;
         } else if (days >= CORPORAL_MIN_DAYS) {
-          toRankTime = CORPORAL;
+          toRankTime = CORPORAL_FMT;
           toRankTimeLevel = 1;
         }
       }
@@ -119,19 +125,19 @@ module.exports = {
       let toRankXpLevel = 0;
       if (isXp) {
         if (player.clanXp >= GENERAL_MIN_XP) {
-          toRankXp = GENERAL;
+          toRankXp = GENERAL_FMT;
           toRankXpLevel = 5;
         } else if (player.clanXp >= CAPTAIN_MIN_XP) {
-          toRankXp = CAPTAIN;
+          toRankXp = CAPTAIN_FMT;
           toRankXpLevel = 4;
         } else if (player.clanXp >= LIEUTENANT_MIN_XP) {
-          toRankXp = LIEUTENANT;
+          toRankXp = LIEUTENANT_FMT;
           toRankXpLevel = 3;
         } else if (player.clanXp >= SERGEANT_MIN_XP) {
-          toRankXp = SERGEANT;
+          toRankXp = SERGEANT_FMT;
           toRankXpLevel = 2;
         } else if (player.clanXp >= CORPORAL_MIN_XP) {
-          toRankXp = CORPORAL;
+          toRankXp = CORPORAL_FMT;
           toRankXpLevel = 1;
         }
       }
