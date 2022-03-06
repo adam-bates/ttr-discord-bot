@@ -4,6 +4,7 @@ const {
   fromUnixTimestamp,
   dropTime,
 } = require("../../../utils/time");
+const { formatNumberToLength } = require("../../../utils/format");
 
 const RECRUIT = "Recruit";
 const CORPORAL = "Corporal";
@@ -136,11 +137,13 @@ module.exports = {
       }
 
       if (toRankTimeLevel > toRankXpLevel) {
-        content += `\nRSN: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankTime}\n- Reason: Time in clan.\n`;
+        content += `\n**RSN**: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankTime}\n- Reason: Time in clan (${days} days)\n`;
       } else if (toRankTimeLevel < toRankXpLevel) {
-        content += `\nRSN: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankXp}\n- Reason: Clan xp.\n`;
+        const clanXp = formatNumberToLength(player.clanXp, 15).trim();
+        content += `\n**RSN**: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankXp}\n- Reason: Clan xp (${clanXp})\n`;
       } else {
-        content += `\nRSN: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankTime}\n- Reason: Time in clan & Clan xp.\n`;
+        const clanXp = formatNumberToLength(player.clanXp, 15).trim();
+        content += `\n**RSN**: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankTime}\n- Reason: Time in clan (${days} days) & Clan xp (${clanXp})\n`;
       }
     });
 
