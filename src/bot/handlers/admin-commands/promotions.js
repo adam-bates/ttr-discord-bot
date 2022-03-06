@@ -53,7 +53,7 @@ module.exports = {
   execute: requireModUser(async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
-    let content = `**Ready for Promotion!**\n`;
+    let content = "";
 
     const players = await redis.getAllPlayers();
 
@@ -153,6 +153,16 @@ module.exports = {
       }
     });
 
-    await interaction.reply({ content, ephemeral: !isPublic });
+    if (content.trim().length === 0) {
+      await interaction.reply({
+        content: `**There are no pending promotions.**\n${content}`,
+        ephemeral: !isPublic,
+      });
+    } else {
+      await interaction.reply({
+        content: `**Ready for Promotion!**\n${content}`,
+        ephemeral: !isPublic,
+      });
+    }
   }),
 };
