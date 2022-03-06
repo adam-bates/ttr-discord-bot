@@ -137,13 +137,13 @@ module.exports = {
       }
 
       if (toRankTimeLevel > toRankXpLevel) {
-        content += `\n**RSN**: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankTime}\n- Reason: Time in clan (${days} days)\n`;
+        content += `\n**RSN**: _${player.rsn}_\n- From: _${player.rank}_\n- To: _${toRankTime}_\n- Reason: _Time in clan (${days} days)_\n`;
       } else if (toRankTimeLevel < toRankXpLevel) {
         const clanXp = formatNumberToLength(player.clanXp, 15).trim();
-        content += `\n**RSN**: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankXp}\n- Reason: Clan xp (${clanXp})\n`;
+        content += `\n**RSN**: _${player.rsn}_\n- From: _${player.rank}_\n- To: _${toRankXp}_\n- Reason: _Clan xp (${clanXp} xp)_\n`;
       } else {
         const clanXp = formatNumberToLength(player.clanXp, 15).trim();
-        content += `\n**RSN**: ${player.rsn}\n- From: ${player.rank}\n- To: ${toRankTime}\n- Reason: Time in clan (${days} days) & Clan xp (${clanXp})\n`;
+        content += `\n**RSN**: _${player.rsn}_\n- From: _${player.rank}_\n- To: _${toRankTime}_\n- Reason: _Time in clan (${days} days) & Clan xp (${clanXp} xp)_\n`;
       }
     });
 
