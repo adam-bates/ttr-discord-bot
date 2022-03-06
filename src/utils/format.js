@@ -22,7 +22,9 @@ const formatNumberToLength = (number, length) => {
   let output = `${number}`;
 
   if (number < 1000) {
-    // NO-OP
+    if (output.length > length && output.includes(".")) {
+      output = output.slice(0, length);
+    }
   } else if (number < 1000000) {
     const thousands = Math.floor(number / 1000) % 1000;
     const hundreds = Math.floor(number / 1) % 1000;
@@ -288,19 +290,6 @@ const formatNumberToLength = (number, length) => {
         }
       }
     }
-  }
-
-  const toRemove = output.length - length;
-
-  if (toRemove > 0 && `${number}`.includes(".")) {
-    const scale = 10 ** toRemove;
-
-    const leftOutput = output.split(".")[0];
-
-    let decimals = parseInt(`${number}`.split(".")[1], 10);
-    decimals = Math.round(decimals / scale) * scale;
-
-    output = `${leftOutput}.${decimals}`;
   }
 
   while (output.length < length) {
