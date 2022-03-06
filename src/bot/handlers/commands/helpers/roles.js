@@ -1,4 +1,4 @@
-const isMasterUser = async (client, interaction, shouldReply = true) => {
+const isUserRole = async (roleId, client, interaction, shouldReply = true) => {
   if (!interaction.guildId) {
     await interaction.reply({
       content: `Error: Protected commands must be run within a server`,
@@ -15,19 +15,20 @@ const isMasterUser = async (client, interaction, shouldReply = true) => {
     return false;
   }
 
-  const isMaster = interaction.member.roles.cache.some(
-    (r) => process.env.MASTER_ROLE_ID === r.id
-  );
+  const isRole = interaction.member.roles.cache.some((r) => roleId === r.id);
 
-  if (!isMaster && shouldReply) {
+  if (!isRole && shouldReply) {
     await interaction.reply({
       content: "Error! Invalid permissions.",
       ephemeral: true,
     });
   }
 
-  return isMaster;
+  return isRole;
 };
+
+const isMasterUser = async (client, interaction, shouldReply = true) =>
+  isUserRole(process.env.MASTER_ROLE_ID, client, interaction, shouldReply);
 
 const requireMasterUser =
   (execute) =>
@@ -37,7 +38,21 @@ const requireMasterUser =
     }
   };
 
+const isModUser = async (client, interaction, shouldReply = true) =>
+  isUserRole(process.env.MOD_ROLE_ID, client, interaction, shouldReply) ||
+  isMasterUser(client, interaction, shouldReply);
+
+const requireModUser =
+  (execute) =>
+  async ({ client, ...rest }, interaction) => {
+    if (await isModUser(client, interaction)) {
+      await execute({ client, ...rest }, interaction);
+    }
+  };
+
 module.exports = {
   isMasterUser,
   requireMasterUser,
+  isModUser,
+  requireModUser,
 };
