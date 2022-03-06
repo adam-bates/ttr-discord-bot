@@ -140,7 +140,29 @@ const Redis = (client) => {
         await client.del(key(GET_YESTERDAY_STATS, fromRsn));
         await client.del(key(GET_WEEK_STATS, fromRsn));
 
-        // TODO: Update event keys
+        const eventStartKeys = await client.sendCommand([
+          "KEYS",
+          key(GET_EVENT_START_SNAPSHOT, "*", fromRsn),
+        ]);
+
+        const eventEndKeys = await client.sendCommand([
+          "KEYS",
+          key(GET_EVENT_END_SNAPSHOT, "*", fromRsn),
+        ]);
+
+        await Promise.all(
+          eventStartKeys.map(async (k) => {
+            const event = k.split("/")[1];
+            await client.rename(k, key(GET_EVENT_START_SNAPSHOT, event, toRsn));
+          })
+        );
+
+        await Promise.all(
+          eventEndKeys.map(async (k) => {
+            const event = k.split("/")[1];
+            await client.rename(k, key(GET_EVENT_END_SNAPSHOT, event, toRsn));
+          })
+        );
       })
     );
 

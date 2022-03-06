@@ -49,59 +49,55 @@ const CLUE_SCROLL_KEYS = [
 const getRenameStatBuffer = (key, value) => {
   if (SKILL_KEYS.includes(key)) {
     if (value > 13000000) {
-      return 12000000;
+      return 150000;
     }
     if (value > 1000000) {
-      return 6000000;
+      return 125000;
     }
     if (value > 6000000) {
-      return 3000000;
+      return 100000;
     }
     if (value > 3000000) {
-      return 1500000;
+      return 75000;
     }
     if (value > 1500000) {
-      return 750000;
+      return 50000;
     }
 
-    return 400000;
+    return 25000;
   }
 
   if (key === OVERALL_KEY) {
     if (value > 50000000) {
-      return 500000000;
+      return 225000;
     }
     if (value > 20000000) {
-      return 200000000;
+      return 200000;
     }
     if (value > 13000000) {
-      return 12000000;
+      return 175000;
     }
     if (value > 1000000) {
-      return 6000000;
+      return 150000;
     }
     if (value > 6000000) {
-      return 3000000;
+      return 125000;
     }
     if (value > 3000000) {
-      return 1500000;
+      return 100000;
     }
     if (value > 1500000) {
-      return 750000;
+      return 75000;
     }
 
-    return 400000;
+    return 50000;
   }
 
   if (CLUE_SCROLL_KEYS.includes(key)) {
-    if (value > 500) {
-      return 250;
-    }
-
-    return 150;
+    return 3;
   }
 
-  return null;
+  return 0;
 };
 
 const wait = promisify(setTimeout);
@@ -174,7 +170,7 @@ const determineRenames = async ({ redis, removedPlayers, addedPlayers }) => {
 
             return (
               value <= addedRsnStats[key] &&
-              (!buffer || value >= addedRsnStats[key] + buffer)
+              addedRsnStats[key] <= value + buffer
             );
           });
 
@@ -198,25 +194,24 @@ const determineRenames = async ({ redis, removedPlayers, addedPlayers }) => {
 const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
   const redis = await connectRedisClient();
 
-  const oldRsnsSet = new Set(await redis.getAllRsns());
   const currentEventNames = await redis.getCurrentEventNames();
 
   const players = await fetchClanInfo(process.env.CLAN_NAME);
-  // const rsnsSet = new Set(players.map(({ rsn }) => rsn));
+  const rsnsSet = new Set(players.map(({ rsn }) => rsn));
 
-  // const oldPlayers = await redis.getAllPlayers();
-  // const oldRsnsSet = new Set(oldPlayers.map(({ rsn }) => rsn));
+  const oldPlayers = await redis.getAllPlayers();
+  const oldRsnsSet = new Set(oldPlayers.map(({ rsn }) => rsn));
 
-  // const removedPlayers = oldPlayers.filter(({ rsn }) => !rsnsSet.has(rsn));
-  // const addedPlayers = players.filter(({ rsn }) => !oldRsnsSet.has(rsn));
+  const removedPlayers = oldPlayers.filter(({ rsn }) => !rsnsSet.has(rsn));
+  const addedPlayers = players.filter(({ rsn }) => !oldRsnsSet.has(rsn));
 
-  // const renames = await determineRenames({
-  //   redis,
-  //   removedPlayers,
-  //   addedPlayers,
-  // });
+  const renames = await determineRenames({
+    redis,
+    removedPlayers,
+    addedPlayers,
+  });
 
-  await redis.updatePlayers(players);
+  await redis.updatePlayers(players, { renames });
 
   const timestamp = unixTimestamp();
   const expected = {
