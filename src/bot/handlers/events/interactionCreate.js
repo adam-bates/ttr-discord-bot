@@ -1,13 +1,17 @@
 module.exports = {
   name: "interactionCreate",
   execute: async ({ client, ...rest }, interaction) => {
-    if (
-      interaction.isCommand() &&
-      interaction.commandName === process.env.COMMAND_NAME
-    ) {
-      const execute = client.commandExecutors.get(
-        interaction.options.getSubcommand()
-      );
+    if (interaction.isCommand()) {
+      let execute = null;
+      if (interaction.commandName === process.env.COMMAND_NAME) {
+        execute = client.commandExecutors.get(
+          interaction.options.getSubcommand()
+        );
+      } else if (interaction.commandName === process.env.ADMINCOMMAND_NAME) {
+        execute = client.adminCommandExecutors.get(
+          interaction.options.getSubcommand()
+        );
+      }
 
       if (!execute) {
         return;
@@ -19,7 +23,11 @@ module.exports = {
         console.error(error);
       }
     } else if (interaction.isSelectMenu()) {
-      const handle = client.selectMenuHandlers.get(interaction.customId);
+      let handle = client.selectMenuHandlers.get(interaction.customId);
+
+      if (!handle) {
+        handle = client.adminSelectMenuHandlers.get(interaction.customId);
+      }
 
       if (!handle) {
         return;

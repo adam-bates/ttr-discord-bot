@@ -11,6 +11,7 @@ const { connectRedisClient } = require("../services/redis");
 const { createCensorService } = require("../services/censor");
 
 const COMMANDS_DIR = path.join(__dirname, "handlers", "commands");
+const ADMIN_COMMANDS_DIR = path.join(__dirname, "handlers", "admin-commands");
 const EVENTS_DIR = path.join(__dirname, "handlers", "events");
 const TEMPLATES_DIR = path.join(
   __dirname,
@@ -42,7 +43,7 @@ const compileTemplates = async () => {
 const buildHandlers = async () => {
   const command = new SlashCommandBuilder()
     .setName(process.env.COMMAND_NAME)
-    .setDescription("Custom commands for the TTR Discord");
+    .setDescription("General commands for the TTR Discord");
 
   const commandExecutors = new Map();
   const selectMenuHandlers = new Map();
@@ -74,7 +75,46 @@ const buildHandlers = async () => {
       }
     });
 
-  return { commandExecutors, selectMenuHandlers };
+  const adminCommand = new SlashCommandBuilder()
+    .setName(process.env.ADMIN_COMMAND_NAME)
+    .setDescription("Admin commands for the TTR Discord");
+
+  const adminCommandExecutors = new Map();
+  const adminSelectMenuHandlers = new Map();
+
+  const adminCommandFiles = await fs.readdir(ADMIN_COMMANDS_DIR);
+
+  adminCommandFiles
+    .filter((file) => file.endsWith(".js"))
+    .forEach((file) => {
+      const subcommand = require(path.join(ADMIN_COMMANDS_DIR, file));
+
+      if (subcommand.disabled) {
+        return;
+      }
+
+      if (subcommand.builder) {
+        adminCommand.addSubcommand(subcommand.builder);
+
+        adminCommandExecutors.set(
+          adminCommand.options[adminCommand.options.length - 1].name,
+          subcommand.execute
+        );
+      }
+
+      if (subcommand.selectMenuHandlers) {
+        subcommand.selectMenuHandlers.forEach(([name, handler]) =>
+          adminSelectMenuHandlers.set(name, handler)
+        );
+      }
+    });
+
+  return {
+    commandExecutors,
+    selectMenuHandlers,
+    adminCommandExecutors,
+    adminSelectMenuHandlers,
+  };
 };
 
 const setupEvents = async ({ client, redis, censor, browser, templates }) => {
@@ -123,10 +163,17 @@ const setupClient = async () => {
     ],
   });
 
-  const { commandExecutors, selectMenuHandlers } = await buildHandlers();
+  const {
+    commandExecutors,
+    selectMenuHandlers,
+    adminCommandExecutors,
+    adminSelectMenuHandlers,
+  } = await buildHandlers();
 
   client.commandExecutors = commandExecutors;
   client.selectMenuHandlers = selectMenuHandlers;
+  client.adminCommandExecutors = adminCommandExecutors;
+  client.adminSelectMenuHandlers = adminSelectMenuHandlers;
 
   const redis = await connectRedisClient();
 
