@@ -42,7 +42,7 @@ const calculateGainz = ({ from, to }) =>
       let total = "-";
       let weighted = "-";
 
-      if (from[key] && from[key].xp && to[key] && to[key].xp) {
+      if (from && from[key] && from[key].xp && to && to[key] && to[key].xp) {
         const fromXp = parseInt(from[key].xp.replace(/,/g, ""), 10);
         const toXp = parseInt(to[key].xp.replace(/,/g, ""), 10);
 

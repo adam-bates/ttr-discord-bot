@@ -407,45 +407,53 @@ const Redis = (client) => {
     return null;
   };
 
-  const getEventDetails = async (eventName) => {
+  const getEventDetails = async (eventName, rsn) => {
     let name = eventName;
-    let details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+    let details = parse(await client.get(key(GET_EVENT_DETAILS, name, rsn)));
 
     if (!details) {
       name = findMatchingEventName(eventName);
 
       if (name) {
-        details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+        details = parse(await client.get(key(GET_EVENT_DETAILS, name, rsn)));
       }
     }
 
     return details;
   };
 
-  const getStartEventStatsByRsn = async (eventName) => {
+  const getStartEventStatsByRsn = async (eventName, rsn) => {
     let name = eventName;
-    let snapshot = parse(await client.get(key(GET_EVENT_START_SNAPSHOT, name)));
+    let snapshot = parse(
+      await client.get(key(GET_EVENT_START_SNAPSHOT, name, rsn))
+    );
 
     if (!snapshot) {
       name = findMatchingEventName(eventName);
 
       if (name) {
-        snapshot = parse(await client.get(key(GET_EVENT_START_SNAPSHOT, name)));
+        snapshot = parse(
+          await client.get(key(GET_EVENT_START_SNAPSHOT, name, rsn))
+        );
       }
     }
 
     return snapshot;
   };
 
-  const getEndEventStatsByRsn = async (eventName) => {
+  const getEndEventStatsByRsn = async (eventName, rsn) => {
     let name = eventName;
-    let snapshot = parse(await client.get(key(GET_EVENT_END_SNAPSHOT, name)));
+    let snapshot = parse(
+      await client.get(key(GET_EVENT_END_SNAPSHOT, name, rsn))
+    );
 
     if (!snapshot) {
       name = findMatchingEventName(eventName);
 
       if (name) {
-        snapshot = parse(await client.get(key(GET_EVENT_END_SNAPSHOT, name)));
+        snapshot = parse(
+          await client.get(key(GET_EVENT_END_SNAPSHOT, name, rsn))
+        );
       }
     }
 
