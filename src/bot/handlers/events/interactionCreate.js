@@ -7,7 +7,7 @@ module.exports = {
         execute = client.commandExecutors.get(
           interaction.options.getSubcommand()
         );
-      } else if (interaction.commandName === process.env.ADMINCOMMAND_NAME) {
+      } else if (interaction.commandName === process.env.ADMIN_COMMAND_NAME) {
         execute = client.adminCommandExecutors.get(
           interaction.options.getSubcommand()
         );
