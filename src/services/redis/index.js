@@ -407,15 +407,15 @@ const Redis = (client) => {
     return null;
   };
 
-  const getEventDetails = async (eventName, rsn) => {
+  const getEventDetails = async (eventName) => {
     let name = eventName;
-    let details = parse(await client.get(key(GET_EVENT_DETAILS, name, rsn)));
+    let details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
 
     if (!details) {
       name = findMatchingEventName(eventName);
 
       if (name) {
-        details = parse(await client.get(key(GET_EVENT_DETAILS, name, rsn)));
+        details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
       }
     }
 
