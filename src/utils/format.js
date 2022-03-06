@@ -290,6 +290,19 @@ const formatNumberToLength = (number, length) => {
     }
   }
 
+  const toRemove = output.length - length;
+
+  if (toRemove > 0 && `${number}`.includes(".")) {
+    const scale = 10 ** toRemove;
+
+    const leftOutput = output.split(".")[0];
+
+    let decimals = parseInt(`${number}`.split(".")[1], 10);
+    decimals = Math.round(decimals / scale) * scale;
+
+    output = `${leftOutput}.${decimals}`;
+  }
+
   while (output.length < length) {
     output = ` ${output}`;
   }
