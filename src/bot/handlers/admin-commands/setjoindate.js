@@ -1,4 +1,4 @@
-const { requireMasterUser } = require("./helpers/roles");
+const { requireModUser } = require("./helpers/roles");
 const { unixTimestamp, dropTime } = require("../../../utils/time");
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
           .setRequired(false)
       ),
 
-  execute: requireMasterUser(async ({ redis }, interaction) => {
+  execute: requireModUser(async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
     const requestedDate = new Date(interaction.options.getString("date"));

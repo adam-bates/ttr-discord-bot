@@ -1,4 +1,4 @@
-const { isMasterUser } = require("./helpers/roles");
+const { isMasterUser } = require("../admin-commands/helpers/roles");
 
 module.exports = {
   builder: (command) =>

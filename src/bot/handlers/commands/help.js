@@ -1,5 +1,3 @@
-const { isMasterUser } = require("./helpers/roles");
-
 module.exports = {
   builder: (command) =>
     command
@@ -14,11 +12,11 @@ module.exports = {
           .setRequired(false)
       ),
 
-  execute: async ({ client }, interaction) => {
+  execute: async (_, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
     let content = `\`\`\`
-Custom Discord Bot for the Runescape clan: The Twisted Republic
+General bot commands for the Runescape clan: The Twisted Republic
 
 - All commands are accessed using /ttr
 - As you type out a command, Discord shows the documentation for that command and its options
@@ -52,56 +50,26 @@ Creating & interacting with raffles:
 Creating & interacting with voting polls:
 - /ttr polls */
 
-    if (!isPublic && isMasterUser(client, interaction)) {
-      content += `
-
-Clan information:
-- /ttr clan
-- /ttr members
-- /ttr rank
-- /ttr setjoindate (admin-only)`;
-
-      content += `
-
-Get and manage events:
-- /ttr listevents
-- /ttr event
-- /ttr eventgainz
-- /ttr startevent (admin-only)
-- /ttr endevent (admin-only)
-- /ttr renameevent (admin-only)
-- /ttr unsafe-delevent (admin-only)`;
-
-      content += `
-
-Assigning custom roles at an MEE6 level:
-- /ttr getrole
-- /ttr getlevel
-- /ttr listroles
-- /ttr setrole (admin-only)
-- /ttr delrole (admin-only)`;
-    } else {
-      content += `
+    content += `
 
 Get clan information:
 - /ttr clan
 - /ttr members
 - /ttr rank`;
 
-      content += `
+    content += `
 
 Get event information:
 - /ttr listevents
 - /ttr event
 - /ttr eventgainz`;
 
-      content += `
+    content += `
 
 Get custom roles for MEE6 levels:
 - /ttr getrole
 - /ttr getlevel
 - /ttr listroles`;
-    }
 
     content += `
 

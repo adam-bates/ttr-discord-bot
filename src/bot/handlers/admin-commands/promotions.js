@@ -43,7 +43,7 @@ module.exports = {
           .setRequired(false)
       ),
 
-  execute: requireModUser(async ({ client, redis }, interaction) => {
+  execute: requireModUser(async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
     let content = `**Ready for Promotion!**\n`;
