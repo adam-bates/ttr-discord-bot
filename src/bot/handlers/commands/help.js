@@ -58,6 +58,7 @@ Creating & interacting with voting polls:
 Clan information:
 - /ttr clan
 - /ttr members
+- /ttr rank
 - /ttr setjoindate (admin-only)`;
 
       content += `
@@ -84,7 +85,8 @@ Assigning custom roles at an MEE6 level:
 
 Get clan information:
 - /ttr clan
-- /ttr members`;
+- /ttr members
+- /ttr rank`;
 
       content += `
 
