@@ -1,6 +1,8 @@
 const { requireMasterUser } = require("./helpers/roles");
 
 module.exports = {
+  disabled: true,
+
   builder: (command) =>
     command
       .setName("unsafe-delevent")
