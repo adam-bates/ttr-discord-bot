@@ -38,7 +38,7 @@ const CAPTAIN_FMT = `${CAPTAIN} (Min 24 weeks or 200 mill clan xp)`;
 const GENERAL_FMT = `${GENERAL} (Min 52 weeks or 500 mill clan xp)`;
 
 const MAX_CONTENT_LENGTH = 2000;
-const TRUNCATE_POSTFIX = "\n...";
+const TRUNCATE_POSTFIX = "\nCont'd (message is too long)...";
 
 const truncateContent = (content) => {
   if (content.length < MAX_CONTENT_LENGTH) {
