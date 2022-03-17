@@ -206,17 +206,13 @@ module.exports = {
           }
         }
 
-        if (toRankTimeLevel > toRankXpLevel) {
-          demotionsContent += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days)_\n`;
-        } else if (toRankTimeLevel < toRankXpLevel) {
-          const clanXp = formatNumberToLength(player.clanXp, 15).trim();
-          demotionsContent += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankXp}_\n- **Reason:** _Clan xp (${clanXp} xp)_\n`;
-        } else {
-          const clanXp = formatNumberToLength(player.clanXp, 15).trim();
-          demotionsContent += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days) & Clan xp (${clanXp} xp)_\n`;
-        }
+        const clanXp = formatNumberToLength(player.clanXp, 15).trim();
 
-        demotionsContent += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days)_\n`;
+        if (toRankTimeLevel > toRankXpLevel) {
+          demotionsContent += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days) & Clan xp (${clanXp} xp)_\n`;
+        } else {
+          demotionsContent += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankXp}_\n- **Reason:** _Time in clan (${days} days) & Clan xp (${clanXp} xp)_\n`;
+        }
 
         return;
       }
