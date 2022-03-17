@@ -72,8 +72,10 @@ module.exports = {
 
       switch (player.rank) {
         case RECRUIT:
-          isTime = days >= CORPORAL_MIN_DAYS;
-          isXp = player.clanXp >= CORPORAL_MIN_XP;
+          // Note: Both min days & min xp are required to participate in promotions
+          isTime =
+            days >= CORPORAL_MIN_DAYS && player.clanXp >= CORPORAL_MIN_XP;
+          isXp = isTime;
           break;
         case CORPORAL:
           isTime = days >= SERGEANT_MIN_DAYS;
