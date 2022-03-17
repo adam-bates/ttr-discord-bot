@@ -13,10 +13,11 @@ const LIEUTENANT = "Lieutenant";
 const CAPTAIN = "Captain";
 const GENERAL = "General";
 
+const MIN_CLAN_DAYS = 2 * 7; // 2 weeks
 const MIN_CLAN_XP = 1 * 1000000; // 1 mill
 
-const CORPORAL_MIN_DAYS = 2 * 7; // 2 weeks
-const CORPORAL_MIN_XP = 1 * 1000000; // 1 mill
+const CORPORAL_MIN_DAYS = MIN_CLAN_DAYS;
+const CORPORAL_MIN_XP = MIN_CLAN_XP;
 
 const SERGEANT_MIN_DAYS = 6 * 7; // 6 weeks
 const SERGEANT_MIN_XP = 15 * 1000000; // 15 mill
@@ -166,7 +167,7 @@ module.exports = {
 
         let toRankTime = RECRUIT_FMT;
         let toRankTimeLevel = 0;
-        if (player.clanXp >= MIN_CLAN_XP) {
+        if (player.clanXp >= MIN_CLAN_XP && days > MIN_CLAN_DAYS) {
           if (days < CORPORAL_MIN_DAYS) {
             toRankTime = RECRUIT_FMT;
             toRankTimeLevel = 0;
@@ -187,7 +188,7 @@ module.exports = {
 
         let toRankXp = RECRUIT_FMT;
         let toRankXpLevel = 0;
-        if (player.clanXp >= MIN_CLAN_XP) {
+        if (player.clanXp >= MIN_CLAN_XP && days > MIN_CLAN_DAYS) {
           if (player.clanXp < CORPORAL_MIN_XP) {
             toRankXp = RECRUIT_FMT;
             toRankXpLevel = 0;
