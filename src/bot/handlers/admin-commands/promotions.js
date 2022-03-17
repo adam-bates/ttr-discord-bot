@@ -37,6 +37,34 @@ const LIEUTENANT_FMT = `${LIEUTENANT} (Min 12 weeks or 75 mill clan xp)`;
 const CAPTAIN_FMT = `${CAPTAIN} (Min 24 weeks or 200 mill clan xp)`;
 const GENERAL_FMT = `${GENERAL} (Min 52 weeks or 500 mill clan xp)`;
 
+const MAX_CONTENT_LENGTH = 2000;
+const TRUNCATE_POSTFIX = "\n...";
+
+const truncateContent = (content) => {
+  if (content.length < MAX_CONTENT_LENGTH) {
+    return content;
+  }
+
+  const lines = content.split("\n");
+
+  let truncated = lines.shift();
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const line of lines) {
+    if (
+      truncated.length + line.length + TRUNCATE_POSTFIX.length >
+      MAX_CONTENT_LENGTH
+    ) {
+      truncated += TRUNCATE_POSTFIX;
+      break;
+    }
+
+    truncated += `\n${line}`;
+  }
+
+  return truncated;
+};
+
 module.exports = {
   builder: (command) =>
     command
@@ -73,42 +101,55 @@ module.exports = {
           (24 * 60 * 60)
       );
 
+      let fromRank = player.rank;
       let isTime = false;
       let isXp = false;
       let isOverPromoted = false;
 
       switch (player.rank) {
         case RECRUIT:
+          fromRank = RECRUIT_FMT;
+
           // Note: Both min days & min xp are required to participate in promotions
           isTime =
             days >= CORPORAL_MIN_DAYS && player.clanXp >= CORPORAL_MIN_XP;
           isXp = isTime;
           break;
         case CORPORAL:
+          fromRank = CORPORAL_FMT;
+
           isTime = days >= SERGEANT_MIN_DAYS;
           isXp = player.clanXp >= SERGEANT_MIN_XP;
           isOverPromoted =
             days < CORPORAL_MIN_DAYS || player.clanXp < CORPORAL_MIN_XP;
           break;
         case SERGEANT:
+          fromRank = SERGEANT_FMT;
+
           isTime = days >= LIEUTENANT_MIN_DAYS;
           isXp = player.clanXp >= LIEUTENANT_MIN_XP;
           isOverPromoted =
             days < SERGEANT_MIN_DAYS && player.clanXp < SERGEANT_MIN_XP;
           break;
         case LIEUTENANT:
+          fromRank = LIEUTENANT_FMT;
+
           isTime = days >= CAPTAIN_MIN_DAYS;
           isXp = player.clanXp >= CAPTAIN_MIN_XP;
           isOverPromoted =
             days < LIEUTENANT_MIN_DAYS && player.clanXp < LIEUTENANT_MIN_XP;
           break;
         case CAPTAIN:
+          fromRank = CAPTAIN_FMT;
+
           isTime = days >= GENERAL_MIN_DAYS;
           isXp = player.clanXp >= GENERAL_MIN_XP;
           isOverPromoted =
             days < CAPTAIN_MIN_DAYS && player.clanXp < CAPTAIN_MIN_XP;
           break;
         case GENERAL:
+          fromRank = GENERAL_FMT;
+
           isOverPromoted =
             days < GENERAL_MIN_DAYS && player.clanXp < GENERAL_MIN_XP;
           break;
@@ -118,7 +159,7 @@ module.exports = {
       }
 
       if (isOverPromoted) {
-        if (demotionsContent === "") {
+        if (demotionsContent.length === 0) {
           demotionsContent += "\n**Players who should be demoted!**\n";
         }
 
@@ -165,16 +206,16 @@ module.exports = {
         }
 
         if (toRankTimeLevel > toRankXpLevel) {
-          content += `\n**RSN:** _${player.rsn}_\n- **From:** _${player.rank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days)_\n`;
+          demotionsContent += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days)_\n`;
         } else if (toRankTimeLevel < toRankXpLevel) {
           const clanXp = formatNumberToLength(player.clanXp, 15).trim();
-          content += `\n**RSN:** _${player.rsn}_\n- **From:** _${player.rank}_\n- **To:** _${toRankXp}_\n- **Reason:** _Clan xp (${clanXp} xp)_\n`;
+          demotionsContent += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankXp}_\n- **Reason:** _Clan xp (${clanXp} xp)_\n`;
         } else {
           const clanXp = formatNumberToLength(player.clanXp, 15).trim();
-          content += `\n**RSN:** _${player.rsn}_\n- **From:** _${player.rank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days) & Clan xp (${clanXp} xp)_\n`;
+          demotionsContent += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days) & Clan xp (${clanXp} xp)_\n`;
         }
 
-        demotionsContent += `\n**RSN:** _${player.rsn}_\n- **From:** _${player.rank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days)_\n`;
+        demotionsContent += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days)_\n`;
 
         return;
       }
@@ -226,24 +267,28 @@ module.exports = {
       }
 
       if (toRankTimeLevel > toRankXpLevel) {
-        content += `\n**RSN:** _${player.rsn}_\n- **From:** _${player.rank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days)_\n`;
+        content += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days)_\n`;
       } else if (toRankTimeLevel < toRankXpLevel) {
         const clanXp = formatNumberToLength(player.clanXp, 15).trim();
-        content += `\n**RSN:** _${player.rsn}_\n- **From:** _${player.rank}_\n- **To:** _${toRankXp}_\n- **Reason:** _Clan xp (${clanXp} xp)_\n`;
+        content += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankXp}_\n- **Reason:** _Clan xp (${clanXp} xp)_\n`;
       } else {
         const clanXp = formatNumberToLength(player.clanXp, 15).trim();
-        content += `\n**RSN:** _${player.rsn}_\n- **From:** _${player.rank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days) & Clan xp (${clanXp} xp)_\n`;
+        content += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days) & Clan xp (${clanXp} xp)_\n`;
       }
     });
 
     if (content.trim().length === 0) {
       await interaction.editReply({
-        content: `**There are no pending promotions.**`,
+        content: truncateContent(
+          `**There are no pending promotions.**${demotionsContent}`
+        ),
         ephemeral: !isPublic,
       });
     } else {
       await interaction.editReply({
-        content: `**Ready for Promotion!**\n${content}${demotionsContent}`,
+        content: truncateContent(
+          `**Ready for Promotion!**\n${content}${demotionsContent}`
+        ),
         ephemeral: !isPublic,
       });
     }
