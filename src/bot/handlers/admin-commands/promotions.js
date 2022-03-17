@@ -160,7 +160,8 @@ module.exports = {
 
       if (isOverPromoted) {
         if (demotionsContent.length === 0) {
-          demotionsContent += "\n**Players who should be demoted!**\n";
+          demotionsContent +=
+            "\n\n**========== Players who should be Demoted ==========**\n";
         }
 
         let toRankTime = RECRUIT_FMT;
@@ -287,7 +288,7 @@ module.exports = {
     } else {
       await interaction.editReply({
         content: truncateContent(
-          `**Ready for Promotion!**\n${content}${demotionsContent}`
+          `**========== Players ready for Promotion! ==========**\n${content}${demotionsContent}`
         ),
         ephemeral: !isPublic,
       });
