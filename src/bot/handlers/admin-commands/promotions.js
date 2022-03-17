@@ -13,28 +13,28 @@ const LIEUTENANT = "Lieutenant";
 const CAPTAIN = "Captain";
 const GENERAL = "General";
 
-const MIN_CLAN_XP = 10 * 1000000; // 10 mill
+const MIN_CLAN_XP = 1 * 1000000; // 1 mill
 
-const CORPORAL_MIN_DAYS = 4 * 7; // 4 weeks
-const CORPORAL_MIN_XP = 15 * 1000000; // 15 mill
+const CORPORAL_MIN_DAYS = 2 * 7; // 2 weeks
+const CORPORAL_MIN_XP = 1 * 1000000; // 1 mill
 
 const SERGEANT_MIN_DAYS = 6 * 7; // 6 weeks
-const SERGEANT_MIN_XP = 25 * 1000000; // 25 mill
+const SERGEANT_MIN_XP = 15 * 1000000; // 15 mill
 
-const LIEUTENANT_MIN_DAYS = 8 * 7; // 8 weeks
-const LIEUTENANT_MIN_XP = 50 * 1000000; // 50 mill
+const LIEUTENANT_MIN_DAYS = 12 * 7; // 12 weeks
+const LIEUTENANT_MIN_XP = 75 * 1000000; // 75 mill
 
-const CAPTAIN_MIN_DAYS = 12 * 7; // 12 weeks
-const CAPTAIN_MIN_XP = 100 * 1000000; // 100 mill
+const CAPTAIN_MIN_DAYS = 24 * 7; // 24 weeks
+const CAPTAIN_MIN_XP = 200 * 1000000; // 200 mill
 
-const GENERAL_MIN_DAYS = 24 * 7; // 24 weeks
-const GENERAL_MIN_XP = 200 * 1000000; // 200 mill
+const GENERAL_MIN_DAYS = 52 * 7; // 52 weeks
+const GENERAL_MIN_XP = 500 * 1000000; // 500 mill
 
-const CORPORAL_FMT = `${CORPORAL} (Min 4 weeks or 15 mill clan xp)`;
-const SERGEANT_FMT = `${SERGEANT} (Min 6 weeks or 25 mill clan xp)`;
-const LIEUTENANT_FMT = `${LIEUTENANT} (Min 8 weeks or 50 mill clan xp)`;
-const CAPTAIN_FMT = `${CAPTAIN} (Min 12 weeks or 100 mill clan xp)`;
-const GENERAL_FMT = `${GENERAL} (Min 24 weeks or 200 mill clan xp)`;
+const CORPORAL_FMT = `${CORPORAL} (Min 2 weeks and 1 mill clan xp)`;
+const SERGEANT_FMT = `${SERGEANT} (Min 6 weeks or 15 mill clan xp)`;
+const LIEUTENANT_FMT = `${LIEUTENANT} (Min 12 weeks or 75 mill clan xp)`;
+const CAPTAIN_FMT = `${CAPTAIN} (Min 24 weeks or 200 mill clan xp)`;
+const GENERAL_FMT = `${GENERAL} (Min 52 weeks or 500 mill clan xp)`;
 
 module.exports = {
   builder: (command) =>
