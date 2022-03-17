@@ -54,6 +54,10 @@ module.exports = {
   execute: requireModUser(async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
+    await interaction.deferReply({
+      ephemeral: !isPublic,
+    });
+
     let content = "";
     let demotionsContent = "";
 
@@ -233,12 +237,12 @@ module.exports = {
     });
 
     if (content.trim().length === 0) {
-      await interaction.reply({
+      await interaction.editReply({
         content: `**There are no pending promotions.**`,
         ephemeral: !isPublic,
       });
     } else {
-      await interaction.reply({
+      await interaction.editReply({
         content: `**Ready for Promotion!**\n${content}${demotionsContent}`,
         ephemeral: !isPublic,
       });
