@@ -7,12 +7,6 @@ module.exports = {
       .setDescription(
         "Create an total xp goal to automatically end a clan event when a player reaches it"
       )
-      .addStringOption((option) =>
-        option
-          .setName("name")
-          .setDescription("Name of the event")
-          .setRequired(false)
-      )
       .addIntegerOption((option) =>
         option
           .setName("goal")
@@ -20,6 +14,12 @@ module.exports = {
             "Amount of overall XP in Millions (ie. 100 means 100M overall xp)"
           )
           .setRequired(true)
+      )
+      .addStringOption((option) =>
+        option
+          .setName("name")
+          .setDescription("Name of the event")
+          .setRequired(false)
       )
       .addBooleanOption((option) =>
         option
