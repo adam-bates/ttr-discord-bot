@@ -65,7 +65,7 @@ module.exports = {
       return;
     }
 
-    const goal = parseInt(interaction.options.getIntegerOption("goal"), 10);
+    const goal = parseInt(interaction.options.getInteger("goal"), 10);
 
     if (!goal || goal <= 0) {
       await interaction.reply({
