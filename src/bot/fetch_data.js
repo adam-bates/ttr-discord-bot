@@ -194,7 +194,8 @@ const determineRenames = async ({ redis, removedPlayers, addedPlayers }) => {
 const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
   const redis = await connectRedisClient();
 
-  const currentEventNames = await redis.getCurrentEventNames();
+  const currentEventDetails = await redis.getCurrentEventDetails();
+  const eventNamesToEndSet = new Set();
 
   const players = await fetchClanInfo(process.env.CLAN_NAME);
   const rsnsSet = new Set(players.map(({ rsn }) => rsn));
@@ -253,9 +254,9 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
     const isNew = !oldRsnsSet.has(player.rsn);
 
     if (isNew) {
-      const promises = currentEventNames.map(async (eventName) => {
+      const promises = currentEventDetails.map(async (event) => {
         const error = await redis.addStatsToEvent(
-          eventName,
+          event.name,
           player.rsn,
           playerStats
         );
@@ -266,6 +267,44 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       });
       await Promise.all(promises);
     }
+
+    const promises = currentEventDetails.map(async (event) => {
+      const goal = event.goal && parseInt(event.goal, 10);
+
+      if (!goal || Number.isNaN(goal)) {
+        return;
+      }
+
+      const startStats = await redis.getStartEventStatsByRsn(
+        event.name,
+        player.rsn
+      );
+
+      if (
+        startStats &&
+        startStats[OVERALL_KEY] &&
+        startStats[OVERALL_KEY].xp &&
+        playerStats &&
+        playerStats[OVERALL_KEY] &&
+        playerStats[OVERALL_KEY].xp
+      ) {
+        const fromXp = parseInt(
+          startStats[OVERALL_KEY].xp.replace(/,/g, ""),
+          10
+        );
+        const toXp = parseInt(
+          playerStats[OVERALL_KEY].xp.replace(/,/g, ""),
+          10
+        );
+
+        const diff = Math.max(toXp - fromXp, 0);
+
+        if (diff >= goal * 1000000) {
+          eventNamesToEndSet.add(event.name);
+        }
+      }
+    });
+    await Promise.all(promises);
 
     let isLateWeek = false;
     let isLateYesterday = false;
@@ -339,6 +378,13 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
     });
     console.log("[%d] Success.", unixTimestamp());
   });
+
+  const promises = Array.from(eventNamesToEndSet).map(async (eventName) => {
+    await redis.endEvent(eventName, timestamp);
+
+    console.log("[%d] Ended event: %s", unixTimestamp(), eventName);
+  });
+  await Promise.all(promises);
 
   console.log(
     "[%d] Done! %d/%d, took ~ %d mins",

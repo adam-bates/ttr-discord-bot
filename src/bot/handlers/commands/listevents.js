@@ -54,15 +54,19 @@ module.exports = {
           return b.start - a.start;
         })
         .forEach((details) => {
+          let goal = details.goal && parseInt(details.goal, 10);
+          if (goal && Number.isNaN(goal)) {
+            goal = null;
+          }
+
           const start = fromUnixTimestamp(details.start).toUTCString();
           const end =
             details.end && fromUnixTimestamp(details.end).toUTCString();
 
-          if (end) {
-            content += `\n\n${details.name}\n- Started: ${start}\n- Ended: ${end}`;
-          } else {
-            content += `\n\n${details.name}\n- Started: ${start}`;
-          }
+          const goalString = goal ? `\n- Goal: ${goal}M Overall EXP` : "";
+          const endString = end ? `\n- Ended: ${end}` : "";
+
+          content += `\n\n${details.name}${goalString}\n- Started: ${start}${endString}`;
         });
 
       content += "```";
@@ -87,9 +91,16 @@ module.exports = {
     let content = `\`\`\`CURRENTLY ACTIVE EVENTS`;
 
     currentDetails.forEach((details) => {
+      let goal = details.goal && parseInt(details.goal, 10);
+      if (goal && Number.isNaN(goal)) {
+        goal = null;
+      }
+
       const start = fromUnixTimestamp(details.start).toUTCString();
 
-      content += `\n\n${details.name}\n- Started: ${start}`;
+      const goalString = goal ? `\n- Goal: ${goal}M Overall EXP` : "";
+
+      content += `\n\n${details.name}${goalString}\n- Started: ${start}`;
     });
 
     content += "```";

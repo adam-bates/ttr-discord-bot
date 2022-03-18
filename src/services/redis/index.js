@@ -280,6 +280,67 @@ const Redis = (client) => {
     return match;
   };
 
+  const getEventGoal = async (eventName) => {
+    let name = eventName;
+    let details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+
+    if (!details) {
+      name = findMatchingEventName(eventName);
+
+      if (name) {
+        details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+      }
+    }
+
+    if (!details) {
+      return null;
+    }
+
+    const rawGoal = details.goal;
+
+    if (!rawGoal) {
+      return null;
+    }
+
+    const goal = parseInt(rawGoal, 10);
+
+    if (!goal || Number.isNaN(goal)) {
+      return null;
+    }
+
+    return goal;
+  };
+
+  const setEventGoal = async (eventName, goal) => {
+    let name = eventName;
+    let details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+
+    if (!details) {
+      name = findMatchingEventName(eventName);
+
+      if (name) {
+        details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
+      }
+    }
+
+    if (!details) {
+      return `Event \`${eventName}\` doesn't exist!`;
+    }
+
+    if (details.end) {
+      const formatted = fromUnixTimestamp(details.end).toUTCString();
+
+      return `Event \`${name}\` was ended at ${formatted}`;
+    }
+
+    await client.set(
+      key(GET_EVENT_DETAILS, name),
+      stringify({ ...details, goal })
+    );
+
+    return null;
+  };
+
   const endEvent = async (eventName, end) => {
     let name = eventName;
     let details = parse(await client.get(key(GET_EVENT_DETAILS, name)));
@@ -562,6 +623,8 @@ const Redis = (client) => {
   client.getAllLevelRoleIdAssignments = getAllLevelRoleIdAssignments;
   client.searchForLevelWithRoleId = searchForLevelWithRoleId;
   client.startEvent = startEvent;
+  client.getEventGoal = getEventGoal;
+  client.setEventGoal = setEventGoal;
   client.endEvent = endEvent;
   client.renameEvent = renameEvent;
   client.delEvent = delEvent;

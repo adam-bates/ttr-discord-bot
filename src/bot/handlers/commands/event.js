@@ -82,6 +82,12 @@ module.exports = {
       ephemeral: !isPublic,
     });
 
+    let goal = details.goal && parseInt(details.goal, 10);
+    if (goal && Number.isNaN(goal)) {
+      goal = null;
+    }
+    const goalString = goal ? `\n- Goal: ${goal}M Overall EXP` : "";
+
     const start = fromUnixTimestamp(details.start).toUTCString();
 
     const rsns = await redis.getAllRsns();
@@ -97,7 +103,7 @@ module.exports = {
       })
     );
 
-    let content = `\`\`\`EVENT HIGHLIGHTS\n\n${details.name}\n- Started: ${start}`;
+    let content = `\`\`\`EVENT HIGHLIGHTS\n\n${details.name}${goalString}\n- Started: ${start}`;
 
     if (details.end) {
       const end = fromUnixTimestamp(details.end).toUTCString();
