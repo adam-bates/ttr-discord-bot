@@ -12,8 +12,13 @@ const PROFANITY_FILE = path.join(
 );
 
 const CensorService = ({ matches }) => {
-  const shouldCensor = (input) =>
-    matches.some((match) => input.includes(match));
+  const shouldCensor = (input) => {
+    const words = input.split(/\W+/);
+
+    return words.some((word) =>
+      matches.some((match) => word.toLowerCase() === match)
+    );
+  };
 
   return {
     shouldCensor,
