@@ -86,27 +86,77 @@ const handleLevelUpPromotions = async ({ client, redis }, message) => {
   await message.reply(`${user} was promoted to ${role}!`);
 };
 
+const reportToStaff = async (
+  { client, message, reportChannelId },
+  stringToReport
+) => {
+  if (!message.guildId) {
+    console.error("Error: No guild found");
+    return;
+  }
+
+  const guild = await client.guilds.cache.get(message.guildId);
+  if (!guild) {
+    console.error(`Error: Couldn't find guild with ID: ${message.guildId}`);
+    return;
+  }
+
+  const reportChannel = await guild.channels.cache.get(reportChannelId);
+  if (!reportChannel) {
+    console.error(
+      `Error: Couldn't find report channel with ID: ${reportChannelId}`
+    );
+    return;
+  }
+
+  await reportChannel.send(stringToReport);
+};
+
+const isCensorEasterEgg = (input) => {
+  const words = input
+    .split(/\W+/)
+    .filter((word) => word.length > 0)
+    .map((word) => word.toLowerCase());
+
+  return words[0] === "censor" && words[1] === "me" && words[2] === "daddy";
+};
+
 module.exports = {
   name: "messageCreate",
   execute: async ({ client, redis, censor }, message) => {
-    if (censor.shouldCensor(message.content)) {
-      await message.delete();
-      // TODO: Notify someone of issue!
+    const reportChannelId = process.env.REPORT_CHANNEL_ID;
+
+    if (message.channelId === reportChannelId) {
+      // Ignore, this channel is the reporting channel
+      return;
     }
 
     if (message.author.id === process.env.MEE6_USER_ID) {
       await handleLevelUpPromotions({ client, redis }, message);
-      return;
-    }
-
-    if (
+    } else if (censor.shouldCensor(message.content)) {
+      await message.delete();
+      await reportToStaff(
+        { client, message, reportChannelId },
+        `========================\n**Message Censored!**\n\n${message.author} may have said something horrible in ${message.channel}\n\n> ${message.content}\n`
+      );
+    } else if (
       message.content.includes("@everyone") ||
       message.content.includes("@here")
     ) {
       // Delete messages mentioning @everyone or @here without permissions
       if (!message.mentions.everyone) {
         await message.delete();
+        await reportToStaff(
+          { client, message, reportChannelId },
+          `========================\n**Message Censored!**\n\n${message.author} tried pinging users in ${message.channel}\n\n> ${message.content}\n`
+        );
       }
+    } else if (isCensorEasterEgg(message.content)) {
+      await message.delete();
+      await reportToStaff(
+        { client, message, reportChannelId },
+        `========================\n**Message Censored!**\n\n${message.author} found an easter egg in ${message.channel}\n\n> ${message.content}\n`
+      );
     }
   },
 };
