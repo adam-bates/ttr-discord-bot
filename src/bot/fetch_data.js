@@ -201,7 +201,22 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
   const currentEventDetails = await redis.getCurrentEventDetails();
   const eventNamesToEndSet = new Set();
 
-  const players = await fetchClanInfo(process.env.CLAN_NAME);
+  let players = await fetchClanInfo(process.env.CLAN_NAME);
+
+  players = await Promise.all(
+    players.map(async (p) => {
+      const player = { ...p };
+
+      const baseClanXp = await redis.getBaseClanXpByRsn(player.rsn);
+
+      if (baseClanXp) {
+        player.clanXp += baseClanXp;
+      }
+
+      return player;
+    })
+  );
+
   const rsnsSet = new Set(players.map(({ rsn }) => rsn));
 
   const oldPlayers = await redis.getAllPlayers();
@@ -252,12 +267,6 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       ...stats,
       timestamp,
     };
-
-    const baseClanXp = await redis.getBaseClanXpByRsn(player.rsn);
-
-    if (baseClanXp) {
-      playerStats.clanXp += baseClanXp;
-    }
 
     await redis.setStatsByRsn(player.rsn, playerStats);
 
