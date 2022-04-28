@@ -163,16 +163,20 @@ const determineRenames = async ({ redis, removedPlayers, addedPlayers }) => {
           return false;
         }
 
-        const match = Object.entries(removedPlayerStats)
-          .filter(([key]) => !["rsn", "timestamp"].includes(key))
-          .every(([key, value]) => {
-            const buffer = getRenameStatBuffer(key, value);
+        const match =
+          removedPlayer.rank === addedRsnStats.rank &&
+          Object.entries(removedPlayerStats)
+            .filter(
+              ([key]) => !["rsn", "rank", "clanXp", "timestamp"].includes(key)
+            )
+            .every(([key, value]) => {
+              const buffer = getRenameStatBuffer(key, value);
 
-            return (
-              value <= addedRsnStats[key] &&
-              addedRsnStats[key] <= value + buffer
-            );
-          });
+              return (
+                value <= addedRsnStats[key] &&
+                addedRsnStats[key] <= value + buffer
+              );
+            });
 
         return match;
       }
