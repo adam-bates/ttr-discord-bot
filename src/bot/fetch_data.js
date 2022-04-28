@@ -206,11 +206,12 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
   players = await Promise.all(
     players.map(async (p) => {
       const player = { ...p };
+      const clanXp = parseInt(player.clanXp, 10);
 
       const baseClanXp = await redis.getBaseClanXpByRsn(player.rsn);
 
-      if (baseClanXp) {
-        player.clanXp += baseClanXp;
+      if (Number.isSafeInteger(clanXp) && baseClanXp) {
+        player.clanXp = `${clanXp + baseClanXp}`;
       }
 
       return player;
