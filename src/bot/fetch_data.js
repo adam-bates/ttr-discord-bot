@@ -253,6 +253,12 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       timestamp,
     };
 
+    const baseClanXp = await redis.getBaseClanXpByRsn(player.rsn);
+
+    if (baseClanXp) {
+      playerStats.clanXp += baseClanXp;
+    }
+
     await redis.setStatsByRsn(player.rsn, playerStats);
 
     const isNew = !oldRsnsSet.has(player.rsn);

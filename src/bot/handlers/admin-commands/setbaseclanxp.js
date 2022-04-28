@@ -1,15 +1,16 @@
 const { requireMasterUser } = require("./helpers/roles");
-const { unixTimestamp, dropTime } = require("../../../utils/time");
 
 module.exports = {
   builder: (command) =>
     command
-      .setName("setjoindate")
-      .setDescription("Set the date that a player joined the clan in Runescape")
-      .addStringOption((option) =>
+      .setName("setbaseclanxp")
+      .setDescription(
+        "Set a base amount of clan xp to do promotion calculations with for a player"
+      )
+      .addIntegerOption((option) =>
         option
-          .setName("date")
-          .setDescription("Date joined clan")
+          .setName("amount")
+          .setDescription("Amount of base clan xp")
           .setRequired(true)
       )
       .addStringOption((option) =>
@@ -30,49 +31,35 @@ module.exports = {
   execute: requireMasterUser(async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
-    const requestedDate = new Date(interaction.options.getString("date"));
+    const baseClanXp = parseInt(interaction.options.getInteger("amount"), 10);
 
-    if (Number.isNaN(requestedDate.getTime())) {
+    if (!Number.isSafeInteger(baseClanXp)) {
       await interaction.reply({
-        content: "Error! Invalid date.",
+        content: "Error! Invalid amount.",
         ephemeral: true,
       });
       return;
     }
 
-    const date = dropTime(requestedDate);
-
     const requestedRsn = interaction.options.getString("rsn");
 
-    let rsn = null;
+    const players = await redis.getAllPlayers();
 
-    let players = await redis.getAllPlayers();
+    const player = players.find(
+      (p) => p.rsn.toLowerCase() === requestedRsn.toLowerCase()
+    );
 
-    players = players.map((player) => {
-      if (player.rsn.toLowerCase() === requestedRsn.toLowerCase()) {
-        rsn = player.rsn;
-        return {
-          ...player,
-          dateJoined: unixTimestamp(date),
-        };
-      }
-
-      return player;
-    });
-
-    if (!rsn) {
+    if (!player) {
       await interaction.reply({
         content: `Error! Couldn't find RSN: ${requestedRsn} in ${process.env.CLAN_NAME}.`,
       });
       return;
     }
 
-    await redis.unsafeSetAllPlayers(players);
-
-    const utcDate = date.toUTCString().substring(0, 16);
+    await redis.setBaseClanXpByRsn(player.rsn, baseClanXp);
 
     await interaction.reply({
-      content: `Successfully set join-date for RSN: ${rsn} to ${utcDate}`,
+      content: `Successfully set base clanXp for RSN: ${player.rsn} to ${baseClanXp}`,
       ephemeral: !isPublic,
     });
   }),

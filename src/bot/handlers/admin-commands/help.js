@@ -16,9 +16,11 @@ Admin bot commands for the Runescape clan: The Twisted Republic
     if (isMasterUser(client, interaction)) {
       content += `
 
-Clan information:
+Manage players:
 - /ttradmin setjoindate
-- /ttradmin promotions`;
+- /ttradmin promotions
+- /ttradmin getbaseclanxp
+- /ttradmin setbaseclanxp`;
 
       content += `
 
@@ -36,9 +38,9 @@ Assigning custom roles at an MEE6 level:
     } else {
       content += `
 
-Clan information:
-- /ttradmin setjoindate
-- /ttradmin promotions`;
+Manage players:
+- /ttradmin promotions
+- /ttradmin getbaseclanxp`;
     }
 
     content += `

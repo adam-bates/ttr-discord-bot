@@ -25,6 +25,8 @@ const GET_EVENT_END_SNAPSHOT = "GetEventEndSnapshot";
 
 const GET_ROLE_ID = "GetRoleId";
 
+const GET_BASE_CLAN_XP = "GetBaseClanXp";
+
 const key = (...parts) => parts.join("/");
 const { parse, stringify } = JSON;
 
@@ -596,6 +598,17 @@ const Redis = (client) => {
     return Promise.all(promises);
   };
 
+  const getBaseClanXpByRsn = async (rsn) => {
+    const baseClanXpStr = await client.get(key(GET_BASE_CLAN_XP, rsn));
+    const baseClanXp = parseInt(baseClanXpStr, 10);
+
+    return Number.isFinite(baseClanXp) ? baseClanXp : null;
+  };
+
+  const setBaseClanXpByRsn = async (rsn, baseClanXp) => {
+    client.set(key(GET_BASE_CLAN_XP, rsn), baseClanXp);
+  };
+
   client.getAllPlayers = getAllPlayers;
   client.unsafeSetAllPlayers = unsafeSetAllPlayers;
   client.getAllRsns = getAllRsns;
@@ -636,6 +649,8 @@ const Redis = (client) => {
   client.getAllEventDetails = getAllEventDetails;
   client.getCurrentEventNames = getCurrentEventNames;
   client.getCurrentEventDetails = getCurrentEventDetails;
+  client.getBaseClanXpByRsn = getBaseClanXpByRsn;
+  client.setBaseClanXpByRsn = setBaseClanXpByRsn;
 
   return client;
 };
