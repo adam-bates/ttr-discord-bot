@@ -155,10 +155,24 @@ module.exports = {
     allTotalXpGainz.sort((a, b) => b.xp - a.xp);
     allWeightedXpGainz.sort((a, b) => b.percent - a.percent);
 
-    const topTotalXpGainz = allTotalXpGainz.slice(0, 3);
-    const topWeightedXpGainz = allWeightedXpGainz.slice(0, 3);
+    const blacklist = await redis.getEventsBlacklist();
 
-    let i = 3;
+    const topTotalXpGainz = [];
+    let i = 0;
+    let count = 0;
+
+    while (i < allTotalXpGainz.length && count < 3) {
+      const player = allTotalXpGainz[i];
+
+      topTotalXpGainz.push(player);
+
+      if (!blacklist.has(player.rsn)) {
+        count += 1;
+      }
+
+      i += 1;
+    }
+
     while (
       i < allTotalXpGainz.length &&
       allTotalXpGainz[i].xp === allTotalXpGainz[i - 1].xp
@@ -167,7 +181,22 @@ module.exports = {
       i += 1;
     }
 
-    i = 3;
+    const topWeightedXpGainz = allWeightedXpGainz.slice(0, 3);
+    i = 0;
+    count = 0;
+
+    while (i < allWeightedXpGainz.length && count < 3) {
+      const player = allWeightedXpGainz[i];
+
+      topWeightedXpGainz.push(player);
+
+      if (!blacklist.has(player.rsn)) {
+        count += 1;
+      }
+
+      i += 1;
+    }
+
     while (
       i < allWeightedXpGainz.length &&
       allWeightedXpGainz[i].percent === allWeightedXpGainz[i - 1].percent

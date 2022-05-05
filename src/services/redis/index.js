@@ -23,6 +23,8 @@ const GET_EVENT_DETAILS = "GetEventDetails";
 const GET_EVENT_START_SNAPSHOT = "GetEventStartSnapshot";
 const GET_EVENT_END_SNAPSHOT = "GetEventEndSnapshot";
 
+const GET_EVENTS_BLACKLIST = "GetEventsBlacklist";
+
 const GET_ROLE_ID = "GetRoleId";
 
 const GET_BASE_CLAN_XP = "GetBaseClanXp";
@@ -598,6 +600,30 @@ const Redis = (client) => {
     return Promise.all(promises);
   };
 
+  const getEventsBlacklist = async () => {
+    const blacklist = parse(await client.get(key(GET_EVENTS_BLACKLIST)));
+    return new Set(blacklist);
+  };
+
+  const setEventsBlacklist = async (blacklist = new Set()) => {
+    await client.set(
+      key(GET_EVENTS_BLACKLIST),
+      stringify(Array.from(blacklist))
+    );
+  };
+
+  const addToEvents = async (rsn) => {
+    const blacklist = await getEventsBlacklist();
+    blacklist.delete(rsn);
+    await setEventsBlacklist(blacklist);
+  };
+
+  const removeFromEvents = async (rsn) => {
+    const blacklist = await getEventsBlacklist();
+    blacklist.add(rsn);
+    await setEventsBlacklist(blacklist);
+  };
+
   const getBaseClanXpByRsn = async (rsn) => {
     const baseClanXpStr = await client.get(key(GET_BASE_CLAN_XP, rsn));
     const baseClanXp = parseInt(baseClanXpStr, 10);
@@ -649,6 +675,9 @@ const Redis = (client) => {
   client.getAllEventDetails = getAllEventDetails;
   client.getCurrentEventNames = getCurrentEventNames;
   client.getCurrentEventDetails = getCurrentEventDetails;
+  client.getEventsBlacklist = getEventsBlacklist;
+  client.addToEvents = addToEvents;
+  client.removeFromEvents = removeFromEvents;
   client.getBaseClanXpByRsn = getBaseClanXpByRsn;
   client.setBaseClanXpByRsn = setBaseClanXpByRsn;
 
