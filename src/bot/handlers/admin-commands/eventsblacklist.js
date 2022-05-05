@@ -33,7 +33,7 @@ module.exports = {
 
     const rowsContent = rows.join("\n|--------------|--------------|\n");
 
-    let content = `
+    let content = `\`\`\`
 .-----------------------------.
 | EVENT HIGHLIGHTS BLACKLIST  |
 |-----------------------------|
@@ -42,7 +42,8 @@ module.exports = {
     content += rowsContent;
 
     content += `
-'-----------------------------'`;
+'-----------------------------'
+\`\`\``;
 
     await interaction.reply({ content, ephemeral: !isPublic });
   }),
