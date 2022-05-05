@@ -164,11 +164,12 @@ module.exports = {
     while (i < allTotalXpGainz.length && count < 3) {
       const player = allTotalXpGainz[i];
 
-      topTotalXpGainz.push(player);
-
       if (!blacklist.has(player.rsn)) {
         count += 1;
+        player.place = count;
       }
+
+      topTotalXpGainz.push(player);
 
       i += 1;
     }
@@ -177,11 +178,18 @@ module.exports = {
       i < allTotalXpGainz.length &&
       allTotalXpGainz[i].xp === allTotalXpGainz[i - 1].xp
     ) {
-      topTotalXpGainz.push(allTotalXpGainz[i]);
+      const player = allTotalXpGainz[i];
+
+      if (!blacklist.has(player.rsn)) {
+        player.place = count;
+      }
+
+      topTotalXpGainz.push(player);
+
       i += 1;
     }
 
-    const topWeightedXpGainz = allWeightedXpGainz.slice(0, 3);
+    const topWeightedXpGainz = [];
     i = 0;
     count = 0;
 
@@ -192,6 +200,7 @@ module.exports = {
 
       if (!blacklist.has(player.rsn)) {
         count += 1;
+        player.place = count;
       }
 
       i += 1;
@@ -201,7 +210,13 @@ module.exports = {
       i < allWeightedXpGainz.length &&
       allWeightedXpGainz[i].percent === allWeightedXpGainz[i - 1].percent
     ) {
-      topWeightedXpGainz.push(allWeightedXpGainz[i]);
+      const player = allWeightedXpGainz[i];
+
+      if (!blacklist.has(player.rsn)) {
+        player.place = count;
+      }
+
+      topWeightedXpGainz.push(player);
       i += 1;
     }
 
@@ -211,8 +226,8 @@ module.exports = {
     ) {
       content += `\n\nTOP TOTAL XP GAINZ:`;
 
-      topTotalXpGainz.forEach(({ rsn, xp }, idx) => {
-        content += `\n${idx + 1}. ${rsn} gained ${formatNumberToLength(
+      topTotalXpGainz.forEach(({ rsn, xp, place }) => {
+        content += `\n${place || "-"}. ${rsn} gained ${formatNumberToLength(
           xp,
           15
         ).trim()} xp`;
@@ -226,9 +241,9 @@ module.exports = {
     ) {
       content += `\n\nTOP WEIGHTED XP GAINZ:`;
 
-      topWeightedXpGainz.forEach(({ rsn, percent }, idx) => {
+      topWeightedXpGainz.forEach(({ rsn, percent, place }) => {
         content += `\n${
-          idx + 1
+          place || "-"
         }. ${rsn} increased their total xp by ${roundTo2Decimals(percent)}%`;
       });
     }
