@@ -79,6 +79,8 @@ module.exports = {
       return;
     }
 
+    await interaction.deferReply({ ephemeral: !isPublic });
+
     if (!user) {
       const userId = await redis.searchForUserIdWithRsn(rsn);
 
@@ -107,6 +109,6 @@ module.exports = {
 
     content += `**Rank:** _${player.rank}_\n**Member Since:** _${dateJoined}_ _(${days} days)_\n**Clan XP:** _${clanXp} xp_`;
 
-    await interaction.reply({ content, ephemeral: !isPublic });
+    await interaction.editReply({ content, ephemeral: !isPublic });
   },
 };
