@@ -42,7 +42,7 @@ const MAX_CONTENT_LENGTH = 2000;
 const TRUNCATE_POSTFIX = "\n\nCont'd (message is too long)...";
 
 const truncateContent = (content) => {
-  if (content.length < MAX_CONTENT_LENGTH) {
+  if (content.length <= MAX_CONTENT_LENGTH) {
     return content;
   }
 
@@ -53,7 +53,7 @@ const truncateContent = (content) => {
   // eslint-disable-next-line no-restricted-syntax
   for (const line of lines) {
     if (
-      truncated.length + line.length + TRUNCATE_POSTFIX.length >
+      "\n".length + truncated.length + line.length + TRUNCATE_POSTFIX.length >
       MAX_CONTENT_LENGTH
     ) {
       truncated += TRUNCATE_POSTFIX;
@@ -63,7 +63,7 @@ const truncateContent = (content) => {
     truncated += `\n${line}`;
   }
 
-  return truncated;
+  return truncated.substring(0, MAX_CONTENT_LENGTH);
 };
 
 module.exports = {
