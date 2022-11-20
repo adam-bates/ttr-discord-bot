@@ -88,6 +88,8 @@ module.exports = {
     });
 
     let content = "";
+    let count = 0;
+
     let demotionsContent = "";
 
     const players = await redis.getAllPlayers();
@@ -273,6 +275,8 @@ module.exports = {
         const clanXp = formatNumberToLength(player.clanXp, 15).trim();
         content += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days) & Clan xp (${clanXp} xp)_\n`;
       }
+
+      count += 1;
     });
 
     if (content.trim().length === 0) {
@@ -285,7 +289,7 @@ module.exports = {
     } else {
       await interaction.editReply({
         content: truncateContent(
-          `**========== Players ready for Promotion! ==========**\n${content}${demotionsContent}`
+          `**========== ${count} Players ready for Promotion! ==========**\n${content}${demotionsContent}`
         ),
         ephemeral: !isPublic,
       });

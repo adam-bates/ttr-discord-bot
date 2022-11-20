@@ -1,35 +1,4 @@
-const { requireModUser } = require("./helpers/roles");
-const {
-  unixTimestamp,
-  fromUnixTimestamp,
-  dropTime,
-} = require("../../../utils/time");
-const { formatNumberToLength } = require("../../../utils/format");
-
-const RECRUIT = "Recruit";
-const CORPORAL = "Corporal";
-const SERGEANT = "Sergeant";
-const LIEUTENANT = "Lieutenant";
-const CAPTAIN = "Captain";
-const GENERAL = "General";
-
-const MIN_CLAN_DAYS = 2 * 7; // 2 weeks
-const MIN_CLAN_XP = 1 * 1000000; // 1 mill
-
-const CORPORAL_MIN_DAYS = MIN_CLAN_DAYS;
-const CORPORAL_MIN_XP = MIN_CLAN_XP;
-
-const SERGEANT_MIN_DAYS = 6 * 7; // 6 weeks
-const SERGEANT_MIN_XP = 15 * 1000000; // 15 mill
-
-const LIEUTENANT_MIN_DAYS = 12 * 7; // 12 weeks
-const LIEUTENANT_MIN_XP = 75 * 1000000; // 75 mill
-
-const CAPTAIN_MIN_DAYS = 24 * 7; // 24 weeks
-const CAPTAIN_MIN_XP = 200 * 1000000; // 200 mill
-
-const GENERAL_MIN_DAYS = 52 * 7; // 52 weeks
-const GENERAL_MIN_XP = 500 * 1000000; // 500 mill
+const { requireMasterUser } = require("./helpers/roles");
 
 const MAX_CONTENT_LENGTH = 2000;
 const TRUNCATE_POSTFIX = "\n\nCont'd (message is too long)...";
@@ -86,7 +55,7 @@ module.exports = {
           .setRequired(false)
       ),
 
-  execute: requireModUser(async ({ redis }, interaction) => {
+  execute: requireMasterUser(async ({ redis }, interaction) => {
     const isPublic = interaction.options.getBoolean("public");
 
     const months = interaction.options.getInteger("months") ?? 6;
@@ -96,25 +65,27 @@ module.exports = {
     const players = await redis.getAllPlayers();
 
     let content = "";
+    let count = 0;
 
     players
       .filter((player) => monthDiff(now, new Date(player.updatedAt ?? 1668920400000)) > months)
       .forEach((player) => {
         const lastActive = player.updatedAt ? new Date(player.updatedAt).toUTCString().slice(0, 16) : "Unknown";
         content += `\n**RSN:** _${player.rsn}_\n- **Last Active:** _${lastActive}_\n`;
+        count += 1;
       });
 
     if (content.trim().length === 0) {
-      await interaction.editReply({
+      await interaction.reply({
         content: truncateContent(
           `**There are no known inactive players.**`
         ),
         ephemeral: !isPublic,
       });
     } else {
-      await interaction.editReply({
+      await interaction.reply({
         content: truncateContent(
-          `**========== Players Inactive For ${months}+ months! ==========**\n${content}`
+          `**========== ${count} Players Inactive For ${months}+ months! ==========**\n${content}`
         ),
         ephemeral: !isPublic,
       });
