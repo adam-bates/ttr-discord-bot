@@ -263,15 +263,26 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       return;
     }
 
+    const old = oldRsnsSet.get(player.rsn);
+
+    const inactive = old && Object.entries(stats).all(([statKey, statVal]) => {
+      return old[statKey] === statVal;
+    });
+
     const playerStats = {
       ...player,
       ...stats,
       timestamp,
     };
 
+    if (inactive) {
+      return;
+    }
+    playerStats.updatedAt = Date.now();
+
     await redis.setStatsByRsn(player.rsn, playerStats);
 
-    const isNew = !oldRsnsSet.has(player.rsn);
+    const isNew = !old;
 
     if (isNew) {
       const promises = currentEventDetails.map(async (event) => {
