@@ -221,10 +221,13 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
   const rsnsSet = new Set(players.map(({ rsn }) => rsn));
 
   const oldPlayers = await redis.getAllPlayers();
-  const oldRsnsSet = new Set(oldPlayers.map(({ rsn }) => rsn));
+  const oldRsnsMap = new Map();
+  oldPlayers.forEach((player) => {
+    oldRsnsMap.set(player.rsn, player);
+  });
 
   const removedPlayers = oldPlayers.filter(({ rsn }) => !rsnsSet.has(rsn));
-  const addedPlayers = players.filter(({ rsn }) => !oldRsnsSet.has(rsn));
+  const addedPlayers = players.filter(({ rsn }) => !oldRsnsMap.has(rsn));
 
   const renames = await determineRenames({
     redis,
@@ -263,7 +266,7 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
       return;
     }
 
-    const old = oldRsnsSet.get(player.rsn);
+    const old = oldRsnsMap.get(player.rsn);
 
     const inactive = old && Object.entries(stats).all(([statKey, statVal]) => {
       return old[statKey] === statVal;
