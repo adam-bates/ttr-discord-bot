@@ -268,7 +268,7 @@ const fetchData = async ({ isWeekStart, isDayStart } = {}) => {
 
     const old = oldRsnsMap.get(player.rsn);
 
-    const inactive = old && Object.entries(stats).all(([statKey, statVal]) => {
+    const inactive = old && Object.entries(stats).every(([statKey, statVal]) => {
       return old[statKey] === statVal;
     });
 
