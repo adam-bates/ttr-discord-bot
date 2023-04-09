@@ -285,7 +285,7 @@ module.exports = {
     } else {
       await interaction.editReply({
         content: truncateContent(
-          `**========== ${count} Players ready for Promotion! ==========**\n${content}${demotionsContent}`
+          `**========== ${count} Players ready for Promotion! ==========**\n${content}`
         ),
         ephemeral: !isPublic,
       });
