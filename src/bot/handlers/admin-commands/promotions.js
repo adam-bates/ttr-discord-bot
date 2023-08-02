@@ -157,7 +157,7 @@ module.exports = {
           break;
       }
 
-      if (isOverPromoted) {
+      if (isOverPromoted && false) {
         if (demotionsContent.length === 0) {
           demotionsContent +=
             "\n\n**========== Players who should be Demoted ==========**\n";
@@ -263,13 +263,9 @@ module.exports = {
       }
 
       if (toRankTimeLevel > toRankXpLevel) {
-        content += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days)_\n`;
-      } else if (toRankTimeLevel < toRankXpLevel) {
-        const clanXp = formatNumberToLength(player.clanXp, 15).trim();
-        content += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankXp}_\n- **Reason:** _Clan xp (${clanXp} xp)_\n`;
+        content += `\n**RSN:** _${player.rsn}_\n- **To:** _${toRankTime}_\n`;
       } else {
-        const clanXp = formatNumberToLength(player.clanXp, 15).trim();
-        content += `\n**RSN:** _${player.rsn}_\n- **From:** _${fromRank}_\n- **To:** _${toRankTime}_\n- **Reason:** _Time in clan (${days} days) & Clan xp (${clanXp} xp)_\n`;
+        content += `\n**RSN:** _${player.rsn}_\n- **To:** _${toRankXp}_\n`;
       }
 
       count += 1;
@@ -285,7 +281,7 @@ module.exports = {
     } else {
       await interaction.editReply({
         content: truncateContent(
-          `**========== ${count} Players ready for Promotion! ==========**\n${content}`
+          `${count} Players for Promotion!\n${content}`
         ),
         ephemeral: !isPublic,
       });
