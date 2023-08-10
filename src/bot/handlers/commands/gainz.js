@@ -44,13 +44,14 @@ const calculateGainz = ({ from, to }) =>
     (gainz, key) => ({
       ...gainz,
       [key]:
-        !from[key] || !from[key].xp || !to[key] || !to[key].xp
+        (!from[key] || !from[key].xp || !to[key] || !to[key].xp
           ? "-"
           : Math.max(
               parseInt(to[key].xp.replace(/,/g, ""), 10) -
                 parseInt(from[key].xp.replace(/,/g, ""), 10),
               0
-            ),
+            )
+        ) || 0,
     }),
     {}
   );
