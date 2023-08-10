@@ -336,7 +336,7 @@ module.exports = {
         const to_div = formatNumberToLength(gainz.today.divination, 9);
         const to_inv = formatNumberToLength(gainz.today.invention, 9);
         const to_arc = formatNumberToLength(gainz.today.archaeology, 9);
-        const to_nec = formatNumberToLength(gainz.today.necromancy, 9);
+        const to_nec = formatNumberToLength(gainz.today.necromancy || 0, 9);
 
         const ye_ovr = formatNumberToLength(gainz.yesterday.overall, 9);
         const ye_att = formatNumberToLength(gainz.yesterday.attack, 9);
@@ -367,7 +367,7 @@ module.exports = {
         const ye_div = formatNumberToLength(gainz.yesterday.divination, 9);
         const ye_inv = formatNumberToLength(gainz.yesterday.invention, 9);
         const ye_arc = formatNumberToLength(gainz.yesterday.archaeology, 9);
-        const ye_nec = formatNumberToLength(gainz.yesterday.necromancy, 9);
+        const ye_nec = formatNumberToLength(gainz.yesterday.necromancy || 0, 9);
 
         const wk_ovr = formatNumberToLength(gainz.week.overall, 9);
         const wk_att = formatNumberToLength(gainz.week.attack, 9);
@@ -398,7 +398,7 @@ module.exports = {
         const wk_div = formatNumberToLength(gainz.week.divination, 9);
         const wk_inv = formatNumberToLength(gainz.week.invention, 9);
         const wk_arc = formatNumberToLength(gainz.week.archaeology, 9);
-        const wk_nec = formatNumberToLength(gainz.week.necromancy, 9);
+        const wk_nec = formatNumberToLength(gainz.week.necromancy || 0, 9);
 
         const tod = gainz.today.late ? "TODAY*" : "TODAY ";
         const yesterd = gainz.yesterday.late ? "YESTERDAY*" : "YESTERDAY ";

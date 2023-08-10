@@ -229,7 +229,7 @@ module.exports = {
     const ev_______div = formatNumberToLength(gainz.event.divination, 15);
     const ev_______inv = formatNumberToLength(gainz.event.invention, 15);
     const ev_______arc = formatNumberToLength(gainz.event.archaeology, 15);
-    const ev_______nec = formatNumberToLength(gainz.event.necromancy, 15);
+    const ev_______nec = formatNumberToLength(gainz.event.necromancy || 0, 15);
 
     const wt_____ovr = formatNumberToLength(gainz.weighted.overall, 13);
     const wt_____att = formatNumberToLength(gainz.weighted.attack, 13);
@@ -260,7 +260,7 @@ module.exports = {
     const wt_____div = formatNumberToLength(gainz.weighted.divination, 13);
     const wt_____inv = formatNumberToLength(gainz.weighted.invention, 13);
     const wt_____arc = formatNumberToLength(gainz.weighted.archaeology, 13);
-    const wt_____nec = formatNumberToLength(gainz.weighted.necromancy, 13);
+    const wt_____nec = formatNumberToLength(gainz.weighted.necromancy || 0, 13);
 
     const content = `
 .---------------------------------------------------.
