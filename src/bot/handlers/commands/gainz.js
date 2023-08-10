@@ -36,6 +36,7 @@ const statKeys = [
   "divination",
   "invention",
   "archaeology",
+  "necromancy",
 ];
 
 const calculateGainz = ({ from, to }) =>
@@ -282,6 +283,7 @@ module.exports = {
         csv += `Divination,${gainz.today.divination},${gainz.yesterday.divination},${gainz.week.divination}\n`;
         csv += `Invention,${gainz.today.invention},${gainz.yesterday.invention},${gainz.week.invention}\n`;
         csv += `Archaeology,${gainz.today.archaeology},${gainz.yesterday.archaeology},${gainz.week.archaeology}\n`;
+        csv += `Necromancy,${gainz.today.necromancy},${gainz.yesterday.necromancy},${gainz.week.necromancy}\n`;
 
         try {
           await fs.writeFile(filepath, csv);
@@ -334,6 +336,7 @@ module.exports = {
         const to_div = formatNumberToLength(gainz.today.divination, 9);
         const to_inv = formatNumberToLength(gainz.today.invention, 9);
         const to_arc = formatNumberToLength(gainz.today.archaeology, 9);
+        const to_nec = formatNumberToLength(gainz.today.necromancy, 9);
 
         const ye_ovr = formatNumberToLength(gainz.yesterday.overall, 9);
         const ye_att = formatNumberToLength(gainz.yesterday.attack, 9);
@@ -364,6 +367,7 @@ module.exports = {
         const ye_div = formatNumberToLength(gainz.yesterday.divination, 9);
         const ye_inv = formatNumberToLength(gainz.yesterday.invention, 9);
         const ye_arc = formatNumberToLength(gainz.yesterday.archaeology, 9);
+        const ye_nec = formatNumberToLength(gainz.yesterday.necromancy, 9);
 
         const wk_ovr = formatNumberToLength(gainz.week.overall, 9);
         const wk_att = formatNumberToLength(gainz.week.attack, 9);
@@ -394,6 +398,7 @@ module.exports = {
         const wk_div = formatNumberToLength(gainz.week.divination, 9);
         const wk_inv = formatNumberToLength(gainz.week.invention, 9);
         const wk_arc = formatNumberToLength(gainz.week.archaeology, 9);
+        const wk_nec = formatNumberToLength(gainz.week.necromancy, 9);
 
         const tod = gainz.today.late ? "TODAY*" : "TODAY ";
         const yesterd = gainz.yesterday.late ? "YESTERDAY*" : "YESTERDAY ";
@@ -434,6 +439,7 @@ module.exports = {
 | Divination    | ${to_div} | ${ye_div} | ${wk_div} |
 | Invention     | ${to_inv} | ${ye_inv} | ${wk_inv} |
 | Archaeology   | ${to_arc} | ${ye_arc} | ${wk_arc} |
+| Necromancy    | ${to_nec} | ${ye_nec} | ${wk_nec} |
 '---------------------------------------------------'`;
 
         if (gainz.lateMessage.length > 0) {

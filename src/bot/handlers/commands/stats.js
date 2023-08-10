@@ -32,6 +32,7 @@ const statKeys = [
   "divination",
   "invention",
   "archaeology",
+  "necromancy",
 ];
 
 const formatDiff = (value) =>
@@ -260,6 +261,7 @@ module.exports = {
         csv += `Divination,${stats.total.divination.level},${stats.total.divination.xp},${stats.total.divination.rank},${stats.today.divination.level},${stats.today.divination.xp},${stats.today.divination.rank},${stats.today.late},${stats.yesterday.divination.level},${stats.yesterday.divination.xp},${stats.yesterday.divination.rank},${stats.yesterday.late},${stats.week.divination.level},${stats.week.divination.xp},${stats.week.divination.rank},${stats.week.late}\n`;
         csv += `Invention,${stats.total.invention.level},${stats.total.invention.xp},${stats.total.invention.rank},${stats.today.invention.level},${stats.today.invention.xp},${stats.today.invention.rank},${stats.today.late},${stats.yesterday.invention.level},${stats.yesterday.invention.xp},${stats.yesterday.invention.rank},${stats.yesterday.late},${stats.week.invention.level},${stats.week.invention.xp},${stats.week.invention.rank},${stats.week.late}\n`;
         csv += `Archaeology,${stats.total.archaeology.level},${stats.total.archaeology.xp},${stats.total.archaeology.rank},${stats.today.archaeology.level},${stats.today.archaeology.xp},${stats.today.archaeology.rank},${stats.today.late},${stats.yesterday.archaeology.level},${stats.yesterday.archaeology.xp},${stats.yesterday.archaeology.rank},${stats.yesterday.late},${stats.week.archaeology.level},${stats.week.archaeology.xp},${stats.week.archaeology.rank},${stats.week.late}\n`;
+        csv += `Necromancy,${stats.total.necromancy.level},${stats.total.necromancy.xp},${stats.total.necromancy.rank},${stats.today.necromancy.level},${stats.today.necromancy.xp},${stats.today.necromancy.rank},${stats.today.late},${stats.yesterday.necromancy.level},${stats.yesterday.necromancy.xp},${stats.yesterday.necromancy.rank},${stats.yesterday.late},${stats.week.necromancy.level},${stats.week.necromancy.xp},${stats.week.necromancy.rank},${stats.week.late}\n`;
 
         try {
           await fs.writeFile(filepath, csv);

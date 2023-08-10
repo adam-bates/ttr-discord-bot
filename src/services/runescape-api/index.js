@@ -32,6 +32,7 @@ const XP_STAT_KEYS = [
   "Divination",
   "Invention",
   "Archaeology",
+  "Necromancy",
 ];
 
 const ACTIVITY_STAT_KEYS = [

@@ -37,6 +37,7 @@ const SKILL_KEYS = [
   "Divination",
   "Invention",
   "Archaeology",
+  "Necromancy",
 ];
 const CLUE_SCROLL_KEYS = [
   "Clue Scrolls Easy",
