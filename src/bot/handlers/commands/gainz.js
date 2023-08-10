@@ -172,7 +172,7 @@ module.exports = {
 
     gainz.lateMessage =
       gainz.today.late || gainz.yesterday.late || gainz.week.late
-        ? "* Data was not pulled on time and may be incorrect"
+        ? "* Data not pulled on time"
         : "";
 
     const output = await interaction.options.getString("output");
