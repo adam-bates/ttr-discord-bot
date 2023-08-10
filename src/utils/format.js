@@ -19,7 +19,9 @@ const padNumberWithZero = (number, length) => {
 };
 
 const formatNumberToLength = (number, length) => {
-  let output = `${number}`;
+  const isSafe = Number.isSafeInteger(number) && Number.isFinite(number) && !Number.isNaN(number);
+  
+  let output = isSafe ? `${number}` : "0"; 
 
   if (number < 1000) {
     if (output.length > length && output.includes(".")) {
