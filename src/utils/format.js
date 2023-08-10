@@ -23,7 +23,9 @@ const formatNumberToLength = (number, length) => {
   
   let output = isSafe ? `${number}` : "0"; 
 
-  if (number < 1000) {
+  if (!isSafe || number == '-') {
+    // NO-OP
+  } else if (number < 1000) {
     if (output.length > length && output.includes(".")) {
       output = output.slice(0, length);
     }

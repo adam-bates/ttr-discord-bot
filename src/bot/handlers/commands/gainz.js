@@ -444,8 +444,7 @@ module.exports = {
 | Invention     | ${to_inv} | ${ye_inv} | ${wk_inv} |
 | Archaeology   | ${to_arc} | ${ye_arc} | ${wk_arc} |
 | Necromancy    | ${to_nec} | ${ye_nec} | ${wk_nec} |
-'---------------------------------------------------'
-        debug: ${JSON.stringify({ x: gainz.today.necromancy, to_nec })}`;
+'---------------------------------------------------'`;
 
         if (gainz.lateMessage.length > 0) {
           content = `${content}\n${gainz.lateMessage}`;
