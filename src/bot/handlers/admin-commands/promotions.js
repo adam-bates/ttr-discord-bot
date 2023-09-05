@@ -12,31 +12,43 @@ const SERGEANT = "Sergeant";
 const LIEUTENANT = "Lieutenant";
 const CAPTAIN = "Captain";
 const GENERAL = "General";
+const ADMIN = "Admin";
+const ORGANIZER = "Organizer";
+const COORDINATOR = "Coordinator";
 
-const MIN_CLAN_DAYS = 2 * 7; // 2 weeks
-const MIN_CLAN_XP = 1 * 1000000; // 1 mill
+const ttr = process.env.COMMAND_NAME == "ttr";
+
+const MIN_CLAN_DAYS = ttr ? 2 * 7 : 0; // 2 weeks
+const MIN_CLAN_XP = ttr ? 1 * 1000000 : 50 * 1000000; // 1 mill
 
 const CORPORAL_MIN_DAYS = MIN_CLAN_DAYS;
 const CORPORAL_MIN_XP = MIN_CLAN_XP;
 
 // const SERGEANT_MIN_DAYS = 6 * 7; // 6 weeks
-const SERGEANT_MIN_XP = 15 * 1000000; // 15 mill
+const SERGEANT_MIN_XP = ttr ? 15 * 1000000 : 200 * 1000000; // 15 mill
 
 // const LIEUTENANT_MIN_DAYS = 12 * 7; // 12 weeks
-const LIEUTENANT_MIN_XP = 75 * 1000000; // 75 mill
+const LIEUTENANT_MIN_XP = ttr ? 75 * 1000000 : 300 * 1000000; // 75 mill
 
 // const CAPTAIN_MIN_DAYS = 24 * 7; // 24 weeks
-const CAPTAIN_MIN_XP = 200 * 1000000; // 200 mill
+const CAPTAIN_MIN_XP = ttr ? 200 * 1000000 : 500 * 1000000; // 200 mill
 
 // const GENERAL_MIN_DAYS = 52 * 7; // 52 weeks
-const GENERAL_MIN_XP = 500 * 1000000; // 500 mill
+const GENERAL_MIN_XP = ttr ? 500 * 1000000 : 750 * 1000000; // 500 mill
+
+const ADMIN_MIN_XP = 1000 * 1000000;
+const ORGANIZER_MIN_XP = 1500 * 1000000;
+const COORDINATOR_MIN_XP = 2000 * 1000000;
 
 const RECRUIT_FMT = `${RECRUIT}`;
-const CORPORAL_FMT = `${CORPORAL} (Min 2 weeks and 1 mill clan xp)`;
-const SERGEANT_FMT = `${SERGEANT} (Min 15 mill clan xp)`;
-const LIEUTENANT_FMT = `${LIEUTENANT} (Min 75 mill clan xp)`;
-const CAPTAIN_FMT = `${CAPTAIN} (Min 200 mill clan xp)`;
-const GENERAL_FMT = `${GENERAL} (Min 500 mill clan xp)`;
+const CORPORAL_FMT = ttr ? `${CORPORAL} (Min 2 weeks and 1 mill clan xp)` : `${CORPORAL} (Min 50 mill clan xp)`;
+const SERGEANT_FMT = ttr ? `${SERGEANT} (Min 15 mill clan xp)` : `${SERGEANT} (Min 200 mill clan xp)`;
+const LIEUTENANT_FMT = ttr ? `${LIEUTENANT} (Min 75 mill clan xp)` : `${LIEUTENANT} (Min 300 mill clan xp)`;
+const CAPTAIN_FMT = ttr ? `${CAPTAIN} (Min 200 mill clan xp)` : `${CAPTAIN} (Min 500 mill clan xp)`;
+const GENERAL_FMT = ttr ? `${GENERAL} (Min 500 mill clan xp)` : `${GENERAL} (Min 750 mill clan xp)`;
+const ADMIN_FMT = `${ADMIN} (Min 1 bill clan xp)`;
+const ORGANIZER_FMT = `${ORGANIZER} (Min 1.5 bill clan xp)`;
+const COORDINATOR_FMT = `${COORDINATOR} (Min 2 bill clan xp)`;
 
 const MAX_CONTENT_LENGTH = 2000;
 const TRUNCATE_POSTFIX = "\n\nCont'd (message is too long)...";
@@ -149,8 +161,30 @@ module.exports = {
         case GENERAL:
           fromRank = GENERAL_FMT;
 
+          isXp = player.clanXp >= ADMIN_MIN_XP;
           isOverPromoted =
             player.clanXp < GENERAL_MIN_XP;
+          break;
+
+        case ADMIN:
+          fromRank = ADMIN_FMT;
+
+          isXp = player.clanXp >= ORGANIZER_MIN_XP;
+          isOverPromoted =
+            player.clanXp < ADMIN_MIN_XP;
+          break;
+        case ORGANIZER:
+          fromRank = ORGANIZER_FMT;
+
+          isXp = player.clanXp >= COORDINATOR_MIN_XP;
+          isOverPromoted =
+            player.clanXp < ORGANIZER_MIN_XP;
+          break;
+        case COORDINATOR:
+          fromRank = COORDINATOR_FMT;
+
+          isOverPromoted =
+            player.clanXp < COORDINATOR_MIN_XP;
           break;
 
         default:
@@ -235,7 +269,7 @@ module.exports = {
         // } else if (days >= SERGEANT_MIN_DAYS) {
         //   toRankTime = SERGEANT_FMT;
         //   toRankTimeLevel = 2;
-        /*} else */ if (days >= CORPORAL_MIN_DAYS) {
+        /*} else */ if (ttr && days >= CORPORAL_MIN_DAYS) {
           toRankTime = CORPORAL_FMT;
           toRankTimeLevel = 1;
         }
@@ -244,7 +278,16 @@ module.exports = {
       let toRankXp = null;
       let toRankXpLevel = 0;
       if (isXp) {
-        if (player.clanXp >= GENERAL_MIN_XP) {
+        if (!ttr && player.clanXp >= COORDINATOR_MIN_XP) {
+          toRankXp = COORDINATOR_FMT;
+          toRankXpLevel = 8;
+        } else if (!ttr && player.clanXp >= ORGANIZER_MIN_XP) {
+          toRankXp = ORGANIZER_FMT;
+          toRankXpLevel = 7;
+        } else if (!ttr && player.clanXp >= ADMIN_MIN_XP) {
+          toRankXp = ADMIN_FMT;
+          toRankXpLevel = 6;
+        } else if (player.clanXp >= GENERAL_MIN_XP) {
           toRankXp = GENERAL_FMT;
           toRankXpLevel = 5;
         } else if (player.clanXp >= CAPTAIN_MIN_XP) {
