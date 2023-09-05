@@ -1,5 +1,6 @@
 node_modules
 .env
+.env.*
 dump.rdb
 temp.*
 seed.js
