@@ -10,43 +10,43 @@ module.exports = {
     let content = `\`\`\`
 Admin bot commands for the Runescape clan: The Twisted Republic
 
-- All admin commands are accessed using /ttradmin
+- All admin commands are accessed using /` + process.env.ADMIN_COMMAND_NAME + `
 - As you type out a command, Discord shows the documentation for that command and its options`;
 
     if (isMasterUser(client, interaction)) {
       content += `
 
 Manage players:
-- /ttradmin setjoindate
-- /ttradmin promotions
-- /ttradmin getbaseclanxp
-- /ttradmin setbaseclanxp`;
+- /` + process.env.ADMIN_COMMAND_NAME + ` setjoindate
+- /` + process.env.ADMIN_COMMAND_NAME + ` promotions
+- /` + process.env.ADMIN_COMMAND_NAME + ` getbaseclanxp
+- /` + process.env.ADMIN_COMMAND_NAME + ` setbaseclanxp`;
 
       content += `
 
 Manage events:
-- /ttradmin startevent
-- /ttradmin endevent
-- /ttradmin renameevent
-- /ttradmin unsafe-delevent`;
+- /` + process.env.ADMIN_COMMAND_NAME + ` startevent
+- /` + process.env.ADMIN_COMMAND_NAME + ` endevent
+- /` + process.env.ADMIN_COMMAND_NAME + ` renameevent
+- /` + process.env.ADMIN_COMMAND_NAME + ` unsafe-delevent`;
 
       content += `
 
 Assigning custom roles at an MEE6 level:
-- /ttradmin setrole
-- /ttradmin delrole`;
+- /` + process.env.ADMIN_COMMAND_NAME + ` setrole
+- /` + process.env.ADMIN_COMMAND_NAME + ` delrole`;
     } else {
       content += `
 
 Manage players:
-- /ttradmin promotions
-- /ttradmin getbaseclanxp`;
+- /` + process.env.ADMIN_COMMAND_NAME + ` promotions
+- /` + process.env.ADMIN_COMMAND_NAME + ` getbaseclanxp`;
     }
 
     content += `
-For the general commands, use /ttr help
+For the general commands, use /` + process.env.COMMAND_NAME + ` help
 
-Having issues? Contact a staff member, or reach out directly to Convergent#2207
+Having issues? Contact a staff member, or reach out directly to SnowyAPI aka Convergent
 \`\`\``;
 
     await interaction.reply({ content, ephemeral: true });

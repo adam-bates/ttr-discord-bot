@@ -73,7 +73,7 @@ module.exports = {
 
     if (!rsn || !player) {
       await interaction.reply({
-        content: `${user} has no assigned RSN.\n\nYou can pass in an RSN instead, or use the command \`/ttr setrsn\` to assign a Discord user to a Runescape name.`,
+        content: `${user} has no assigned RSN.\n\nYou can pass in an RSN instead, or use the command \`/` + process.env.COMMAND_NAME + ` setrsn\` to assign a Discord user to a Runescape name.`,
         ephemeral: true,
       });
       return;
