@@ -43,7 +43,7 @@ const compileTemplates = async () => {
 const buildHandlers = async () => {
   const command = new SlashCommandBuilder()
     .setName(process.env.COMMAND_NAME)
-    .setDescription("General commands for the TTR Discord");
+    .setDescription("General commands for the " + process.env.COMMAND_NAME.toUpperCase() + " Discord");
 
   const commandExecutors = new Map();
   const selectMenuHandlers = new Map();
@@ -77,7 +77,7 @@ const buildHandlers = async () => {
 
   const adminCommand = new SlashCommandBuilder()
     .setName(process.env.ADMIN_COMMAND_NAME)
-    .setDescription("Admin commands for the TTR Discord");
+    .setDescription("Admin commands for the " + process.env.COMMAND_NAME.toUpperCase() + " Discord");
 
   const adminCommandExecutors = new Map();
   const adminSelectMenuHandlers = new Map();

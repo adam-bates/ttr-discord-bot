@@ -13,7 +13,7 @@ const ADMIN_COMMANDS_DIR = path.join(__dirname, "handlers", "admin-commands");
 const deploy = async () => {
   const command = new SlashCommandBuilder()
     .setName(process.env.COMMAND_NAME)
-    .setDescription("General commands for the TTR Discord");
+    .setDescription("General commands for the " + process.env.COMMAND_NAME.toUpperCase() + " Discord");
   const commandFiles = await fs.readdir(COMMANDS_DIR);
 
   commandFiles
@@ -29,7 +29,7 @@ const deploy = async () => {
 
   const adminCommand = new SlashCommandBuilder()
     .setName(process.env.ADMIN_COMMAND_NAME)
-    .setDescription("Admin commands for the TTR Discord");
+    .setDescription("Admin commands for the " + process.env.COMMAND_NAME.toUpperCase() + " Discord");
   const adminCommandFiles = await fs.readdir(ADMIN_COMMANDS_DIR);
 
   adminCommandFiles

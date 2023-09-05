@@ -17,9 +17,14 @@ module.exports = {
 
     // const rsns = await redis.getAllRsns();
 
-    const content = `The Twisted Republic (a.k.a TTR)
+    const content = process.env.COMMAND_NAME == "ttr" ? `The Twisted Republic (a.k.a TTR)
 
 A fresh and welcoming clan; a republic of amazing people who have been twisted about to where they are now.
+
+Feel free to say hi, contribute to conversations, and ask questions. Also, reach out to any of our friendly staff members if you need help!
+` : `daaFriends
+
+A fresh and welcoming clan!
 
 Feel free to say hi, contribute to conversations, and ask questions. Also, reach out to any of our friendly staff members if you need help!
 `;
