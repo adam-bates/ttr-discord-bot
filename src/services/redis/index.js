@@ -29,7 +29,9 @@ const GET_ROLE_ID = "GetRoleId";
 
 const GET_BASE_CLAN_XP = "GetBaseClanXp";
 
-const key = (...parts) => parts.join("/");
+const PREFIX = process.env["REDIS_PREFIX"] || ""
+
+const key = (...parts) => PREFIX + parts.join("/");
 const { parse, stringify } = JSON;
 
 const Redis = (client) => {
