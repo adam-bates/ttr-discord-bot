@@ -7,31 +7,31 @@ const {
   fromUnixTimestamp,
 } = require("../../utils/time");
 
-const GET_ALL_PLAYERS = "GetAllPlayers";
-const GET_DELETED_PLAYERS = "GetDeletedPlayers";
-
-const GET_RSN = "GetRsn";
-
-const GET_LATEST_STATS = "GetStats/latest";
-const GET_TODAY_STATS = "GetStats/today";
-const GET_YESTERDAY_STATS = "GetStats/yesterday";
-const GET_WEEK_STATS = "GetStats/week";
-
-const GET_SNAPSHOT = "GetSnapshot";
-
-const GET_EVENT_DETAILS = "GetEventDetails";
-const GET_EVENT_START_SNAPSHOT = "GetEventStartSnapshot";
-const GET_EVENT_END_SNAPSHOT = "GetEventEndSnapshot";
-
-const GET_EVENTS_BLACKLIST = "GetEventsBlacklist";
-
-const GET_ROLE_ID = "GetRoleId";
-
-const GET_BASE_CLAN_XP = "GetBaseClanXp";
-
 const PREFIX = process.env["REDIS_PREFIX"] || ""
 
-const key = (...parts) => PREFIX + parts.join("/");
+const GET_ALL_PLAYERS = PREFIX + "GetAllPlayers";
+const GET_DELETED_PLAYERS = PREFIX + "GetDeletedPlayers";
+
+const GET_RSN = PREFIX + "GetRsn";
+
+const GET_LATEST_STATS = PREFIX + "GetStats/latest";
+const GET_TODAY_STATS = PREFIX + "GetStats/today";
+const GET_YESTERDAY_STATS = PREFIX + "GetStats/yesterday";
+const GET_WEEK_STATS = PREFIX + "GetStats/week";
+
+const GET_SNAPSHOT = PREFIX + "GetSnapshot";
+
+const GET_EVENT_DETAILS = PREFIX + "GetEventDetails";
+const GET_EVENT_START_SNAPSHOT = PREFIX + "GetEventStartSnapshot";
+const GET_EVENT_END_SNAPSHOT = PREFIX + "GetEventEndSnapshot";
+
+const GET_EVENTS_BLACKLIST = PREFIX + "GetEventsBlacklist";
+
+const GET_ROLE_ID = PREFIX + "GetRoleId";
+
+const GET_BASE_CLAN_XP = PREFIX + "GetBaseClanXp";
+
+const key = (...parts) => parts.join("/");
 const { parse, stringify } = JSON;
 
 const Redis = (client) => {
