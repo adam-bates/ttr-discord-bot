@@ -18,7 +18,7 @@ const COORDINATOR = "Coordinator";
 
 const ttr = process.env.COMMAND_NAME == "ttr";
 
-const MIN_CLAN_DAYS = ttr ? 2 * 7 : 0; // 2 weeks
+const MIN_CLAN_DAYS = ttr ? 2 * 7 : 30; // 2 weeks
 const MIN_CLAN_XP = ttr ? 1 * 1000000 : 50 * 1000000; // 1 mill
 
 const CORPORAL_MIN_DAYS = MIN_CLAN_DAYS;
