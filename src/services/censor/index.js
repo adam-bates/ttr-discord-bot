@@ -33,6 +33,8 @@ const CensorService = ({ matches }) => {
 
         if (isMatch) {
           censorsSet.add(match);
+        } else {
+          console.error(`No match for "${match}" starting at "${words[wordIdx]}"`);
         }
       }
     }
