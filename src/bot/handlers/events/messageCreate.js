@@ -136,7 +136,7 @@ module.exports = {
     if (message.author.id === process.env.MEE6_USER_ID) {
       await handleLevelUpPromotions({ client, redis }, message);
     } else if (censorMatches.length > 0) {
-      let censoredTxt = "Matches:\n";
+      let censoredTxt = "\nMatches:\n";
       censorMatches.forEach((m) => {
         censoredTxt += `- \`${m}\`\n`;
       });
