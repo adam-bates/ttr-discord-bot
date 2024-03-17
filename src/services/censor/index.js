@@ -14,23 +14,30 @@ const PROFANITY_FILE = path.join(
 const CensorService = ({ matches }) => {
   const findCensors = (input) => {
     const words = input.toLowerCase().split(/\W+/);
+    let censorsSet = new Set();
 
-    let wordIdx = 0;
+    for (wordIdx = 0; wordIdx < words.length; wordIdx += 1) {
+      for (const match of matches) {
+        const matchWords = match.split(/\W+/);
+        let offset = 0;
+        let isMatch = true;
 
-    return matches.filter((match) => {
-      matchWords = match.split(/\W+/);
-      let offset = 0;
+        for (i = 0; i < matchWords.length; i++) {
+          if (matchWords[i] !== words[wordIdx + offset]) {
+            isMatch = false;
+            break;
+          }
 
-      for (i = 0; i < matchWords.length; i++) {
-        if (matchWords[i] !== words[wordIdx + offset]) {
-          return false;
+          offset += 1;
         }
 
-        offset += 1;
+        if (isMatch) {
+          censorsSet.add(match);
+        }
       }
+    }
 
-      wordIdx += 1;
-    });
+    return Array.from(censorsSet);
   };
 
   return {
@@ -40,7 +47,7 @@ const CensorService = ({ matches }) => {
 
 const createCensorService = async () => {
   const text = await fs.readFile(PROFANITY_FILE, { encoding: "utf8" });
-  const matches = text.split("\n").map((match) => match.toLowerCase());
+  const matches = text.toLowerCase().split("\n");
 
   return CensorService({ matches });
 };
