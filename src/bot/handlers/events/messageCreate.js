@@ -131,13 +131,19 @@ module.exports = {
       return;
     }
 
+    const censorMatches = censor.findCensors(message.content);
+
     if (message.author.id === process.env.MEE6_USER_ID) {
       await handleLevelUpPromotions({ client, redis }, message);
-    } else if (censor.shouldCensor(message.content)) {
+    } else if (censorMatches.length > 0) {
+      const censoredTxt = "";
+      censorMatches.forEach((m) => {
+        censoredTxt += `Match: \'${m}\`\n`;
+      });
       await message.delete();
       await reportToStaff(
         { client, message, reportChannelId },
-        `========================\n**Message Censored!**\n\n${message.author} may have said something horrible in ${message.channel}\n\n> ${message.content}\n`
+        `========================\n**Message Censored!**\n\n${message.author} may have said something horrible in ${message.channel}\n\n> ${message.content}\n${censoredTxt}`
       );
     } else if (
       message.content.includes("@everyone") ||
