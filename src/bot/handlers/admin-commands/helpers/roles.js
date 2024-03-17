@@ -27,12 +27,12 @@ const isUserRole = async (roleId, client, interaction, shouldReply = true) => {
   return isRole;
 };
 
-const isAdam = async (userId, interaction) =>
+const isAdam = (userId, interaction) =>
   interaction.user && interaction.user.id === userId;
 
 const isMasterUser = async (client, interaction, shouldReply = true) =>
   isAdam(process.env.ADAM_USER_ID, interaction)
-  || isUserRole(process.env.MASTER_ROLE_ID, client, interaction, shouldReply);
+  || await isUserRole(process.env.MASTER_ROLE_ID, client, interaction, shouldReply);
 
 const requireMasterUser =
   (execute) =>
@@ -44,8 +44,8 @@ const requireMasterUser =
 
 const isModUser = async (client, interaction, shouldReply = true) =>
   isAdam(process.env.ADAM_USER_ID, interaction)
-  || isUserRole(process.env.MOD_ROLE_ID, client, interaction, false)
-  || isMasterUser(client, interaction, shouldReply);
+  || await isUserRole(process.env.MOD_ROLE_ID, client, interaction, false)
+  || await isMasterUser(client, interaction, shouldReply);
 
 const requireModUser =
   (execute) =>
