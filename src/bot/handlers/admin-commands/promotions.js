@@ -164,7 +164,7 @@ module.exports = {
         case GENERAL:
           fromRank = GENERAL_FMT;
 
-          isXp = player.clanXp >= ADMIN_MIN_XP;
+          isXp = !ttr && player.clanXp >= ADMIN_MIN_XP;
           isOverPromoted =
             player.clanXp < GENERAL_MIN_XP;
           break;
@@ -172,14 +172,14 @@ module.exports = {
         case ADMIN:
           fromRank = ADMIN_FMT;
 
-          isXp = player.clanXp >= ORGANIZER_MIN_XP;
+          isXp = !ttr && player.clanXp >= ORGANIZER_MIN_XP;
           isOverPromoted =
             player.clanXp < ADMIN_MIN_XP;
           break;
         case ORGANIZER:
           fromRank = ORGANIZER_FMT;
 
-          isXp = player.clanXp >= COORDINATOR_MIN_XP;
+          isXp = !ttr && player.clanXp >= COORDINATOR_MIN_XP;
           isOverPromoted =
             player.clanXp < ORGANIZER_MIN_XP;
           break;
