@@ -116,16 +116,19 @@ module.exports = {
 
     const rsnCurrentTargetId = await redis.searchForUserIdWithRsn(rsn);
 
-    const rsnCurrentTarget = await guild.members.fetch(rsnCurrentTargetId);
-
     if (rsnCurrentTargetId) {
       if (!forceRsn) {
-        if (rsnCurrentTarget) {
-          await interaction.reply({
-            content: `Error! ${rsnCurrentTarget} is already assigned to RSN: ${rsn}. Use the option \`force-rsn\` to override this.`,
-            ephemeral: true,
-          });
-          return;
+        try {
+          const rsnCurrentTarget = await guild.members.fetch(rsnCurrentTargetId);
+          if (rsnCurrentTarget) {
+            await interaction.reply({
+              content: `Error! ${rsnCurrentTarget} is already assigned to RSN: ${rsn}. Use the option \`force-rsn\` to override this.`,
+              ephemeral: true,
+            });
+            return;
+          }
+        } catch (e) {
+          // prev target not in clan anymore ...
         }
 
         await interaction.reply({

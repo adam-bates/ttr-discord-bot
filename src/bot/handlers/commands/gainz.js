@@ -114,7 +114,7 @@ module.exports = {
     if (user) {
       const userRsn = await redis.getRsnByUserId(user.id);
 
-      if (rsn && rsn.toLowerCase() !== userRsn.toLowerCase()) {
+      if (rsn && userRsn && rsn.toLowerCase() !== userRsn.toLowerCase()) {
         await interaction.reply({
           content: `Error! RSN ${rsn} is not assigned to: ${user}`,
           ephemeral: true,
